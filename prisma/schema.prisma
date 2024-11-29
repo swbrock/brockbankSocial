@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id
+  email     String   @unique
+  username  String   @unique
+  firstName String  // User's first name
+  lastName  String  // User's last name
+  password  String   // Store a hashed password here
+  avatar   String?  // URL to user's avatar
+  cover    String?  // URL to user's cover image
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ratings   Rating[] // Relation to the Rating model
+  games     Game[]   // Relation to the Game model (user can be a player)
+  GameParticipant GameParticipant[] // Relation to the GameParticipant model (user can be a participant)
+
+  Post Post[]
+}
+
+model BoardGame {
+  id            Int      @id @default(autoincrement())
+  name          String
+  rating        Float?   // Average rating, can be calculated dynamically
+  difficulty    String?
+  timesPlayed   Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  ratings       Rating[] // Relation to the Rating model (ratings for this board game)
+  gamesPlayed   Game[]   // Relation to the Game model (tracks each game played)
+}
+
+model Movie {
+  id            Int      @id @default(autoincrement())
+  name          String
+  rating        Float?   // Average rating, can be calculated dynamically
+  genre         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  ratings       Rating[] // Relation to the Rating model (ratings for this movie)
+}
+
+model Book {
+  id            Int      @id @default(autoincrement())
+  name          String
+  author        String
+  genre         String?
+  rating        Float?   // Average rating, can be calculated dynamically
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  ratings       Rating[] // Relation to the Rating model (ratings for this book)
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  boardGameId Int?   // Nullable for polymorphic relation
+  movieId   Int?     // Nullable for polymorphic relation
+  bookId    Int?     // Nullable for polymorphic relation
+  rating    Float
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  boardGame BoardGame? @relation(fields: [boardGameId], references: [id])
+  movie     Movie?   @relation(fields: [movieId], references: [id])
+  book      Book?    @relation(fields: [bookId], references: [id])
+
+  Post Post[]
+}
+
+model Game {
+  id            Int      @id @default(autoincrement())
+  boardGameId   Int
+  winnerUserId  String
+  playDate      DateTime
+  playDuration  Int      // Duration in minutes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  boardGame     BoardGame @relation(fields: [boardGameId], references: [id])
+  winner        User      @relation(fields: [winnerUserId], references: [id])
+  participants  GameParticipant[] // Relation to GameParticipant model
+
+  Post Post[]
+}
+
+model GameParticipant {
+  id        Int     @id @default(autoincrement())
+  gameId    Int
+  userId    String
+  createdAt DateTime @default(now())
+
+  game      Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id])
+  @@unique([gameId, userId]) // Ensures a user can only participate in a game once
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+  ratingId  Int?     // Nullable, references the Rating model
+  gameId    Int?     // Nullable, references the Game model
+
+  rating    Rating?  @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+  game      Game?    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
