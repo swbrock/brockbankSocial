@@ -1,6 +1,5 @@
 import React from "react";
 import Post from "./Post";
-import { auth } from "@clerk/nextjs/server";
 
 const Feed = () => {
     return (

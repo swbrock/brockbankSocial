@@ -1,14 +1,13 @@
 import React from "react";
-import TopGame from "./TopGame";
 import TopMovie from "./TopMovie";
 import TopBook from "./TopBook";
+import { Book, Movie } from "@prisma/client";
 
-const RightMenu = ({ userId }: { userId?: string }) => {
+const RightMenu = ({ movies, books }: { movies: Movie[]; books: Book[] }) => {
     return (
         <div className="flex flex-col gap-6">
-            <TopGame />
-            <TopMovie />
-            <TopBook />
+            <TopMovie movies={movies} />
+            <TopBook books={books} />
         </div>
     );
 };

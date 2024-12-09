@@ -15,53 +15,109 @@ datasource db {
 
 model User {
   id        String   @id
-  email     String   @unique
   username  String   @unique
-  firstName String  // User's first name
-  lastName  String  // User's last name
-  password  String   // Store a hashed password here
-  avatar   String?  // URL to user's avatar
-  cover    String?  // URL to user's cover image
+  firstName String?  // User's first name
+  lastName  String?  // User's last name
+  avatar    String?  // URL to user's avatar
+  cover     String?  // URL to user's cover image
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ratings   Rating[] // Relation to the Rating model
   games     Game[]   // Relation to the Game model (user can be a player)
   GameParticipant GameParticipant[] // Relation to the GameParticipant model (user can be a participant)
-
   Post Post[]
+
+  SportsPredictions SportsPredictions[]
+
+  Leaderboard Leaderboard[]
 }
+
+model SportsEvents {
+  id            Int      @id @default(autoincrement())
+  sport         String
+  homeTeam      String
+  awayTeam      String
+  homeTeamLogo  String?
+  awayTeamLogo  String?
+  homeScore     Int?
+  awayScore     Int?
+  Time          DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  SportsPredictions SportsPredictions[]
+}
+
+model SportsPredictions {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  sportsEventId Int
+  homeScore     Int
+  awayScore     Int
+  eventScore    Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+  sportsEvent   SportsEvents  @relation(fields: [sportsEventId], references: [id])
+}
+
+model Leaderboard {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  points    Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
 
 model BoardGame {
   id            Int      @id @default(autoincrement())
   name          String
   rating        Float?   // Average rating, can be calculated dynamically
   difficulty    String?
+  image         String?  // URL to the board game's picture
+  length        Int?     // Duration in minutes
   timesPlayed   Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   ratings       Rating[] // Relation to the Rating model (ratings for this board game)
   gamesPlayed   Game[]   // Relation to the Game model (tracks each game played)
+
+  Post Post[]
 }
 
 model Movie {
   id            Int      @id @default(autoincrement())
   name          String
   rating        Float?   // Average rating, can be calculated dynamically
-  genre         String?
+  genreId       Int?     // Genre ID
+  mpaaRating    String?  // MPAA rating
+  director      String?
+  releaseDate   DateTime?
+  image         String?  // URL to the movie's poster
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  genre         Genre?   @relation(fields: [genreId], references: [id])
   ratings       Rating[] // Relation to the Rating model (ratings for this movie)
+
+  Post Post[]
 }
 
 model Book {
   id            Int      @id @default(autoincrement())
   name          String
   author        String
-  genre         String?
+  genreId       Int?     // Genre ID
   rating        Float?   // Average rating, can be calculated dynamically
+  image         String?  // URL to the book's cover image
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  genre         Genre?   @relation(fields: [genreId], references: [id])
   ratings       Rating[] // Relation to the Rating model (ratings for this book)
+
+  Post Post[]
 }
 
 model Rating {
@@ -87,6 +143,7 @@ model Game {
   winnerUserId  String
   playDate      DateTime
   playDuration  Int      // Duration in minutes
+  image         String?  // URL to the game's picture
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -108,6 +165,17 @@ model GameParticipant {
   @@unique([gameId, userId]) // Ensures a user can only participate in a game once
 }
 
+model Genre {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Movie Movie[]
+
+  Book Book[]
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   userId    String
@@ -117,6 +185,16 @@ model Post {
   updatedAt DateTime @updatedAt
 
   user      User     @relation(fields: [userId], references: [id])
+
+  // Optional polymorphic relationships to BoardGame, Movie, or Book
+  boardGameId Int?      // Nullable field to link to BoardGame
+  movieId     Int?      // Nullable field to link to Movie
+  bookId      Int?      // Nullable field to link to Book
+
+  boardGame   BoardGame? @relation(fields: [boardGameId], references: [id])
+  movie       Movie?     @relation(fields: [movieId], references: [id])
+  book        Book?      @relation(fields: [bookId], references: [id])
+
   ratingId  Int?     // Nullable, references the Rating model
   gameId    Int?     // Nullable, references the Game model
 
