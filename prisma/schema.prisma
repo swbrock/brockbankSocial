@@ -13,6 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id        String   @id
   username  String   @unique
@@ -41,7 +42,7 @@ model SportsEvents {
   awayTeamLogo  String?
   homeScore     Int?
   awayScore     Int?
-  Time          DateTime
+  time          DateTime
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

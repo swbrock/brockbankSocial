@@ -1,7 +1,6 @@
 import AddEvent from "@/components/AddEvent";
 import Feed from "@/components/Feed";
 import LeftMenu from "@/components/LeftMenu";
-import RightMenu from "@/components/RightMenu";
 import React from "react";
 import Image from "next/image";
 import prisma from "@/lib/client";
