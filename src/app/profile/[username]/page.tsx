@@ -5,6 +5,8 @@ import React from "react";
 import Image from "next/image";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
+import UpdateUser from "@/components/UpdateUser";
+import { auth } from "@clerk/nextjs/server";
 
 const ProfilePage = async ({ params }: { params: { username: string } }) => {
     const topRatedGames = await prisma.boardGame.findMany({
@@ -35,6 +37,7 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
     if (!user) {
         return notFound();
     }
+    const { userId: currentUserId } = await auth();
 
     // Find the highest rated game
     const highestRatedGames = user.ratings
@@ -110,6 +113,12 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
                                 ? `${user.firstName} ${user.lastName}`
                                 : user.username}
                         </h1>
+                        {currentUserId === user.id ? (
+                            <div className="flex justify-between items-center font-medium">
+                                <UpdateUser user={user} />
+                            </div>
+                        ) : null}
+
                         <div className="flex items-center justify-center gap-12 mb-4">
                             <div className="flex flex-col items-center gap-2">
                                 <span className="font-medium">Top Game(s)</span>

@@ -539,9 +539,8 @@ export const updateProfile = async (
         cover: z.string().optional(),
         firstName: z.string().max(60).optional(),
         lastName: z.string().max(60).optional(),
-        avatar: z.string().optional(),
-        userName: z.string().optional(),
     });
+    console.log({ cover, ...filteredFields });
 
     const validatedFields = Profile.safeParse({ cover, ...filteredFields });
 
@@ -557,12 +556,16 @@ export const updateProfile = async (
     }
 
     try {
+        console.log("Updating profile...");
+        console.log({ userId });
+        console.log({ validatedFields });
         await prisma.user.update({
             where: {
                 id: userId,
             },
             data: validatedFields.data,
         });
+        console.log("Profile updated successfully");
         return { success: true, error: false };
     } catch (err) {
         console.log(err);
