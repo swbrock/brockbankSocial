@@ -17,9 +17,19 @@ export default async function BoardGameProfilePageServer({
         },
     });
 
+    const ratings = await prisma.rating.findMany({
+        where: {
+            boardGameId: parseInt(params.boardGameId),
+        },
+    });
+
     if (!boardGame) {
         return notFound(); // Return 404 if the book is not found
     }
+
+    boardGame.rating =
+        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+        ratings.length;
 
     return <BoardGameProfilePage boardGame={boardGame} />; // Pass the fetched book data to the page component
 }

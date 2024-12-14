@@ -13,7 +13,11 @@ export default async function Movies() {
         },
     });
 
-    console.log(boardGames);
+    boardGames.forEach((boardGame) => {
+        boardGame.rating =
+            boardGame.ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+            boardGame.ratings.length;
+    });
 
     return <BoardGamePage dbBoardGames={boardGames} />; // Pass the fetched
 }

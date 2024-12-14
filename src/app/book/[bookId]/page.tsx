@@ -18,9 +18,19 @@ export default async function BookProfilePageServer({
         },
     });
 
+    const ratings = await prisma.rating.findMany({
+        where: {
+            bookId: parseInt(params.bookId),
+        },
+    });
+
     if (!book) {
         return notFound(); // Return 404 if the book is not found
     }
+
+    book.rating =
+        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+        ratings.length;
 
     return <BookProfilePage book={book} />; // Pass the fetched book data to the page component
 }

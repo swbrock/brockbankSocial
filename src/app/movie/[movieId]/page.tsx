@@ -18,9 +18,19 @@ export default async function MovieProfilePageServer({
         },
     });
 
+    const ratings = await prisma.rating.findMany({
+        where: {
+            movieId: parseInt(params.movieId),
+        },
+    });
+
     if (!movie) {
         return notFound(); // Return 404 if the movie is not found
     }
+
+    movie.rating =
+        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+        ratings.length;
 
     return <MovieProfilePage movie={movie} />; // Pass the fetched movie data to the page component
 }

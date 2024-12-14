@@ -14,7 +14,11 @@ export default async function Movies() {
         },
     });
 
-    console.log(books);
+    books.forEach((book) => {
+        book.rating =
+            book.ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+            book.ratings.length;
+    });
 
     return <BookPage dbBooks={books} />; // Pass the fetched
 }

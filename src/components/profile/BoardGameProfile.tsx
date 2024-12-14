@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
+import { Genre } from "@prisma/client";
 
 interface Post {
     id: number;

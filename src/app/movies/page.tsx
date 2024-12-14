@@ -13,8 +13,12 @@ export default async function Movies() {
             ratings: true, // Include ratings for each movie
         },
     });
-
-    console.log(movies);
+    //for each movie, get the ratings and the average rating for each movie and add it to the movie object as rating
+    movies.forEach((movie) => {
+        movie.rating =
+            movie.ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+            movie.ratings.length;
+    });
 
     return <MoviePage dbMovies={movies} />; // Pass the fetched
 }
