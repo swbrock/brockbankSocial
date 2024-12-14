@@ -82,12 +82,9 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                 </div>
                 {filteredMovies && filteredMovies.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredMovies.map((movie) => (
+                        {filteredMovies.map((movie, index) => (
                             <Link key={movie.id} href={`/movie/${movie.id}`}>
-                                <div
-                                    key={movie.id}
-                                    className="relative p-6 bg-white shadow-xl rounded-xl border-2 border-transparent hover:border-purple-400 transition-transform duration-300 hover:scale-105"
-                                >
+                                <div className="relative p-6 bg-white shadow-xl rounded-xl border-2 border-transparent hover:border-purple-400 transition-transform duration-300 hover:scale-105">
                                     <div className="absolute top-2 right-2 bg-yellow-200 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
                                         {movie.rating
                                             ? `⭐ ${movie.rating}/5`
@@ -98,6 +95,9 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                                     </h2>
                                     <p className="text-sm text-gray-600 mb-4">
                                         {movie.director || "Director: Unknown"}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        Rank: {index + 1}
                                     </p>
                                     <button
                                         onClick={(e) => {
