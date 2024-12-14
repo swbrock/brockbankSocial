@@ -28,7 +28,7 @@ const Navbar = () => {
                         />
                         <span>Homepage</span>
                     </Link>
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/movies" className="flex items-center gap-2">
                         <Image
                             src="/movieIcon.png"
                             alt="Movies"
@@ -38,7 +38,10 @@ const Navbar = () => {
                         />
                         <span>Movies</span>
                     </Link>
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link
+                        href="/boardGames"
+                        className="flex items-center gap-2"
+                    >
                         <Image
                             src="/games.png"
                             alt="Games"
@@ -48,7 +51,7 @@ const Navbar = () => {
                         />
                         <span>Board Games</span>
                     </Link>
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/books" className="flex items-center gap-2">
                         <Image
                             src="/book.png"
                             alt="Books"

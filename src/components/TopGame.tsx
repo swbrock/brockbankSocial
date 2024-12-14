@@ -1,4 +1,5 @@
 import { BoardGame } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 interface TopGameProps {
@@ -61,22 +62,14 @@ const TopGame: React.FC<TopGameProps> = ({ boardGames }) => {
                                     ))}
                                 </div>
 
-                                {/* Game Difficulty */}
-                                <p className="text-sm text-gray-600 mt-2">
-                                    Difficulty: {game.difficulty || "N/A"}
-                                </p>
-                                <p className="text-sm text-gray-600 mt-2">
-                                    Times Played: {game.timesPlayed || "N/A"}
-                                </p>
-
                                 {/* Buttons */}
                                 <div className="flex items-center gap-4 mt-4">
-                                    <button className="text-blue-500 text-sm hover:underline">
+                                    <Link
+                                        className="text-blue-500 text-center text-sm hover:underline"
+                                        href={`/boardGame/${game.id}`}
+                                    >
                                         More Info
-                                    </button>
-                                    <button className="text-green-500 text-sm hover:underline">
-                                        Play Now
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

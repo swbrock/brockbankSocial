@@ -1,4 +1,5 @@
 import { Movie } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 interface TopMovieProps {
@@ -71,12 +72,12 @@ const TopMovie: React.FC<TopMovieProps> = ({ movies }) => {
 
                                 {/* Buttons */}
                                 <div className="flex items-center gap-4 mt-4">
-                                    <button className="text-blue-500 text-sm hover:underline">
+                                    <Link
+                                        className="text-blue-500 text-sm hover:underline"
+                                        href={`/movie/${movie.id}`}
+                                    >
                                         More Info
-                                    </button>
-                                    <button className="text-green-500 text-sm hover:underline">
-                                        Watch Now
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

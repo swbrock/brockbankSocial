@@ -1,4 +1,5 @@
 import { Book } from "@prisma/client"; // Import the Book type from Prisma schema
+import Link from "next/link";
 import React from "react";
 
 interface TopBookProps {
@@ -63,19 +64,14 @@ const TopBook: React.FC<TopBookProps> = ({ books }) => {
                                     ))}
                                 </div>
 
-                                {/* Book Author */}
-                                <p className="text-sm text-gray-600 mt-2">
-                                    Author: {book.author || "Unknown Author"}
-                                </p>
-
                                 {/* Buttons */}
                                 <div className="flex items-center gap-4 mt-4">
-                                    <button className="text-blue-500 text-sm hover:underline">
+                                    <Link
+                                        className="text-blue-500 text-sm hover:underline"
+                                        href={`/book/${book.id}`}
+                                    >
                                         More Info
-                                    </button>
-                                    <button className="text-green-500 text-sm hover:underline">
-                                        Read Now
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
