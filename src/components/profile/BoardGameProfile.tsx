@@ -62,34 +62,6 @@ const BoardGameProfilePage = ({ boardGame }: BoardGameProfileProps) => {
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
                 />
             )}
-
-            {/* Posts Section */}
-            <div className="mt-10">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Related Posts
-                </h2>
-                {boardGame.Post.length > 0 ? (
-                    <ul className="space-y-4">
-                        {boardGame.Post.map((post) => (
-                            <li
-                                key={post.id}
-                                className="bg-white p-4 rounded-lg shadow-md hover:bg-gray-50 transition-all"
-                            >
-                                <h3 className="text-xl font-semibold text-gray-700">
-                                    {post.title}
-                                </h3>
-                                <p className="mt-2 text-gray-600">
-                                    {post.content}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-600">
-                        No posts related to this game yet.
-                    </p>
-                )}
-            </div>
         </div>
     );
 };

@@ -1,21 +1,45 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
+import { Post as PostType } from "@prisma/client";
 
-const Post = ({ post }: { post: any }) => {
+type FeedPostType = PostType & {
+    user?: {
+        username: string;
+        avatar?: string | null;
+    };
+    boardGame?: {
+        name: string;
+    };
+    movie?: {
+        name: string;
+    };
+    book?: {
+        name: string;
+    };
+    game?: {
+        name: string;
+    };
+    rating?: {
+        score: number;
+    };
+};
+
+const Post = ({ post }: { post: FeedPostType }) => {
     return (
         <div className="flex flex-col gap-6 p-6 bg-gradient-to-r from-white via-gray-100 to-white shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300">
             {/* Header with user info and options */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Image
-                        src={post?.user?.profilePicture || "/friends.png"}
-                        alt={post?.user?.username || "User"}
+                        src={post.user?.avatar || "/noAvatar.png"}
+                        alt={post.user?.username || "User"}
                         width={50}
                         height={50}
                         className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
                     />
                     <span className="font-semibold text-lg text-gray-800">
-                        {post?.user?.username || "Unknown User"}
+                        {post.user?.username || "Unknown User"}
                     </span>
                 </div>
                 <Image
@@ -59,14 +83,14 @@ const Post = ({ post }: { post: any }) => {
                 {post?.movie && (
                     <p className="text-gray-600 text-sm">
                         <span className="font-semibold">Related Movie:</span>{" "}
-                        {post.movie.title}
+                        {post.movie.name}
                     </p>
                 )}
 
                 {post?.book && (
                     <p className="text-gray-600 text-sm">
                         <span className="font-semibold">Related Book:</span>{" "}
-                        {post.book.title}
+                        {post.book.name}
                     </p>
                 )}
 

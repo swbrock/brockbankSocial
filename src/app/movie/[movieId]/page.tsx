@@ -1,3 +1,4 @@
+import Feed from "@/components/Feed";
 import MovieProfilePage from "@/components/profile/MovieProfile";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
@@ -64,10 +65,9 @@ export default async function MovieProfilePageServer({
 
     // Render the MovieProfilePage with the fetched data
     return (
-        <MovieProfilePage
-            movie={movieWithRating}
-            posts={posts || []}
-            genre={genre}
-        />
+        <>
+            <MovieProfilePage movie={movieWithRating} genre={genre} />
+            <Feed movieId={movieId} />
+        </>
     );
 }

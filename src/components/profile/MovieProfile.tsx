@@ -7,11 +7,9 @@ import { Genre, Movie, Post } from "@prisma/client";
 const MovieProfilePage = ({
     movie,
     genre,
-    posts = [],
 }: {
     movie: Movie;
     genre?: Genre | null;
-    posts?: Post[];
 }) => {
     // Client-side state for managing the modal visibility and rating
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,34 +47,6 @@ const MovieProfilePage = ({
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
                 />
             )}
-
-            {/* Posts Section */}
-            <div className="mt-10">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Related Posts
-                </h2>
-                {posts.length > 0 ? (
-                    <ul className="space-y-4">
-                        {posts.map((post) => (
-                            <li
-                                key={post.id}
-                                className="bg-white p-4 rounded-lg shadow-md hover:bg-gray-50 transition-all"
-                            >
-                                <h3 className="text-xl font-semibold text-gray-700">
-                                    {post.title}
-                                </h3>
-                                <p className="mt-2 text-gray-600">
-                                    {post.content}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-600">
-                        No posts related to this movie yet.
-                    </p>
-                )}
-            </div>
         </div>
     );
 };

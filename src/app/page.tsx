@@ -5,45 +5,17 @@ import Feed from "@/components/Feed";
 import LeftMenu from "@/components/LeftMenu";
 import RightMenu from "@/components/RightMenu";
 import Stories from "@/components/Stories";
+import { topRatedGames, topRatedBooks, topRatedMovies } from "@/lib/actions"; // Import topRatedGames function
 
 const Homepage = async () => {
-    // Fetch top-rated data on the server-side
-    const topRatedGames = await prisma.boardGame.findMany({
-        orderBy: {
-            rating: "desc", // Order by rating (highest to lowest)
-        },
-        take: 5, // Fetch top 5 only
-        include: {
-            ratings: true, // Include ratings if needed
-        },
-    });
-
-    const topRatedMovies = await prisma.movie.findMany({
-        orderBy: {
-            rating: "desc", // Order by rating (highest to lowest)
-        },
-        take: 5, // Fetch top 5 only
-        include: {
-            ratings: true, // Include ratings if needed
-            genre: true, // Include genre
-        },
-    });
-
-    const topRatedBooks = await prisma.book.findMany({
-        orderBy: {
-            rating: "desc", // Order by rating (highest to lowest)
-        },
-        take: 5, // Fetch top 5 only
-        include: {
-            ratings: true, // Include ratings if needed
-            genre: true, // Include genre
-        },
-    });
+    const topGames = await topRatedGames(); // Get top rated games
+    const topMovies = await topRatedMovies(); // Get top rated movies
+    const topBooks = await topRatedBooks(); // Get top rated
 
     return (
         <div className="flex gap-6 pt-6">
             <div className="hidden xl:block w-[30%]">
-                <LeftMenu type={"home"} boardGames={topRatedGames} />
+                <LeftMenu type={"home"} boardGames={topGames} />
             </div>
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
@@ -53,7 +25,7 @@ const Homepage = async () => {
                 </div>
             </div>
             <div className="hidden lg:block w-[30%]">
-                <RightMenu movies={topRatedMovies} books={topRatedBooks} />
+                <RightMenu movies={topMovies} books={topBooks} />
             </div>
         </div>
     );

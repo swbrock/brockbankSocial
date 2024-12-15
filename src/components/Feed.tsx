@@ -4,9 +4,19 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
 
 // Feed component to display a list of posts
-const Feed = async ({ username }: { username?: string }) => {
-    const { userId } = await auth();
-
+const Feed = async ({
+    username,
+    boardGameId,
+    movieId,
+    bookId,
+    gameId,
+}: {
+    username?: string;
+    boardGameId?: number;
+    movieId?: number;
+    bookId?: number;
+    gameId?: number;
+}) => {
     let posts = [];
     if (username) {
         posts = await prisma.post.findMany({
@@ -22,8 +32,69 @@ const Feed = async ({ username }: { username?: string }) => {
                 createdAt: "desc",
             },
         });
+    } else if (boardGameId) {
+        posts = await prisma.post.findMany({
+            where: {
+                boardGameId: boardGameId,
+            },
+            include: {
+                user: true,
+                boardGame: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    } else if (movieId) {
+        posts = await prisma.post.findMany({
+            where: {
+                movieId: movieId,
+            },
+            include: {
+                user: true,
+                movie: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    }
+    // Add the bookId condition
+    else if (bookId) {
+        posts = await prisma.post.findMany({
+            where: {
+                bookId: bookId,
+            },
+            include: {
+                user: true,
+                book: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    } else if (gameId) {
+        posts = await prisma.post.findMany({
+            where: {
+                gameId: gameId,
+            },
+            include: {
+                user: true,
+                game: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
     } else {
-        posts = await prisma.post.findMany();
+        posts = await prisma.post.findMany({
+            include: {
+                user: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
     }
 
     return (

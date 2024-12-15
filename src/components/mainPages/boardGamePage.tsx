@@ -82,7 +82,7 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
                 {filteredBoardGames && filteredBoardGames.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredBoardGames.map((game, index) => (
-                            <Link key={game.id} href={`/boardgame/${game.id}`}>
+                            <Link key={game.id} href={`/boardGame/${game.id}`}>
                                 <div className="relative p-6 bg-white shadow-xl rounded-xl border-2 border-transparent hover:border-orange-400 transition-transform duration-300 hover:scale-105">
                                     <div className="absolute top-2 right-2 bg-yellow-200 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
                                         {game.rating

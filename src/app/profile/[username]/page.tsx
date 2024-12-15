@@ -7,17 +7,13 @@ import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 import UpdateUser from "@/components/UpdateUser";
 import { auth } from "@clerk/nextjs/server";
+import { topRatedBooks, topRatedGames, topRatedMovies } from "@/lib/actions";
+import RightMenu from "@/components/RightMenu";
 
 const ProfilePage = async ({ params }: { params: { username: string } }) => {
-    const topRatedGames = await prisma.boardGame.findMany({
-        orderBy: {
-            rating: "desc", // Order by rating (highest to lowest)
-        },
-        take: 5, // Fetch top 5 only
-        include: {
-            ratings: true, // Include ratings if needed
-        },
-    });
+    const topGames = await topRatedGames();
+    const topMovies = await topRatedMovies();
+    const topBooks = await topRatedBooks();
 
     const user = await prisma.user.findUnique({
         where: {
@@ -85,7 +81,7 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
     return (
         <div className="flex gap-6 pt-6">
             <div className="hidden xl:block w-[30%]">
-                <LeftMenu type={"profile"} boardGames={topRatedGames} />
+                <LeftMenu type={"profile"} boardGames={topGames} />
             </div>
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
@@ -175,6 +171,9 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
                     </div>
                     <Feed username={user.username} />
                 </div>
+            </div>
+            <div className="hidden xl:block w-[20%]">
+                <RightMenu movies={topMovies} books={topBooks} />
             </div>
         </div>
     );

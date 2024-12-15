@@ -182,6 +182,7 @@ model Post {
   userId    String
   title     String
   content   String
+  image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -1,6 +1,9 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import {
+    BoardGame,
+    Book,
+    Movie,
     PrismaClient,
     Rating,
     SportsEvents,
@@ -568,3 +571,50 @@ export const updateProfile = async (
         return { success: false, error: true };
     }
 };
+
+/// ------------------------------- Board Game Actions -------------------------------
+
+export async function topRatedGames(): Promise<BoardGame[]> {
+    const games = await prisma.boardGame.findMany({
+        orderBy: {
+            rating: "desc", // Order by rating (highest to lowest)
+        },
+        take: 5, // Fetch top 5 only
+        include: {
+            ratings: true, // Include ratings if needed
+        },
+    });
+    return games;
+}
+
+// ------------------------------- Movie Actions -------------------------------
+
+export async function topRatedMovies(): Promise<Movie[]> {
+    const movies = await prisma.movie.findMany({
+        orderBy: {
+            rating: "desc", // Order by rating (highest to lowest)
+        },
+        take: 5, // Fetch top 5 only
+        include: {
+            ratings: true, // Include ratings if needed
+            genre: true, // Include genre
+        },
+    });
+    return movies;
+}
+
+// ------------------------------- Book Actions -------------------------------
+
+export async function topRatedBooks(): Promise<Book[]> {
+    const books = await prisma.book.findMany({
+        orderBy: {
+            rating: "desc", // Order by rating (highest to lowest)
+        },
+        take: 5, // Fetch top 5 only
+        include: {
+            ratings: true, // Include ratings if needed
+            genre: true, // Include genre
+        },
+    });
+    return books;
+}

@@ -7,10 +7,18 @@ export default async function BookProfilePageServer({
 }: {
     params: { bookId: string };
 }) {
+    const bookId = parseInt(params.bookId);
+
+    console.log(bookId);
+
+    // Ensure movieId is valid
+    if (isNaN(bookId)) {
+        return notFound();
+    }
     // Fetch the book data and related posts from the database
     const book = await prisma.book.findUnique({
         where: {
-            id: parseInt(params.bookId), // Ensure the ID is a number
+            id: bookId, // Ensure the ID is a number
         },
         include: {
             Post: true, // Fetch related posts
@@ -20,7 +28,7 @@ export default async function BookProfilePageServer({
 
     const ratings = await prisma.rating.findMany({
         where: {
-            bookId: parseInt(params.bookId),
+            bookId: bookId,
         },
     });
 

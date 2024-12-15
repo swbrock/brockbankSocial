@@ -1,3 +1,4 @@
+import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
@@ -5,31 +6,49 @@ import { notFound } from "next/navigation";
 export default async function BoardGameProfilePageServer({
     params,
 }: {
-    params: { boardGameId: string };
+    params: { boardGameId: string }; // IDs from Next.js params are strings
 }) {
-    // Fetch the book data and related posts from the database
-    const boardGame = await prisma.boardGame.findUnique({
-        where: {
-            id: parseInt(params.boardGameId), // Ensure the ID is a number
-        },
-        include: {
-            Post: true, // Fetch related posts
-        },
-    });
+    // Convert the ID to a number
+    const boardGameId = parseInt(params.boardGameId);
 
-    const ratings = await prisma.rating.findMany({
-        where: {
-            boardGameId: parseInt(params.boardGameId),
-        },
-    });
-
-    if (!boardGame) {
-        return notFound(); // Return 404 if the book is not found
+    // Ensure the ID is valid
+    if (isNaN(boardGameId)) {
+        return notFound();
     }
 
-    boardGame.rating =
-        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-        ratings.length;
+    // Fetch the board game and ratings
+    const [boardGame, ratings] = await Promise.all([
+        prisma.boardGame.findUnique({
+            where: { id: boardGameId },
+            include: {
+                Post: true,
+            },
+        }),
+        prisma.rating.findMany({
+            where: { boardGameId },
+        }),
+    ]);
 
-    return <BoardGameProfilePage boardGame={boardGame} />; // Pass the fetched book data to the page component
+    // Handle the case where the board game is not found
+    if (!boardGame) {
+        return notFound();
+    }
+
+    // Calculate average rating, if ratings exist
+    const averageRating =
+        ratings.length > 0
+            ? ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+              ratings.length
+            : null;
+
+    // Add the average rating to the board game object
+    boardGame.rating = averageRating;
+
+    // Render the page components
+    return (
+        <>
+            <BoardGameProfilePage boardGame={boardGame} />
+            <Feed boardGameId={boardGameId} />
+        </>
+    );
 }
