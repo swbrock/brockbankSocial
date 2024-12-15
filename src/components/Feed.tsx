@@ -27,6 +27,10 @@ const Feed = async ({
             },
             include: {
                 user: true,
+                boardGame: true,
+                movie: true,
+                book: true,
+                game: true,
             },
             orderBy: {
                 createdAt: "desc",
@@ -90,6 +94,10 @@ const Feed = async ({
         posts = await prisma.post.findMany({
             include: {
                 user: true,
+                boardGame: true,
+                movie: true,
+                book: true,
+                game: true,
             },
             orderBy: {
                 createdAt: "desc",

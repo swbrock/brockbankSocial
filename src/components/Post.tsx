@@ -9,19 +9,34 @@ type FeedPostType = PostType & {
         avatar?: string | null;
     };
     boardGame?: {
+        id: number;
         name: string;
+        length?: number | null;
+        rating?: number | null;
+        difficulty?: string | null;
+        timesPlayed?: number | null;
+        image?: string | null;
     };
     movie?: {
+        id: number;
         name: string;
+        rating?: number | null;
+        releaseDate?: Date | null;
+        image?: string | null;
     };
     book?: {
+        id: number;
         name: string;
+        genre?: string | null;
+        author?: string | null;
+        rating?: number | null;
     };
     game?: {
+        id: number;
         name: string;
-    };
-    rating?: {
-        score: number;
+        platform?: string | null;
+        genre?: string | null;
+        rating?: number | null;
     };
 };
 
@@ -32,14 +47,14 @@ const Post = ({ post }: { post: FeedPostType }) => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Image
-                        src={post.user?.avatar || "/noAvatar.png"}
-                        alt={post.user?.username || "User"}
+                        src={post.user?.avatar ?? "/noAvatar.png"}
+                        alt={post.user?.username ?? "User"}
                         width={50}
                         height={50}
                         className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
                     />
                     <span className="font-semibold text-lg text-gray-800">
-                        {post.user?.username || "Unknown User"}
+                        {post.user?.username ?? "Unknown User"}
                     </span>
                 </div>
                 <Image
@@ -101,12 +116,12 @@ const Post = ({ post }: { post: FeedPostType }) => {
                     </p>
                 )}
 
-                {post?.rating && (
+                {/* {post?.rating && (
                     <p className="text-gray-600 text-sm">
                         <span className="font-semibold">Rating:</span>{" "}
                         {post.rating.score}/5
                     </p>
-                )}
+                )} */}
             </div>
         </div>
     );

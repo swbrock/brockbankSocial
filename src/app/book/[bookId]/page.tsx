@@ -1,3 +1,4 @@
+import Feed from "@/components/Feed";
 import BookProfilePage from "@/components/profile/BookProfile";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
@@ -40,5 +41,10 @@ export default async function BookProfilePageServer({
         ratings.reduce((acc, rating) => acc + rating.rating, 0) /
         ratings.length;
 
-    return <BookProfilePage book={book} />; // Pass the fetched book data to the page component
+    return (
+        <>
+            <BookProfilePage book={book} />
+            <Feed bookId={bookId} />
+        </>
+    );
 }
