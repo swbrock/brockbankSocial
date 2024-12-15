@@ -7,30 +7,67 @@ export default async function MovieProfilePageServer({
 }: {
     params: { movieId: string };
 }) {
-    // Fetch the movie data and related posts from the database
-    const movie = await prisma.movie.findUnique({
-        where: {
-            id: parseInt(params.movieId), // Ensure the ID is a number
-        },
-        include: {
-            Post: true, // Fetch related posts
-            genre: true, // Fetch genre
-        },
-    });
+    const movieId = parseInt(params.movieId);
 
-    const ratings = await prisma.rating.findMany({
-        where: {
-            movieId: parseInt(params.movieId),
-        },
-    });
-
-    if (!movie) {
-        return notFound(); // Return 404 if the movie is not found
+    // Ensure movieId is valid
+    if (isNaN(movieId)) {
+        return notFound();
     }
 
-    movie.rating =
-        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-        ratings.length;
+    // Fetch movie and ratings in parallel
+    const [movie, ratings, posts] = await Promise.all([
+        prisma.movie.findUnique({
+            where: { id: movieId },
+            include: {
+                Post: {
+                    include: {
+                        user: true, // Include the user relationship
+                    },
+                },
+                genre: true,
+            },
+        }),
+        prisma.rating.findMany({
+            where: { movieId },
+        }),
+        prisma.post.findMany({
+            where: {
+                movieId: movieId,
+            },
+        }),
+    ]);
 
-    return <MovieProfilePage movie={movie} />; // Pass the fetched movie data to the page component
+    // Handle case when the movie is not found
+    if (!movie) {
+        return notFound();
+    }
+
+    // Calculate average rating safely
+    const averageRating =
+        ratings.length > 0
+            ? ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+              ratings.length
+            : null;
+
+    // Add calculated rating to the movie object
+    const movieWithRating = {
+        ...movie,
+        rating: averageRating,
+    };
+
+    // Determine the genre, only if it exists
+    const genre = movie.genreId
+        ? await prisma.genre.findUnique({
+              where: { id: movie.genreId },
+          })
+        : null;
+
+    // Render the MovieProfilePage with the fetched data
+    return (
+        <MovieProfilePage
+            movie={movieWithRating}
+            posts={posts || []}
+            genre={genre}
+        />
+    );
 }

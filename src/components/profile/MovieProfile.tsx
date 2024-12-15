@@ -2,25 +2,17 @@
 
 import React, { useState } from "react";
 import AddMovieRatingModal from "@/components/addRatings/AddMovieRatingModal";
-import { Genre } from "@prisma/client";
+import { Genre, Movie, Post } from "@prisma/client";
 
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
-
-export interface MovieProfileProps {
-    movie: {
-        id: number;
-        name: string;
-        genre: Genre | null;
-        rating: number | null;
-        Post: Post[];
-    };
-}
-
-const MovieProfilePage = ({ movie }: MovieProfileProps) => {
+const MovieProfilePage = ({
+    movie,
+    genre,
+    posts = [],
+}: {
+    movie: Movie;
+    genre?: Genre | null;
+    posts?: Post[];
+}) => {
     // Client-side state for managing the modal visibility and rating
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rating, setRating] = useState<number | null>(null);
@@ -31,11 +23,11 @@ const MovieProfilePage = ({ movie }: MovieProfileProps) => {
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
                 <h1 className="text-4xl font-extrabold">{movie.name}</h1>
                 <p className="mt-2 text-lg">
-                    {movie.genre?.name || "Genre: Unknown"}
+                    {genre?.name || "Genre: Unknown"}
                 </p>
                 <p className="mt-1 text-lg">
                     <strong>Rating:</strong>{" "}
-                    {movie.rating ? movie.rating : "No rating yet"}
+                    {movie.rating !== null ? movie.rating : "No rating yet"}
                 </p>
             </div>
 
@@ -63,9 +55,9 @@ const MovieProfilePage = ({ movie }: MovieProfileProps) => {
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                     Related Posts
                 </h2>
-                {movie.Post.length > 0 ? (
+                {posts.length > 0 ? (
                     <ul className="space-y-4">
-                        {movie.Post.map((post) => (
+                        {posts.map((post) => (
                             <li
                                 key={post.id}
                                 className="bg-white p-4 rounded-lg shadow-md hover:bg-gray-50 transition-all"
