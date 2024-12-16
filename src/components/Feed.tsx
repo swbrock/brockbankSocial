@@ -1,6 +1,5 @@
 import React from "react";
 import Post from "./Post";
-import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
 
 // Feed component to display a list of posts
@@ -94,10 +93,10 @@ const Feed = async ({
         posts = await prisma.post.findMany({
             include: {
                 user: true,
-                boardGame: true,
-                movie: true,
-                book: true,
-                game: true,
+                // boardGame: true,
+                // movie: true,
+                // book: true,
+                // game: true,
             },
             orderBy: {
                 createdAt: "desc",
