@@ -14,26 +14,17 @@ import { z } from "zod";
 // Initialize Prisma Client
 const prisma = new PrismaClient();
 
-// ------------------------------- Post Actions -------------------------------
-
-interface CreatePostParams {
-    userId: string;
-    title: string;
-    content: string;
-    boardGameId?: number;
-    movieId?: number;
-    bookId?: number;
-}
+// ------------------------------- Post Actions ------------------------------
 
 // Create a new post
-export async function createPost({
-    userId,
-    title,
-    content,
-    boardGameId,
-    movieId,
-    bookId,
-}: CreatePostParams) {
+export async function createPost(
+    userId: string,
+    title: string,
+    content: string,
+    boardGameId?: number,
+    movieId?: number,
+    bookId?: number
+) {
     try {
         const post = await prisma.post.create({
             data: {
@@ -52,20 +43,15 @@ export async function createPost({
     }
 }
 
-// Update an existing post
-interface UpdatePostParams extends CreatePostParams {
-    postId: number;
-}
-
-export async function updatePost({
-    postId,
-    userId,
-    title,
-    content,
-    boardGameId,
-    movieId,
-    bookId,
-}: UpdatePostParams) {
+export async function updatePost(
+    userId: string,
+    postId: number,
+    title: string,
+    content: string,
+    boardGameId?: number,
+    movieId?: number,
+    bookId?: number
+) {
     try {
         const post = await prisma.post.update({
             where: { id: postId },
@@ -95,195 +81,6 @@ export async function deletePost(postId: number) {
     } catch (error) {
         console.error("Error deleting post:", error);
         throw new Error("Error deleting post");
-    }
-}
-
-// ------------------------------- Rating Actions -------------------------------
-
-interface CreateRatingParams {
-    userId: string;
-    ratingValue: number;
-}
-
-// Create a new rating for BoardGame
-export async function createBoardGameRating({
-    userId,
-    boardGameId,
-    ratingValue,
-}: CreateRatingParams & { boardGameId: number }): Promise<Rating> {
-    try {
-        const rating = await prisma.rating.create({
-            data: {
-                userId,
-                boardGameId,
-                rating: ratingValue,
-            },
-        });
-
-        // Optionally, update the average rating for the BoardGame
-        await updateAverageRating(boardGameId, "BoardGame");
-
-        return rating;
-    } catch (error) {
-        console.error("Error creating BoardGame rating:", error);
-        throw new Error("Error creating BoardGame rating");
-    }
-}
-
-// Create a new rating for Movie
-export async function createMovieRating({
-    userId,
-    movieId,
-    ratingValue,
-}: CreateRatingParams & { movieId: number }): Promise<Rating> {
-    try {
-        const rating = await prisma.rating.create({
-            data: {
-                userId,
-                movieId,
-                rating: ratingValue,
-            },
-        });
-
-        // Optionally, update the average rating for the Movie
-        await updateAverageRating(movieId, "Movie");
-
-        return rating;
-    } catch (error) {
-        console.error("Error creating Movie rating:", error);
-        throw new Error("Error creating Movie rating");
-    }
-}
-
-// Create a new rating for Book
-export async function createBookRating({
-    userId,
-    bookId,
-    ratingValue,
-}: CreateRatingParams & { bookId: number }): Promise<Rating> {
-    try {
-        const rating = await prisma.rating.create({
-            data: {
-                userId,
-                bookId,
-                rating: ratingValue,
-            },
-        });
-
-        // Optionally, update the average rating for the Book
-        await updateAverageRating(bookId, "Book");
-
-        return rating;
-    } catch (error) {
-        console.error("Error creating Book rating:", error);
-        throw new Error("Error creating Book rating");
-    }
-}
-
-// Update a rating
-export async function updateRating(
-    ratingId: number,
-    ratingValue: number
-): Promise<Rating> {
-    try {
-        const rating = await prisma.rating.update({
-            where: { id: ratingId },
-            data: {
-                rating: ratingValue,
-            },
-        });
-
-        // Optionally, update the average rating for the related entity (BoardGame, Movie, Book)
-        if (rating.boardGameId) {
-            await updateAverageRating(rating.boardGameId, "BoardGame");
-        } else if (rating.movieId) {
-            await updateAverageRating(rating.movieId, "Movie");
-        } else if (rating.bookId) {
-            await updateAverageRating(rating.bookId, "Book");
-        }
-
-        return rating;
-    } catch (error) {
-        console.error("Error updating rating:", error);
-        throw new Error("Error updating rating");
-    }
-}
-
-// Delete a rating
-export async function deleteRating(ratingId: number): Promise<Rating> {
-    try {
-        const rating = await prisma.rating.delete({
-            where: { id: ratingId },
-        });
-
-        // Optionally, update the average rating for the related entity (BoardGame, Movie, Book)
-        if (rating.boardGameId) {
-            await updateAverageRating(rating.boardGameId, "BoardGame");
-        } else if (rating.movieId) {
-            await updateAverageRating(rating.movieId, "Movie");
-        } else if (rating.bookId) {
-            await updateAverageRating(rating.bookId, "Book");
-        }
-
-        return rating;
-    } catch (error) {
-        console.error("Error deleting rating:", error);
-        throw new Error("Error deleting rating");
-    }
-}
-
-// Helper function to update the average rating for a BoardGame, Movie, or Book
-async function updateAverageRating(
-    entityId: number,
-    entityType: "BoardGame" | "Movie" | "Book"
-) {
-    try {
-        let averageRating = null;
-        let ratings: { rating: number }[];
-
-        if (entityType === "BoardGame") {
-            ratings = await prisma.rating.findMany({
-                where: { boardGameId: entityId },
-                select: { rating: true },
-            });
-        } else if (entityType === "Movie") {
-            ratings = await prisma.rating.findMany({
-                where: { movieId: entityId },
-                select: { rating: true },
-            });
-        } else if (entityType === "Book") {
-            ratings = await prisma.rating.findMany({
-                where: { bookId: entityId },
-                select: { rating: true },
-            });
-        } else {
-            throw new Error("Invalid entity type for rating update");
-        }
-
-        const totalRatings = ratings.length;
-        if (totalRatings > 0) {
-            const sum = ratings.reduce((acc, rating) => acc + rating.rating, 0);
-            averageRating = sum / totalRatings;
-        }
-
-        if (entityType === "BoardGame") {
-            await prisma.boardGame.update({
-                where: { id: entityId },
-                data: { rating: averageRating },
-            });
-        } else if (entityType === "Movie") {
-            await prisma.movie.update({
-                where: { id: entityId },
-                data: { rating: averageRating },
-            });
-        } else if (entityType === "Book") {
-            await prisma.book.update({
-                where: { id: entityId },
-                data: { rating: averageRating },
-            });
-        }
-    } catch (error) {
-        console.error("Error updating average rating:", error);
     }
 }
 
@@ -572,6 +369,15 @@ export const updateProfile = async (
     }
 };
 
+//get logged in user
+export async function getLoggedInUserId() {
+    const { userId } = await auth();
+    if (!userId) {
+        throw new Error("User not authenticated");
+    }
+    return userId;
+}
+
 /// ------------------------------- Board Game Actions -------------------------------
 
 export async function topRatedGames(): Promise<BoardGame[]> {
@@ -617,4 +423,197 @@ export async function topRatedBooks(): Promise<Book[]> {
         },
     });
     return books;
+}
+
+// ------------------------------- Rating Actions -------------------------------
+
+//update average rating
+export async function updateAverageRating(
+    entityId: number,
+    entityType: "BoardGame" | "Movie" | "Book"
+) {
+    let averageRating = null;
+    let ratings: { rating: number }[];
+
+    if (entityType === "BoardGame") {
+        ratings = await prisma.rating.findMany({
+            where: { boardGameId: entityId },
+            select: { rating: true },
+        });
+    } else if (entityType === "Movie") {
+        ratings = await prisma.rating.findMany({
+            where: { movieId: entityId },
+            select: { rating: true },
+        });
+    } else if (entityType === "Book") {
+        ratings = await prisma.rating.findMany({
+            where: { bookId: entityId },
+            select: { rating: true },
+        });
+    } else {
+        throw new Error("Invalid entity type for rating update");
+    }
+
+    const totalRatings = ratings.length;
+    if (totalRatings > 0) {
+        const sum = ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        averageRating = sum / totalRatings;
+    }
+
+    if (entityType === "BoardGame") {
+        await prisma.boardGame.update({
+            where: { id: entityId },
+            data: { rating: averageRating },
+        });
+    } else if (entityType === "Movie") {
+        await prisma.movie.update({
+            where: { id: entityId },
+            data: { rating: averageRating },
+        });
+    } else if (entityType === "Book") {
+        await prisma.book.update({
+            where: { id: entityId },
+            data: { rating: averageRating },
+        });
+    }
+}
+
+//get all ratings for a board game
+export async function getBoardGameRatings(boardGameId: number) {
+    if (!boardGameId) {
+        throw new Error("Invalid boardGameId provided.");
+    }
+    console.log("Fetching ratings for boardGameId:", boardGameId);
+    const ratings = await prisma.rating.findMany({
+        where: { boardGameId },
+    });
+    console.log("Ratings fetched:", ratings);
+    return ratings;
+}
+
+// Create a new rating for BoardGame
+export async function createBoardGameRating(
+    userId: string,
+    boardGameId: number,
+    ratingValue: number
+): Promise<Rating> {
+    try {
+        const rating = await prisma.rating.create({
+            data: {
+                userId,
+                boardGameId,
+                rating: ratingValue,
+            },
+        });
+
+        // Optionally, update the average rating for the BoardGame
+        await updateAverageRating(boardGameId, "BoardGame");
+
+        return rating;
+    } catch (error) {
+        console.error("Error creating BoardGame rating:", error);
+        throw new Error("Error creating BoardGame rating");
+    }
+}
+
+// Create a new rating for Movie
+export async function createMovieRating(
+    userId: string,
+    movieId: number,
+    ratingValue: number
+): Promise<Rating> {
+    try {
+        const rating = await prisma.rating.create({
+            data: {
+                userId,
+                movieId,
+                rating: ratingValue,
+            },
+        });
+
+        // Optionally, update the average rating for the Movie
+        await updateAverageRating(movieId, "Movie");
+
+        return rating;
+    } catch (error) {
+        console.error("Error creating Movie rating:", error);
+        throw new Error("Error creating Movie rating");
+    }
+}
+
+// Create a new rating for Book
+export async function createBookRating(
+    userId: string,
+    bookId: number,
+    ratingValue: number
+): Promise<Rating> {
+    try {
+        const rating = await prisma.rating.create({
+            data: {
+                userId,
+                bookId,
+                rating: ratingValue,
+            },
+        });
+
+        // Optionally, update the average rating for the Book
+        await updateAverageRating(bookId, "Book");
+
+        return rating;
+    } catch (error) {
+        console.error("Error creating Book rating:", error);
+        throw new Error("Error creating Book rating");
+    }
+}
+
+// Update a rating
+export async function updateRating(
+    ratingId: number,
+    ratingValue: number
+): Promise<Rating> {
+    try {
+        const rating = await prisma.rating.update({
+            where: { id: ratingId },
+            data: {
+                rating: ratingValue,
+            },
+        });
+
+        // Optionally, update the average rating for the related entity (BoardGame, Movie, Book)
+        if (rating.boardGameId) {
+            await updateAverageRating(rating.boardGameId, "BoardGame");
+        } else if (rating.movieId) {
+            await updateAverageRating(rating.movieId, "Movie");
+        } else if (rating.bookId) {
+            await updateAverageRating(rating.bookId, "Book");
+        }
+
+        return rating;
+    } catch (error) {
+        console.error("Error updating rating:", error);
+        throw new Error("Error updating rating");
+    }
+}
+
+// Delete a rating
+export async function deleteRating(ratingId: number): Promise<Rating> {
+    try {
+        const rating = await prisma.rating.delete({
+            where: { id: ratingId },
+        });
+
+        // Optionally, update the average rating for the related entity (BoardGame, Movie, Book)
+        if (rating.boardGameId) {
+            await updateAverageRating(rating.boardGameId, "BoardGame");
+        } else if (rating.movieId) {
+            await updateAverageRating(rating.movieId, "Movie");
+        } else if (rating.bookId) {
+            await updateAverageRating(rating.bookId, "Book");
+        }
+
+        return rating;
+    } catch (error) {
+        console.error("Error deleting rating:", error);
+        throw new Error("Error deleting rating");
+    }
 }

@@ -135,8 +135,14 @@ model Rating {
   movie     Movie?   @relation(fields: [movieId], references: [id])
   book      Book?    @relation(fields: [bookId], references: [id])
 
+  @@unique([userId, boardGameId]) // Ensure only one rating per user per board game
+  @@unique([userId, movieId])     // Ensure only one rating per user per movie
+  @@unique([userId, bookId])      // Ensure only one rating per user per book
+  
+
   Post Post[]
 }
+
 
 model Game {
   id            Int      @id @default(autoincrement())

@@ -1,8 +1,7 @@
-"use client"; // Ensures this component is client-side rendered (for hooks like useState)
+"use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
-import { Genre } from "@prisma/client";
 
 interface Post {
     id: number;
@@ -19,12 +18,16 @@ export interface BoardGameProfileProps {
         rating: number | null;
         Post: Post[];
     };
+    userId: string;
 }
 
-const BoardGameProfilePage = ({ boardGame }: BoardGameProfileProps) => {
-    // Client-side state for managing the modal visibility and rating
+const BoardGameProfilePage = ({ boardGame, userId }: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [rating, setRating] = useState<number | null>(null);
+    const [rating, setRating] = useState<number | null>(boardGame.rating);
+
+    useEffect(() => {
+        console.log("Board game:", boardGame);
+    }, [boardGame]);
 
     return (
         <div className="container mx-auto px-6 py-8">
@@ -40,7 +43,7 @@ const BoardGameProfilePage = ({ boardGame }: BoardGameProfileProps) => {
                 </p>
                 <p className="mt-1 text-lg">
                     <strong>Rating:</strong>{" "}
-                    {boardGame.rating ? boardGame.rating : "No rating yet"}
+                    {boardGame.rating ? boardGame.rating.toFixed(2) : "N/A"}
                 </p>
             </div>
 
@@ -54,12 +57,13 @@ const BoardGameProfilePage = ({ boardGame }: BoardGameProfileProps) => {
                 </button>
             </div>
 
-            {/* Modal component to add the rating */}
+            {/* Modal Component */}
             {isModalOpen && (
                 <AddBoardGameRatingModal
                     currentRating={rating}
-                    onSubmitRating={setRating} // Pass the rating back to the parent
-                    onClose={() => setIsModalOpen(false)} // Close modal on cancel
+                    boardGame={boardGame}
+                    onClose={() => setIsModalOpen(false)}
+                    userId={userId}
                 />
             )}
         </div>

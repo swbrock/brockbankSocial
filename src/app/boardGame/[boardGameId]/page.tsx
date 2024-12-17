@@ -1,5 +1,6 @@
 import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
+import { getLoggedInUserId, createBoardGameRating } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -10,6 +11,8 @@ export default async function BoardGameProfilePageServer({
 }) {
     // Convert the ID to a number
     const boardGameId = parseInt(params.boardGameId);
+
+    const loggedInUser = await getLoggedInUserId();
 
     // Ensure the ID is valid
     if (isNaN(boardGameId)) {
@@ -47,7 +50,7 @@ export default async function BoardGameProfilePageServer({
     // Render the page components
     return (
         <>
-            <BoardGameProfilePage boardGame={boardGame} />
+            <BoardGameProfilePage boardGame={boardGame} userId={loggedInUser} />
             <Feed boardGameId={boardGameId} />
         </>
     );

@@ -1,18 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WheelSlider from "../WheelSlider";
+import { useRouter } from "next/navigation"; // Import useRouter
 
+interface Post {
+    id: number;
+    title: string;
+    content: string;
+}
+
+interface BoardGameProfileProps {
+    id: number;
+    name: string;
+    difficulty: string | null;
+    timesPlayed: number | null;
+    rating: number | null;
+    Post: Post[];
+}
 // Props interface for the modal
-interface RatingModalProps {
+export interface RatingModalProps {
     currentRating: any;
-    onSubmitRating: (rating: any) => void;
+    boardGame: BoardGameProfileProps;
+    userId: string;
     onClose: () => void;
 }
 
 const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     currentRating,
-    onSubmitRating,
+    boardGame,
+    userId,
     onClose,
 }) => {
+    const router = useRouter(); // Get the router instance
+
     const [ratings, setRatings] = useState({
         gameplayMechanics: currentRating?.gameplayMechanics || 0,
         funFactor: currentRating?.funFactor || 0,
@@ -29,6 +48,53 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         }));
     };
 
+    const submitNewBoardGameRating = async (newRating: number) => {
+        try {
+            // Submit the rating
+            const response = await fetch("/api/ratings/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    boardGameId: boardGame.id,
+                    rating: newRating,
+                    userId: userId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to submit rating");
+            } else {
+                console.log("Rating submitted successfully!");
+            }
+
+            // Submit a new post after the rating is saved
+            const postResponse = await fetch("/api/posts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: userId,
+                    title: "New Rating Submitted!",
+                    content: `A new rating of ${newRating.toFixed(
+                        2
+                    )} has been submitted for ${boardGame.name}.`,
+                    boardGameId: boardGame.id,
+                }),
+            });
+
+            if (!postResponse.ok) {
+                throw new Error("Failed to submit post");
+            } else {
+                console.log("Post submitted successfully!");
+            }
+
+            onClose(); // Close the modal
+            router.refresh(); // Reload the page to see the new rating
+        } catch (error) {
+            console.error("Error submitting rating or post:", error);
+            alert("Failed to submit rating or post. Please try again.");
+        }
+    };
+
     // Handle form submission
     const handleSubmit = () => {
         // Check if all categories are rated with a value between 0 and 5
@@ -36,8 +102,12 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
             (value) => value >= 0 && value <= 5
         );
 
+        const averageRating =
+            Object.values(ratings).reduce((acc, rating) => acc + rating, 0) /
+            Object.values(ratings).length;
+
         if (isValid) {
-            onSubmitRating(ratings); // Pass ratings back to the parent
+            submitNewBoardGameRating(averageRating);
         } else {
             alert(
                 "Please provide valid ratings between 0 and 5 for all categories."
