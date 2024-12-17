@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import WheelSlider from "../WheelSlider";
 import { useRouter } from "next/navigation"; // Import useRouter
+import { BoardGameRatingResponses } from "@/lib/content";
 
 interface Post {
     id: number;
@@ -22,12 +23,14 @@ export interface RatingModalProps {
     boardGame: BoardGameProfileProps;
     userId: string;
     onClose: () => void;
+    userRating: number | null;
 }
 
 const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     currentRating,
     boardGame,
     userId,
+    userRating,
     onClose,
 }) => {
     const router = useRouter(); // Get the router instance
@@ -39,6 +42,19 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         replayability: currentRating?.replayability || 0,
         themeAndAesthetics: currentRating?.themeAndAesthetics || 0,
     });
+
+    const getRandomResponseForRange = (range: string) => {
+        const filteredResponses = BoardGameRatingResponses.find(
+            (res) => res.range === range
+        );
+        if (filteredResponses) {
+            const randomIndex = Math.floor(
+                Math.random() * filteredResponses.responses.length
+            );
+            return filteredResponses.responses[randomIndex];
+        }
+        return null;
+    };
 
     // Handle rating change for each category
     const handleChange = (category: string, value: number) => {
@@ -67,16 +83,34 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                 console.log("Rating submitted successfully!");
             }
 
+            const ratingRange = `${Math.floor(newRating)}-${Math.ceil(
+                newRating
+            )}`; // Determine the range
+            const randomResponse = getRandomResponseForRange(ratingRange);
+
+            if (!randomResponse) {
+                throw new Error("Invalid rating range");
+            }
+            const title = randomResponse.title;
+
+            const content = userRating
+                ? `Rating has been updated to ${newRating.toFixed(2)} for ${
+                      boardGame.name
+                  }. ${randomResponse.response}`
+                : `A new rating of ${newRating.toFixed(
+                      2
+                  )} has been submitted for ${boardGame.name}. ${
+                      randomResponse.response
+                  }`;
+
             // Submit a new post after the rating is saved
             const postResponse = await fetch("/api/posts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userId: userId,
-                    title: "New Rating Submitted!",
-                    content: `A new rating of ${newRating.toFixed(
-                        2
-                    )} has been submitted for ${boardGame.name}.`,
+                    title: title,
+                    content: content,
                     boardGameId: boardGame.id,
                 }),
             });

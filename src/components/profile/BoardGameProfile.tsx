@@ -19,9 +19,14 @@ export interface BoardGameProfileProps {
         Post: Post[];
     };
     userId: string;
+    userRating: number | null;
 }
 
-const BoardGameProfilePage = ({ boardGame, userId }: BoardGameProfileProps) => {
+const BoardGameProfilePage = ({
+    boardGame,
+    userId,
+    userRating,
+}: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rating, setRating] = useState<number | null>(boardGame.rating);
 
@@ -53,9 +58,19 @@ const BoardGameProfilePage = ({ boardGame, userId }: BoardGameProfileProps) => {
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
                     onClick={() => setIsModalOpen(true)}
                 >
-                    Add Rating
+                    {userRating ? "Edit" : "Add"} Rating
                 </button>
             </div>
+
+            {userRating && (
+                <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
+                    <h2 className="text-xl font-semibold">
+                        Your Rating: {userRating.toFixed(2)}
+                    </h2>
+                </div>
+            )}
+
+            {/* Post Section */}
 
             {/* Modal Component */}
             {isModalOpen && (
@@ -64,6 +79,7 @@ const BoardGameProfilePage = ({ boardGame, userId }: BoardGameProfileProps) => {
                     boardGame={boardGame}
                     onClose={() => setIsModalOpen(false)}
                     userId={userId}
+                    userRating={userRating}
                 />
             )}
         </div>

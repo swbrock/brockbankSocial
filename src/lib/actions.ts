@@ -617,3 +617,30 @@ export async function deleteRating(ratingId: number): Promise<Rating> {
         throw new Error("Error deleting rating");
     }
 }
+
+//get user rating for specific entity
+export async function getUserRating(
+    userId: string,
+    entityId: number,
+    entityType: "BoardGame" | "Movie" | "Book"
+) {
+    let rating = null;
+
+    if (entityType === "BoardGame") {
+        rating = await prisma.rating.findFirst({
+            where: { userId, boardGameId: entityId },
+        });
+    } else if (entityType === "Movie") {
+        rating = await prisma.rating.findFirst({
+            where: { userId, movieId: entityId },
+        });
+    } else if (entityType === "Book") {
+        rating = await prisma.rating.findFirst({
+            where: { userId, bookId: entityId },
+        });
+    } else {
+        throw new Error("Invalid entity type for rating fetch");
+    }
+
+    return rating?.rating || null;
+}

@@ -1,5 +1,6 @@
 import Feed from "@/components/Feed";
 import MovieProfilePage from "@/components/profile/MovieProfile";
+import { getUserRating } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 

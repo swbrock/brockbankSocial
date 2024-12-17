@@ -1,6 +1,10 @@
 import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
-import { getLoggedInUserId, createBoardGameRating } from "@/lib/actions";
+import {
+    getLoggedInUserId,
+    createBoardGameRating,
+    getUserRating,
+} from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -47,10 +51,20 @@ export default async function BoardGameProfilePageServer({
     // Add the average rating to the board game object
     boardGame.rating = averageRating;
 
+    const userRating = await getUserRating(
+        loggedInUser,
+        boardGame.id,
+        "BoardGame"
+    );
+
     // Render the page components
     return (
         <>
-            <BoardGameProfilePage boardGame={boardGame} userId={loggedInUser} />
+            <BoardGameProfilePage
+                boardGame={boardGame}
+                userId={loggedInUser}
+                userRating={userRating}
+            />
             <Feed boardGameId={boardGameId} />
         </>
     );
