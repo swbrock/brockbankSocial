@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
     try {
         // Parse the request body
         const body = await req.json();
-        const { userId, title, content, boardGameId } = body;
+        const { userId, title, content, entityId, entityType } = body;
 
         // Input validation
         if (!userId || !title || !content) {
@@ -16,11 +16,26 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Create the post
-        const newPost = await createPost(userId, title, content, boardGameId);
+        console.log("POST request received:", {
+            userId,
+            title,
+            content,
+            entityId,
+            entityType,
+        });
 
+        const newPost = await createPost(
+            userId,
+            title,
+            content,
+            entityId,
+            entityType
+        );
         return NextResponse.json(
-            { message: "Post created successfully!", post: newPost },
+            {
+                message: "Post created successfully!",
+                post: newPost,
+            },
             { status: 200 }
         );
     } catch (error) {

@@ -2,15 +2,32 @@
 
 import React, { useState } from "react";
 import AddMovieRatingModal from "@/components/addRatings/AddMovieRatingModal";
-import { Genre, Movie, Post } from "@prisma/client";
+import { Genre, Movie } from "@prisma/client";
+
+interface Post {
+    id: number;
+    title: string;
+    content: string;
+}
+
+export interface MovieProfileProps {
+    movie: {
+        id: number;
+        name: string;
+        rating: number | null;
+        Post: Post[];
+    };
+    genre?: Genre | null;
+    userId: string;
+    userRating: number | null;
+}
 
 const MovieProfilePage = ({
     movie,
     genre,
-}: {
-    movie: Movie;
-    genre?: Genre | null;
-}) => {
+    userId,
+    userRating,
+}: MovieProfileProps) => {
     // Client-side state for managing the modal visibility and rating
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rating, setRating] = useState<number | null>(null);
@@ -35,7 +52,7 @@ const MovieProfilePage = ({
                     className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
                     onClick={() => setIsModalOpen(true)}
                 >
-                    Add Rating
+                    {userRating ? "Edit" : "Add"} Rating
                 </button>
             </div>
 
@@ -43,7 +60,9 @@ const MovieProfilePage = ({
             {isModalOpen && (
                 <AddMovieRatingModal
                     currentRating={rating}
-                    onSubmitRating={setRating} // Pass the rating back to the parent
+                    movie={movie}
+                    userId={userId}
+                    userRating={userRating}
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
                 />
             )}

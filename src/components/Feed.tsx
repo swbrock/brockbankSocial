@@ -5,16 +5,12 @@ import prisma from "@/lib/client";
 // Feed component to display a list of posts
 const Feed = async ({
     username,
-    boardGameId,
-    movieId,
-    bookId,
-    gameId,
+    entityId,
+    entityType,
 }: {
     username?: string;
-    boardGameId?: number;
-    movieId?: number;
-    bookId?: number;
-    gameId?: number;
+    entityId?: number;
+    entityType?: string;
 }) => {
     let posts = [];
     if (username) {
@@ -35,10 +31,10 @@ const Feed = async ({
                 createdAt: "desc",
             },
         });
-    } else if (boardGameId) {
+    } else if (entityType === "boardGame") {
         posts = await prisma.post.findMany({
             where: {
-                boardGameId: boardGameId,
+                boardGameId: entityId,
             },
             include: {
                 user: true,
@@ -48,10 +44,10 @@ const Feed = async ({
                 createdAt: "desc",
             },
         });
-    } else if (movieId) {
+    } else if (entityType === "movie") {
         posts = await prisma.post.findMany({
             where: {
-                movieId: movieId,
+                movieId: entityId,
             },
             include: {
                 user: true,
@@ -63,10 +59,10 @@ const Feed = async ({
         });
     }
     // Add the bookId condition
-    else if (bookId) {
+    else if (entityType === "book") {
         posts = await prisma.post.findMany({
             where: {
-                bookId: bookId,
+                bookId: entityId,
             },
             include: {
                 user: true,
@@ -76,10 +72,10 @@ const Feed = async ({
                 createdAt: "desc",
             },
         });
-    } else if (gameId) {
+    } else if (entityType === "game") {
         posts = await prisma.post.findMany({
             where: {
-                gameId: gameId,
+                gameId: entityId,
             },
             include: {
                 user: true,

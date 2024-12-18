@@ -63,9 +63,9 @@ export default async function BoardGameProfilePageServer({
             <BoardGameProfilePage
                 boardGame={boardGame}
                 userId={loggedInUser}
-                userRating={userRating}
+                userRating={userRating ? userRating : null}
             />
-            <Feed boardGameId={boardGameId} />
+            <Feed entityId={boardGameId} entityType="boardGame" />
         </>
     );
 }

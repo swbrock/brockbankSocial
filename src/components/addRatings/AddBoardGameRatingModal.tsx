@@ -67,7 +67,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     const submitNewBoardGameRating = async (newRating: number) => {
         try {
             // Submit the rating
-            const response = await fetch("/api/ratings/submit", {
+            const response = await fetch("/api/ratings/boardGames", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -111,7 +111,8 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                     userId: userId,
                     title: title,
                     content: content,
-                    boardGameId: boardGame.id,
+                    entityId: boardGame.id,
+                    entityType: "boardGame",
                 }),
             });
 
@@ -136,9 +137,13 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
             (value) => value >= 0 && value <= 5
         );
 
-        const averageRating =
-            Object.values(ratings).reduce((acc, rating) => acc + rating, 0) /
-            Object.values(ratings).length;
+        const averageRating = // Calculate the average rating
+            //make it to 1 decimal place
+            parseFloat(
+                (Object.values(ratings).reduce((a, b) => a + b, 0) / 5).toFixed(
+                    1
+                )
+            );
 
         if (isValid) {
             submitNewBoardGameRating(averageRating);

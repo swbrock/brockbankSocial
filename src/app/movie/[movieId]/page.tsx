@@ -1,6 +1,10 @@
 import Feed from "@/components/Feed";
 import MovieProfilePage from "@/components/profile/MovieProfile";
-import { getUserRating } from "@/lib/actions";
+import {
+    getUserRating,
+    getLoggedInUserId,
+    createMovieRating,
+} from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -16,26 +20,18 @@ export default async function MovieProfilePageServer({
         return notFound();
     }
 
+    const loggedInUser = await getLoggedInUserId();
     // Fetch movie and ratings in parallel
-    const [movie, ratings, posts] = await Promise.all([
+    const [movie, ratings] = await Promise.all([
         prisma.movie.findUnique({
             where: { id: movieId },
             include: {
-                Post: {
-                    include: {
-                        user: true, // Include the user relationship
-                    },
-                },
+                Post: true,
                 genre: true,
             },
         }),
         prisma.rating.findMany({
             where: { movieId },
-        }),
-        prisma.post.findMany({
-            where: {
-                movieId: movieId,
-            },
         }),
     ]);
 
@@ -64,11 +60,18 @@ export default async function MovieProfilePageServer({
           })
         : null;
 
+    const userRating = await getUserRating(loggedInUser, movie.id, "Movie");
+
     // Render the MovieProfilePage with the fetched data
     return (
         <>
-            <MovieProfilePage movie={movieWithRating} genre={genre} />
-            <Feed movieId={movieId} />
+            <MovieProfilePage
+                movie={movieWithRating}
+                genre={genre}
+                userId={loggedInUser}
+                userRating={userRating ? userRating : null}
+            />
+            <Feed entityId={movieId} entityType="movie" />
         </>
     );
 }

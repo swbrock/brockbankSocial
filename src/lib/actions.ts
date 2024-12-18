@@ -21,10 +21,21 @@ export async function createPost(
     userId: string,
     title: string,
     content: string,
-    boardGameId?: number,
-    movieId?: number,
-    bookId?: number
+    entityId?: number,
+    entityType?: string
 ) {
+    let boardGameId = null;
+    let movieId = null;
+    let bookId = null;
+
+    if (entityType === "boardGame") {
+        boardGameId = entityId;
+    } else if (entityType === "movie") {
+        movieId = entityId;
+    } else if (entityType === "book") {
+        bookId = entityId;
+    }
+
     try {
         const post = await prisma.post.create({
             data: {
@@ -642,5 +653,5 @@ export async function getUserRating(
         throw new Error("Invalid entity type for rating fetch");
     }
 
-    return rating?.rating || null;
+    return rating?.rating;
 }
