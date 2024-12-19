@@ -32,24 +32,6 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
         setBooks((prevBooks) => [newBook, ...prevBooks]);
     };
 
-    const addRating = (bookId: number) => {
-        const newRating = prompt("Enter a rating (1-5):");
-        const parsedRating = parseFloat(newRating || "0");
-        if (parsedRating >= 1 && parsedRating <= 5) {
-            setBooks((prevBooks) =>
-                prevBooks
-                    .map((book) =>
-                        book.id === bookId
-                            ? { ...book, rating: parsedRating }
-                            : book
-                    )
-                    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-            );
-        } else {
-            alert("Please enter a valid rating between 1 and 5.");
-        }
-    };
-
     // Filter books based on the search query
     const filteredBooks = books.filter((book) =>
         book.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -97,15 +79,6 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
                                     <p className="text-sm text-gray-500">
                                         Rank: {index + 1}
                                     </p>
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault(); // Prevent navigation on button click
-                                            addRating(book.id);
-                                        }}
-                                        className="w-full bg-blue-400 text-white py-2 rounded-md shadow-md hover:bg-blue-500 transition duration-200"
-                                    >
-                                        Rate This Book
-                                    </button>
                                 </div>
                             </Link>
                         ))}

@@ -19,7 +19,6 @@ interface BoardGameProfileProps {
 }
 // Props interface for the modal
 export interface RatingModalProps {
-    currentRating: any;
     boardGame: BoardGameProfileProps;
     userId: string;
     onClose: () => void;
@@ -27,7 +26,6 @@ export interface RatingModalProps {
 }
 
 const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
-    currentRating,
     boardGame,
     userId,
     userRating,
@@ -36,11 +34,11 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     const router = useRouter(); // Get the router instance
 
     const [ratings, setRatings] = useState({
-        gameplayMechanics: currentRating?.gameplayMechanics || 0,
-        funFactor: currentRating?.funFactor || 0,
-        strategyAndDepth: currentRating?.strategyAndDepth || 0,
-        replayability: currentRating?.replayability || 0,
-        themeAndAesthetics: currentRating?.themeAndAesthetics || 0,
+        gameplayMechanics: 0,
+        funFactor: 0,
+        strategyAndDepth: 0,
+        replayability: 0,
+        themeAndAesthetics: 0,
     });
 
     const getRandomResponseForRange = (range: string) => {

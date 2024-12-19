@@ -18,7 +18,6 @@ interface MovieProfileProps {
 
 // Props interface for the modal
 export interface RatingModalProps {
-    currentRating: any;
     movie: MovieProfileProps;
     userId: string;
     onClose: () => void;
@@ -26,7 +25,6 @@ export interface RatingModalProps {
 }
 
 const AddMovieRatingModal: React.FC<RatingModalProps> = ({
-    currentRating,
     movie,
     userId,
     userRating,
@@ -35,11 +33,11 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
     const router = useRouter(); // Get the router instance
     // State for each category rating (range: 0 to 5 with decimals)
     const [ratings, setRatings] = useState({
-        plot: currentRating?.plot || 0,
-        acting: currentRating?.acting || 0,
-        visuals: currentRating?.visuals || 0,
-        emotionalImpact: currentRating?.emotionalImpact || 0,
-        originality: currentRating?.originality || 0,
+        plot: 0,
+        acting: 0,
+        visuals: 0,
+        emotionalImpact: 0,
+        originality: 0,
     });
 
     const getRandomResponseForRange = (range: string) => {

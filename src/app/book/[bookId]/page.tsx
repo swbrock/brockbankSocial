@@ -1,5 +1,6 @@
 import Feed from "@/components/Feed";
 import BookProfilePage from "@/components/profile/BookProfile";
+import { getLoggedInUserId, getUserRating } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -37,14 +38,25 @@ export default async function BookProfilePageServer({
         return notFound(); // Return 404 if the book is not found
     }
 
-    book.rating =
-        ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-        ratings.length;
+    const userId = await getLoggedInUserId();
+
+    const genre = book.genreId
+        ? await prisma.genre.findUnique({
+              where: { id: book.genreId },
+          })
+        : null;
+
+    const userRating = await getUserRating(userId, book.id, "Book");
 
     return (
         <>
-            <BookProfilePage book={book} />
-            <Feed bookId={bookId} />
+            <BookProfilePage
+                book={book}
+                genre={genre}
+                userId={userId}
+                userRating={userRating ? userRating : null}
+            />
+            <Feed entityId={bookId} entityType="book" />
         </>
     );
 }

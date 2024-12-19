@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
 
 interface Post {
@@ -28,54 +28,55 @@ const BoardGameProfilePage = ({
     userRating,
 }: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [rating, setRating] = useState<number | null>(boardGame.rating);
-
-    useEffect(() => {
-        console.log("Board game:", boardGame);
-    }, [boardGame]);
 
     return (
         <div className="container mx-auto px-6 py-8">
             {/* Header Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
-                <h1 className="text-4xl font-extrabold">{boardGame.name}</h1>
-                <p className="mt-2 text-lg">
-                    {boardGame.difficulty || "Difficulty: N/A"}
-                </p>
-                <p className="mt-1 text-lg">
-                    <strong>Times Played:</strong>{" "}
-                    {boardGame.timesPlayed || "0"}
-                </p>
-                <p className="mt-1 text-lg">
-                    <strong>Rating:</strong>{" "}
-                    {boardGame.rating ? boardGame.rating.toFixed(2) : "N/A"}
-                </p>
-            </div>
-
-            {/* Action Section */}
-            <div className="mt-6 flex justify-center">
-                <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    {userRating ? "Edit" : "Add"} Rating
-                </button>
-            </div>
-
-            {userRating && (
-                <div className="mt-6 bg-white p-4 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-semibold">
-                        Your Rating: {userRating.toFixed(2)}
-                    </h2>
+            <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
+                {/* User Rating - Top Right */}
+                <div className="absolute top-6 right-6 text-right">
+                    <p className="text-sm text-blue-200">Your Rating:</p>
+                    <p
+                        className="text-2xl font-bold text-white"
+                        title={
+                            userRating
+                                ? `Your rating: ${userRating.toFixed(2)}`
+                                : "You haven't rated this game yet"
+                        }
+                    >
+                        {userRating ? userRating.toFixed(2) : "N/A"}
+                    </p>
+                    <button
+                        className="mt-1 bg-white text-blue-600 font-semibold text-xs py-0.5 px-2 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        {userRating ? "Edit" : "Add"} Rating
+                    </button>
                 </div>
-            )}
 
-            {/* Post Section */}
+                {/* Board Game Details */}
+                <h1 className="text-4xl font-extrabold mb-4">
+                    {boardGame.name}
+                </h1>
+                <div className="space-y-2">
+                    <p className="text-lg">
+                        <strong>Difficulty:</strong>{" "}
+                        {boardGame.difficulty || "N/A"}
+                    </p>
+                    <p className="text-lg">
+                        <strong>Times Played:</strong>{" "}
+                        {boardGame.timesPlayed || "0"}
+                    </p>
+                    <p className="text-lg">
+                        <strong>Average Rating:</strong>{" "}
+                        {boardGame.rating ? boardGame.rating.toFixed(2) : "N/A"}
+                    </p>
+                </div>
+            </div>
 
             {/* Modal Component */}
             {isModalOpen && (
                 <AddBoardGameRatingModal
-                    currentRating={rating}
                     boardGame={boardGame}
                     onClose={() => setIsModalOpen(false)}
                     userId={userId}

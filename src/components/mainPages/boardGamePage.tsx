@@ -33,24 +33,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
         setBoardGames((prevBoardGames) => [newBoardGame, ...prevBoardGames]);
     };
 
-    const addRating = (gameId: number) => {
-        const newRating = prompt("Enter a rating (1-5):");
-        const parsedRating = parseFloat(newRating || "0");
-        if (parsedRating >= 1 && parsedRating <= 5) {
-            setBoardGames((prevBoardGames) =>
-                prevBoardGames
-                    .map((game) =>
-                        game.id === gameId
-                            ? { ...game, rating: parsedRating }
-                            : game
-                    )
-                    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-            );
-        } else {
-            alert("Please enter a valid rating between 1 and 5.");
-        }
-    };
-
     // Filter board games based on the search query
     const filteredBoardGames = boardGames.filter((game) =>
         game.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -95,15 +77,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
                                     <p className="text-sm text-gray-500">
                                         Rank: {index + 1}
                                     </p>
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault(); // Prevent navigation on button click
-                                            addRating(game.id);
-                                        }}
-                                        className="w-full bg-red-400 text-white py-2 rounded-md shadow-md hover:bg-red-500 transition duration-200"
-                                    >
-                                        Rate This Game
-                                    </button>
                                 </div>
                             </Link>
                         ))}

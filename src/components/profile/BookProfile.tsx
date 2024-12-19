@@ -19,46 +19,66 @@ export interface BookProfileProps {
         rating: number | null;
         Post: Post[];
     };
+    genre?: Genre | null;
+    userId: string;
+    userRating: number | null;
 }
 
-const BookProfilePage = ({ book }: BookProfileProps) => {
-    // Client-side state for managing the modal visibility and rating
+const BookProfilePage = ({
+    book,
+    genre,
+    userId,
+    userRating,
+}: BookProfileProps) => {
+    // Client-side state for managing the modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [rating, setRating] = useState<number | null>(null);
 
     return (
         <div className="container mx-auto px-6 py-8">
             {/* Header Section */}
-            <div className="bg-gradient-to-r from-teal-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+            <div className="relative bg-gradient-to-r from-teal-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+                {/* User Rating - Top Right */}
+                <div className="absolute top-6 right-6 text-right">
+                    <p className="text-sm text-teal-200">Your Rating:</p>
+                    <p
+                        className="text-2xl font-bold text-white"
+                        title={
+                            userRating
+                                ? `Your rating: ${userRating.toFixed(2)}`
+                                : "You haven't rated this book yet"
+                        }
+                    >
+                        {userRating ? userRating.toFixed(2) : "N/A"}
+                    </p>
+                    <button
+                        className="mt-1 bg-white text-blue-600 font-semibold text-xs py-0.5 px-2 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        {userRating ? "Edit" : "Add"} Rating
+                    </button>
+                </div>
+
+                {/* Book Details */}
                 <h1 className="text-4xl font-extrabold">{book.name}</h1>
                 <p className="mt-2 text-lg">
                     {book.author || "Author: Unknown"}
                 </p>
                 <p className="mt-1 text-lg">
-                    <strong>Genre:</strong> {book.genre?.name || "Genre: N/A"}
+                    <strong>Genre:</strong> {genre?.name || "Genre: N/A"}
                 </p>
                 <p className="mt-1 text-lg">
                     <strong>Rating:</strong>{" "}
-                    {book.rating ? book.rating : "No rating yet"}
+                    {book.rating ? book.rating.toFixed(2) : "No rating yet"}
                 </p>
             </div>
 
-            {/* Action Section */}
-            <div className="mt-6 flex justify-center">
-                <button
-                    className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Add Rating
-                </button>
-            </div>
-
-            {/* Modal component to add the rating */}
+            {/* Modal Component */}
             {isModalOpen && (
                 <AddBookRatingModal
-                    currentRating={rating}
-                    onSubmitRating={setRating} // Pass the rating back to the parent
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
+                    book={book}
+                    userId={userId}
+                    userRating={userRating}
                 />
             )}
         </div>

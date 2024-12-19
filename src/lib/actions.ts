@@ -351,12 +351,10 @@ export const updateProfile = async (
         firstName: z.string().max(60).optional(),
         lastName: z.string().max(60).optional(),
     });
-    console.log({ cover, ...filteredFields });
 
     const validatedFields = Profile.safeParse({ cover, ...filteredFields });
 
     if (!validatedFields.success) {
-        console.log(validatedFields.error.flatten().fieldErrors);
         return { success: false, error: true };
     }
 
@@ -494,11 +492,9 @@ export async function getBoardGameRatings(boardGameId: number) {
     if (!boardGameId) {
         throw new Error("Invalid boardGameId provided.");
     }
-    console.log("Fetching ratings for boardGameId:", boardGameId);
     const ratings = await prisma.rating.findMany({
         where: { boardGameId },
     });
-    console.log("Ratings fetched:", ratings);
     return ratings;
 }
 

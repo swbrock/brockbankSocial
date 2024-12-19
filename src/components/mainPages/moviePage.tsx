@@ -2,6 +2,7 @@
 import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import AddMovieRatingModal from "../addRatings/AddMovieRatingModal";
 
 interface MoviePageProps {
     dbMovies: Movie[];
@@ -32,24 +33,6 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
             updatedAt: new Date(),
         };
         setMovies((prevMovies) => [newMovie, ...prevMovies]);
-    };
-
-    const addRating = (movieId: number) => {
-        const newRating = prompt("Enter a rating (1-5):");
-        const parsedRating = parseFloat(newRating || "0");
-        if (parsedRating >= 1 && parsedRating <= 5) {
-            setMovies((prevMovies) =>
-                prevMovies
-                    .map((movie) =>
-                        movie.id === movieId
-                            ? { ...movie, rating: parsedRating }
-                            : movie
-                    )
-                    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-            );
-        } else {
-            alert("Please enter a valid rating between 1 and 5.");
-        }
     };
 
     // Filter movies based on the search query
@@ -99,15 +82,6 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                                     <p className="text-sm text-gray-500">
                                         Rank: {index + 1}
                                     </p>
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault(); // Prevent navigation on button click
-                                            addRating(movie.id);
-                                        }}
-                                        className="w-full bg-green-400 text-white py-2 rounded-md shadow-md hover:bg-green-500 transition duration-200"
-                                    >
-                                        Rate This Movie
-                                    </button>
                                 </div>
                             </Link>
                         ))}
