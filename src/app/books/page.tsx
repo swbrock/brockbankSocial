@@ -9,8 +9,8 @@ export default async function Movies() {
     //get movies from the database
     const books = await prisma.book.findMany({
         include: {
-            genre: true, // Include genre details with each movie
-            ratings: true, // Include ratings for each movie
+            genre: true, // Include genre details with each book
+            ratings: true, // Include ratings for each book
         },
     });
 

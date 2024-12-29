@@ -445,6 +445,14 @@ export async function topRatedMovies(): Promise<Movie[]> {
     return movies;
 }
 
+//get just movie names
+export async function getAllMovieNames() {
+    const movies = await prisma.movie.findMany({
+        select: { name: true },
+    });
+    return movies.map((movie) => movie.name);
+}
+
 // ------------------------------- Book Actions -------------------------------
 
 export async function topRatedBooks(): Promise<Book[]> {
@@ -457,6 +465,14 @@ export async function topRatedBooks(): Promise<Book[]> {
             ratings: true, // Include ratings if needed
             genre: true, // Include genre
         },
+    });
+    return books;
+}
+
+//get all book names
+export async function getAllBookNames() {
+    const books = await prisma.book.findMany({
+        select: { name: true },
     });
     return books;
 }
@@ -677,4 +693,10 @@ export async function getUserRating(
     }
 
     return rating?.rating;
+}
+
+// ------------------------------- Genre Actions -------------------------------
+export async function getAllGenres() {
+    const genres = await prisma.genre.findMany();
+    return genres;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { createMovie } from "@/lib/actions";
+import { createMovie, getAllGenres, getAllMovieNames } from "@/lib/actions";
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
@@ -30,29 +30,16 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         const fetchGenres = async () => {
-            try {
-                const res = await fetch("/api/genres");
-                const data = await res.json();
-                if (data.genres) {
-                    setGenres(data.genres);
-                }
-            } catch (err) {
-                console.error("Error fetching genres:", err);
-            }
+            const genres = await getAllGenres();
+            setGenres(genres);
         };
-        const fetchExistingMovieNames = async () => {
-            try {
-                const res = await fetch("/api/movies/names"); // Endpoint to get existing movie names
-                const data = await res.json();
-                if (data.movieNames) {
-                    setExistingMovieNames(data.movieNames); // Set existing movie names
-                }
-            } catch (err) {
-                console.error("Error fetching existing movie names:", err);
-            }
+
+        const fetchMovieNames = async () => {
+            const movies = await getAllMovieNames();
+            setExistingMovieNames(movies);
         };
         fetchGenres();
-        fetchExistingMovieNames();
+        fetchMovieNames();
     }, []);
 
     const checkMovieNameExists = (name: string) => {
