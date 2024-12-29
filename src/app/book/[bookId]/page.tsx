@@ -11,8 +11,6 @@ export default async function BookProfilePageServer({
 }) {
     const bookId = parseInt(params.bookId);
 
-    console.log(bookId);
-
     // Ensure movieId is valid
     if (isNaN(bookId)) {
         return notFound();

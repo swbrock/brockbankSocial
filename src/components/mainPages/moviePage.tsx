@@ -3,6 +3,7 @@ import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddMovieRatingModal from "../addRatings/AddMovieRatingModal";
+import AddMovieModal from "../addEvents/AddMovieModal";
 
 interface MoviePageProps {
     dbMovies: Movie[];
@@ -11,6 +12,7 @@ interface MoviePageProps {
 const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const sortedMovies = [...dbMovies].sort(
@@ -19,22 +21,6 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
         setMovies(sortedMovies);
     }, [dbMovies]);
 
-    const addMovie = () => {
-        const newMovie: Movie = {
-            id: Date.now(),
-            name: "Surprise Movie",
-            director: "Mystery Director",
-            rating: 0,
-            genreId: null,
-            mpaaRating: null,
-            releaseDate: null,
-            image: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-        setMovies((prevMovies) => [newMovie, ...prevMovies]);
-    };
-
     // Filter movies based on the search query
     const filteredMovies = movies.filter((movie) =>
         movie.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -42,13 +28,19 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
 
     return (
         <div className="p-8 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 min-h-screen">
+            {showModal && (
+                <AddMovieModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
             <div className="max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">
                         🎬 Movie Showcase
                     </h1>
                     <button
-                        onClick={addMovie}
+                        onClick={() => setShowModal(true)}
                         className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-200"
                     >
                         + Add Movie

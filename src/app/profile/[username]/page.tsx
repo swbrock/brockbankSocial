@@ -60,7 +60,6 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
                 // If the rating is tied, add it to the accumulator
                 acc.push(rating);
             }
-            console.log(acc);
             return acc;
         }, [] as typeof user.ratings);
 

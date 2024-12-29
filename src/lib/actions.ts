@@ -404,6 +404,33 @@ export async function topRatedGames(): Promise<BoardGame[]> {
 
 // ------------------------------- Movie Actions -------------------------------
 
+//add new movie
+export async function createMovie(
+    name: string,
+    director: string,
+    genreId: number,
+    releaseDate: Date,
+    mpaaRating: string,
+    image: string
+): Promise<Movie> {
+    try {
+        const movie = await prisma.movie.create({
+            data: {
+                name,
+                director,
+                genreId,
+                releaseDate,
+                mpaaRating,
+                image,
+            },
+        });
+        return movie;
+    } catch (error) {
+        console.error("Error creating movie:", error);
+        throw new Error("Error creating movie");
+    }
+}
+
 export async function topRatedMovies(): Promise<Movie[]> {
     const movies = await prisma.movie.findMany({
         orderBy: {

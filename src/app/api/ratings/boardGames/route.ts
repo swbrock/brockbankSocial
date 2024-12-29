@@ -8,8 +8,6 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { boardGameId, rating, userId } = body;
 
-        console.log("POST request received:", { boardGameId, rating, userId });
-
         // Check if a rating already exists for this user and board game
         const existingRating = await prisma.rating.findFirst({
             where: {
@@ -21,7 +19,6 @@ export async function POST(req: NextRequest) {
         if (existingRating) {
             // Update the existing rating
             const updatedRating = await updateRating(existingRating.id, rating);
-            console.log("Rating updated:", updatedRating);
 
             return NextResponse.json(
                 { message: "Rating updated successfully!", updatedRating },
@@ -34,7 +31,6 @@ export async function POST(req: NextRequest) {
                 boardGameId,
                 rating
             );
-            console.log("New rating created:", newRating);
 
             return NextResponse.json(
                 { message: "Rating created successfully!", newRating },

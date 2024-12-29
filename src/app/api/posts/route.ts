@@ -16,14 +16,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        console.log("POST request received:", {
-            userId,
-            title,
-            content,
-            entityId,
-            entityType,
-        });
-
         const newPost = await createPost(
             userId,
             title,
