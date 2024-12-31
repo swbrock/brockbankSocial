@@ -402,6 +402,46 @@ export async function topRatedGames(): Promise<BoardGame[]> {
     return games;
 }
 
+//get all board game names
+export async function getAllBoardGameNames() {
+    const boardGames = await prisma.boardGame.findMany({
+        select: { name: true },
+    });
+    return boardGames.map((boardGame: { name: string }) => boardGame.name);
+}
+
+//get all board games
+export async function getAllBoardGames() {
+    const boardGames = await prisma.boardGame.findMany({
+        include: {
+            ratings: true, // Include ratings for each board game
+        },
+    });
+    return boardGames;
+}
+
+//create a new board game
+export async function createBoardGame(
+    name: string,
+    difficulty: string,
+    length: number,
+    image: string
+): Promise<BoardGame> {
+    try {
+        const boardGame = await prisma.boardGame.create({
+            data: {
+                name,
+                difficulty,
+                length,
+                image,
+            },
+        });
+        return boardGame;
+    } catch (error) {
+        console.error("Error creating board game:", error);
+        throw new Error("Error creating board game");
+    }
+}
 // ------------------------------- Movie Actions -------------------------------
 
 //add new movie
@@ -451,6 +491,17 @@ export async function getAllMovieNames() {
         select: { name: true },
     });
     return movies.map((movie: { name: string }) => movie.name);
+}
+
+//get all movies
+export async function getAllMovies() {
+    const movies = await prisma.movie.findMany({
+        include: {
+            genre: true, // Include genre details with each movie
+            ratings: true, // Include ratings for each movie
+        },
+    });
+    return movies;
 }
 
 // ------------------------------- Book Actions -------------------------------

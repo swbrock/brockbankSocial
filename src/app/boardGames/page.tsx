@@ -3,21 +3,11 @@
 // or add a new movie
 
 import BoardGamePage from "@/components/mainPages/boardGamePage";
-import prisma from "@/lib/client";
+import { getAllBoardGames } from "@/lib/actions";
 
 export default async function Movies() {
     //get movies from the database
-    const boardGames = await prisma.boardGame.findMany({
-        include: {
-            ratings: true, // Include ratings for each movie
-        },
-    });
-
-    boardGames.forEach((boardGame) => {
-        boardGame.rating =
-            boardGame.ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-            boardGame.ratings.length;
-    });
+    const boardGames = await getAllBoardGames();
 
     return <BoardGamePage dbBoardGames={boardGames} />; // Pass the fetched
 }

@@ -2,6 +2,8 @@
 import { BoardGame } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Toast from "../Toast";
+import AddBoardGameModal from "../addEvents/AddBoardGameModal";
 
 interface BoardGamePageProps {
     dbBoardGames: BoardGame[];
@@ -10,6 +12,9 @@ interface BoardGamePageProps {
 const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
     const [boardGames, setBoardGames] = useState<BoardGame[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const sortedBoardGames = [...dbBoardGames].sort(
@@ -18,21 +23,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
         setBoardGames(sortedBoardGames);
     }, [dbBoardGames]);
 
-    const addBoardGame = () => {
-        const newBoardGame: BoardGame = {
-            id: Date.now(),
-            name: "Mystery Game",
-            rating: 0,
-            image: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            difficulty: null,
-            length: null,
-            timesPlayed: 0,
-        };
-        setBoardGames((prevBoardGames) => [newBoardGame, ...prevBoardGames]);
-    };
-
     // Filter board games based on the search query
     const filteredBoardGames = boardGames.filter((game) =>
         game.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -40,16 +30,38 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
 
     return (
         <div className="p-8 bg-gradient-to-r from-yellow-100 via-orange-100 to-red-100 min-h-screen">
+            {success && (
+                <Toast
+                    type="success"
+                    message="Book added successfully!"
+                    onClose={() => setSuccess(false)}
+                />
+            )}
+            {error && (
+                <Toast
+                    type="error"
+                    message={error}
+                    onClose={() => setError(null)}
+                />
+            )}
+            {showModal && (
+                <AddBoardGameModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    setSuccess={setSuccess}
+                    setError={setError}
+                />
+            )}
             <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">
                         🎲 Board Game Collection
                     </h1>
                     <button
-                        onClick={addBoardGame}
+                        onClick={() => setShowModal(true)}
                         className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-200"
                     >
-                        + Add Game
+                        + Add Board Game
                     </button>
                 </div>
                 <div className="mb-6">
