@@ -450,7 +450,7 @@ export async function getAllMovieNames() {
     const movies = await prisma.movie.findMany({
         select: { name: true },
     });
-    return movies.map((movie) => movie.name);
+    return movies.map((movie: { name: string }) => movie.name);
 }
 
 // ------------------------------- Book Actions -------------------------------
@@ -474,7 +474,29 @@ export async function getAllBookNames() {
     const books = await prisma.book.findMany({
         select: { name: true },
     });
-    return books;
+    return books.map((book: { name: string }) => book.name);
+}
+
+export async function createBook(
+    name: string,
+    author: string,
+    genreId: number,
+    image: string
+): Promise<Book> {
+    try {
+        const book = await prisma.book.create({
+            data: {
+                name,
+                author,
+                genreId,
+                image,
+            },
+        });
+        return book;
+    } catch (error) {
+        console.error("Error creating book:", error);
+        throw new Error("Error creating book");
+    }
 }
 
 // ------------------------------- Rating Actions -------------------------------
