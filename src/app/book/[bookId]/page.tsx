@@ -26,12 +26,6 @@ export default async function BookProfilePageServer({
         },
     });
 
-    const ratings = await prisma.rating.findMany({
-        where: {
-            bookId: bookId,
-        },
-    });
-
     if (!book) {
         return notFound(); // Return 404 if the book is not found
     }
@@ -52,7 +46,7 @@ export default async function BookProfilePageServer({
                 book={book}
                 genre={genre}
                 userId={userId}
-                userRating={userRating ? userRating : null}
+                userRating={userRating ?? null}
             />
             <Feed entityId={bookId} entityType="book" />
         </>

@@ -61,10 +61,10 @@ const BookProfilePage = ({
                 {/* Book Details */}
                 <h1 className="text-4xl font-extrabold">{book.name}</h1>
                 <p className="mt-2 text-lg">
-                    {book.author || "Author: Unknown"}
+                    {book.author ?? "Author: Unknown"}
                 </p>
                 <p className="mt-1 text-lg">
-                    <strong>Genre:</strong> {genre?.name || "Genre: N/A"}
+                    <strong>Genre:</strong> {genre?.name ?? "Genre: N/A"}
                 </p>
                 <p className="mt-1 text-lg">
                     <strong>Rating:</strong>{" "}

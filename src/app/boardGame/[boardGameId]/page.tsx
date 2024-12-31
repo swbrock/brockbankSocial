@@ -1,10 +1,7 @@
+import AddGameModal from "@/components/addEvents/AddGameModal";
 import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
-import {
-    getLoggedInUserId,
-    createBoardGameRating,
-    getUserRating,
-} from "@/lib/actions";
+import { getLoggedInUserId, getUserRating, getAllUsers } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -24,7 +21,7 @@ export default async function BoardGameProfilePageServer({
     }
 
     // Fetch the board game and ratings
-    const [boardGame, ratings] = await Promise.all([
+    const [boardGame] = await Promise.all([
         prisma.boardGame.findUnique({
             where: { id: boardGameId },
             include: {
@@ -41,21 +38,24 @@ export default async function BoardGameProfilePageServer({
         return notFound();
     }
 
-    // Calculate average rating, if ratings exist
-    const averageRating =
-        ratings.length > 0
-            ? ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-              ratings.length
-            : null;
-
-    // Add the average rating to the board game object
-    boardGame.rating = averageRating;
-
     const userRating = await getUserRating(
         loggedInUser,
         boardGame.id,
         "BoardGame"
     );
+
+    //get all users
+    const users = await getAllUsers();
+
+    //for each through users and if firstname or lastname is null, set it to an empty string
+    users.forEach((user) => {
+        if (!user.firstName) {
+            user.firstName = "";
+        }
+        if (!user.lastName) {
+            user.lastName = "";
+        }
+    });
 
     // Render the page components
     return (
@@ -63,7 +63,12 @@ export default async function BoardGameProfilePageServer({
             <BoardGameProfilePage
                 boardGame={boardGame}
                 userId={loggedInUser}
-                userRating={userRating ? userRating : null}
+                userRating={userRating ?? null}
+            />
+            <AddGameModal
+                users={users}
+                boardGameId={boardGameId}
+                boardGameName={boardGame.name}
             />
             <Feed entityId={boardGameId} entityType="boardGame" />
         </>

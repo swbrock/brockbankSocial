@@ -22,7 +22,8 @@ export async function createPost(
     title: string,
     content: string,
     entityId?: number,
-    entityType?: string
+    entityType?: string,
+    image?: string
 ) {
     let boardGameId = null;
     let movieId = null;
@@ -45,6 +46,7 @@ export async function createPost(
                 boardGameId,
                 movieId,
                 bookId,
+                image,
             },
         });
         return post;
@@ -111,8 +113,8 @@ export async function createGame({
     winnerUserId,
     playDate,
     playDuration,
-}: //image,
-CreateGameParams) {
+    image,
+}: CreateGameParams) {
     try {
         const game = await prisma.game.create({
             data: {
@@ -120,13 +122,32 @@ CreateGameParams) {
                 winnerUserId,
                 playDate,
                 playDuration,
-                //image,
+                image,
             },
         });
         return game;
     } catch (error) {
         console.error("Error creating game:", error);
         throw new Error("Error creating game");
+    }
+}
+
+//create game participants
+export async function createGameParticipants(
+    gameId: number,
+    userIds: string[]
+) {
+    try {
+        const participants = await prisma.gameParticipant.createMany({
+            data: userIds.map((userId) => ({
+                gameId,
+                userId,
+            })),
+        });
+        return participants;
+    } catch (error) {
+        console.error("Error creating game participants:", error);
+        throw new Error("Error creating game participants");
     }
 }
 
@@ -387,6 +408,15 @@ export async function getLoggedInUserId() {
     return userId;
 }
 
+//get all users
+export async function getAllUsers() {
+    //just get the users name and id
+    const users = await prisma.user.findMany({
+        select: { id: true, firstName: true, lastName: true },
+    });
+    return users;
+}
+
 /// ------------------------------- Board Game Actions -------------------------------
 
 export async function topRatedGames(): Promise<BoardGame[]> {
@@ -442,6 +472,25 @@ export async function createBoardGame(
         throw new Error("Error creating board game");
     }
 }
+
+//update times played
+export async function updateTimesPlayed(boardGameId: number) {
+    try {
+        const boardGame = await prisma.boardGame.update({
+            where: { id: boardGameId },
+            data: {
+                timesPlayed: {
+                    increment: 1,
+                },
+            },
+        });
+        return boardGame;
+    } catch (error) {
+        console.error("Error updating times played:", error);
+        throw new Error("Error updating times played");
+    }
+}
+
 // ------------------------------- Movie Actions -------------------------------
 
 //add new movie

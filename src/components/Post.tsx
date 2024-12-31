@@ -68,12 +68,18 @@ const Post = ({ post }: { post: FeedPostType }) => {
 
             {/* Main content of the post */}
             <div className="flex flex-col gap-4">
+                <h2 className="text-2xl font-bold text-gray-900">
+                    {post.title}
+                </h2>
+
+                {/* Conditional rendering for image */}
                 {post?.image && (
-                    <div className="w-full relative aspect-video overflow-hidden rounded-xl shadow-sm">
+                    <div className="w-full relative overflow-hidden rounded-xl shadow-sm">
                         <Image
                             src={post.image}
                             alt="Post content"
-                            fill
+                            width={300}
+                            height={300}
                             className="object-cover hover:scale-105 transition-transform duration-300"
                         />
                     </div>
@@ -84,44 +90,6 @@ const Post = ({ post }: { post: FeedPostType }) => {
                         {post.content}
                     </p>
                 )}
-
-                {/* Conditional rendering for polymorphic relationships */}
-                {post?.boardGame && (
-                    <p className="text-gray-600 text-sm">
-                        <span className="font-semibold">
-                            Related Board Game:
-                        </span>{" "}
-                        {post.boardGame.name}
-                    </p>
-                )}
-
-                {post?.movie && (
-                    <p className="text-gray-600 text-sm">
-                        <span className="font-semibold">Related Movie:</span>{" "}
-                        {post.movie.name}
-                    </p>
-                )}
-
-                {post?.book && (
-                    <p className="text-gray-600 text-sm">
-                        <span className="font-semibold">Related Book:</span>{" "}
-                        {post.book.name}
-                    </p>
-                )}
-
-                {post?.game && (
-                    <p className="text-gray-600 text-sm">
-                        <span className="font-semibold">Related Game:</span>{" "}
-                        {post.game.name}
-                    </p>
-                )}
-
-                {/* {post?.rating && (
-                    <p className="text-gray-600 text-sm">
-                        <span className="font-semibold">Rating:</span>{" "}
-                        {post.rating.score}/5
-                    </p>
-                )} */}
             </div>
         </div>
     );
