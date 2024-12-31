@@ -1,24 +1,11 @@
-"use server"; // Ensures this component is server-side rendered (for Prisma queries)
-//need to make a default page to display all movies and make it so that the user can click on a movie to see more details about it and rate it
-// or add a new movie
+"use server";
 
 import BookPage from "@/components/mainPages/bookPage";
-import prisma from "@/lib/client";
+import { getAllBooks } from "@/lib/actions";
 
-export default async function Movies() {
+export default async function Books() {
     //get movies from the database
-    const books = await prisma.book.findMany({
-        include: {
-            genre: true, // Include genre details with each book
-            ratings: true, // Include ratings for each book
-        },
-    });
-
-    books.forEach((book) => {
-        book.rating =
-            book.ratings.reduce((acc, rating) => acc + rating.rating, 0) /
-            book.ratings.length;
-    });
+    const books = await getAllBooks();
 
     return <BookPage dbBooks={books} />; // Pass the fetched
 }

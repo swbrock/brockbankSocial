@@ -499,6 +499,18 @@ export async function createBook(
     }
 }
 
+//get all books
+export async function getAllBooks() {
+    const books = await prisma.book.findMany({
+        include: {
+            genre: true, // Include genre details with each book
+            ratings: true, // Include ratings for each book
+        },
+    });
+
+    return books;
+}
+
 // ------------------------------- Rating Actions -------------------------------
 
 //update average rating

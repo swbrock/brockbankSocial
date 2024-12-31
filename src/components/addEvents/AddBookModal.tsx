@@ -5,23 +5,27 @@ import { createBook, getAllGenres, getAllBookNames } from "@/lib/actions";
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
-import Alert from "../Alert";
 
 interface AddBookModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setSuccess: (success: boolean) => void;
+    setError: (error: string | null) => void;
 }
 
-const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose }) => {
+const AddBookModal: React.FC<AddBookModalProps> = ({
+    isOpen,
+    onClose,
+    setError,
+    setSuccess,
+}) => {
     const [formData, setFormData] = useState({
         name: "",
         author: "",
         genreId: "",
         image: "",
     });
-    const [error, setError] = useState<string | null>(null);
     const [genres, setGenres] = useState<Genre[]>([]);
-    const [success, setSuccess] = useState(false);
     const [coverImage, setCoverImage] = useState<any>(null);
     const [existingBookTitles, setExistingBookTitles] = useState<string[]>([]);
 
@@ -80,8 +84,6 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose }) => {
                 setSuccess(true);
                 setError(null);
                 onClose();
-                //alert("Book added successfully!");
-                //instead of alert i want to create a nice looking success
             }
         } catch (error) {
             console.error("Error creating book:", error);
@@ -102,20 +104,6 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
                 <h2 className="text-2xl font-bold mb-4">Add New Book</h2>
-                {error && (
-                    <Alert
-                        type="error"
-                        message={error}
-                        onClose={() => setError(null)}
-                    />
-                )}
-                {success && (
-                    <Alert
-                        type="success"
-                        message="Book added successfully!"
-                        onClose={() => setSuccess(false)}
-                    />
-                )}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-gray-700">
