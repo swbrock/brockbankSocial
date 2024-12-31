@@ -2,6 +2,7 @@
 import { Book } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import AddBookModal from "../addEvents/AddBookModal";
 
 interface BookPageProps {
     dbBooks: Book[];
@@ -10,6 +11,7 @@ interface BookPageProps {
 const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
     const [books, setBooks] = useState<Book[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const sortedBooks = [...dbBooks].sort(
@@ -18,20 +20,6 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
         setBooks(sortedBooks);
     }, [dbBooks]);
 
-    const addBook = () => {
-        const newBook: Book = {
-            id: Date.now(),
-            name: "Mystery Book",
-            author: "Unknown Author",
-            rating: 0,
-            genreId: null,
-            image: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-        setBooks((prevBooks) => [newBook, ...prevBooks]);
-    };
-
     // Filter books based on the search query
     const filteredBooks = books.filter((book) =>
         book.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -39,13 +27,19 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
 
     return (
         <div className="p-8 bg-gradient-to-r from-green-100 via-teal-100 to-blue-100 min-h-screen">
+            {showModal && (
+                <AddBookModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
             <div className="max-w-5xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">
                         📚 Book Library
                     </h1>
                     <button
-                        onClick={addBook}
+                        onClick={() => setShowModal(true)}
                         className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-200"
                     >
                         + Add Book
