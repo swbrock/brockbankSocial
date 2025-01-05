@@ -605,6 +605,35 @@ export async function getMovieById(movieId: number) {
     return movie;
 }
 
+//update movie
+export async function updateMovie(
+    movieId: number,
+    name: string,
+    director: string,
+    genreId: number,
+    releaseDate: Date,
+    mpaaRating: string,
+    image: string
+) {
+    try {
+        const movie = await prisma.movie.update({
+            where: { id: movieId },
+            data: {
+                name,
+                director,
+                genreId,
+                releaseDate,
+                mpaaRating,
+                image,
+            },
+        });
+        return movie;
+    } catch (error) {
+        console.error("Error updating movie:", error);
+        throw new Error("Error updating movie");
+    }
+}
+
 // ------------------------------- Book Actions -------------------------------
 
 export async function topRatedBooks(): Promise<Book[]> {

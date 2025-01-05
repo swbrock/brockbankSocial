@@ -1,21 +1,18 @@
-"use client"; // Ensures this component is client-side rendered (for hooks like useState)
+"use client";
 
 import React, { useState } from "react";
 import AddMovieRatingModal from "@/components/addRatings/AddMovieRatingModal";
-import { Genre, Movie } from "@prisma/client";
-
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
+import AddMovieModal from "@/components/addMovies/AddMovieModal";
+import Toast from "@/components/Toast";
+import { Genre } from "@prisma/client";
 
 export interface MovieProfileProps {
     movie: {
         id: number;
         name: string;
         rating: number | null;
-        Post: Post[];
+        director: string;
+        image: string | null;
     };
     genre?: Genre | null;
     userId: string;
@@ -28,15 +25,65 @@ const MovieProfilePage = ({
     userId,
     userRating,
 }: MovieProfileProps) => {
-    // Client-side state for managing the modal visibility and rating
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     return (
         <div className="container mx-auto px-6 py-8">
+            {success && (
+                <Toast
+                    type="success"
+                    message="Movie updated successfully!"
+                    onClose={() => setSuccess(false)}
+                />
+            )}
+            {error && (
+                <Toast
+                    type="error"
+                    message={error}
+                    onClose={() => setError(null)}
+                />
+            )}
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
+                {/* Movie Image Section */}
+                <div className="flex items-center space-x-6">
+                    {movie.image && (
+                        <img
+                            src={movie.image}
+                            alt={movie.name}
+                            className="w-40 h-64 object-cover rounded-lg shadow-lg border border-white"
+                        />
+                    )}
+                    <div>
+                        <h1 className="text-4xl font-extrabold mb-4">
+                            {movie.name}
+                        </h1>
+                        <div className="space-y-2">
+                            <p className="text-lg">
+                                <strong>Director:</strong> {movie.director}
+                            </p>
+                            <p className="text-lg">
+                                <strong>Genre:</strong> {genre?.name ?? "N/A"}
+                            </p>
+                            <p className="text-lg">
+                                <strong>Rating:</strong>{" "}
+                                {movie.rating ? movie.rating.toFixed(2) : "N/A"}
+                            </p>
+                        </div>
+                        <div className="mt-4">
+                            <button
+                                className="bg-green-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow"
+                                onClick={() => setEditModalOpen(true)}
+                            >
+                                Edit Movie
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* User Rating - Top Right */}
                 <div className="absolute top-6 right-6 text-right">
                     <p className="text-sm text-purple-200">Your Rating:</p>
@@ -57,31 +104,27 @@ const MovieProfilePage = ({
                         {userRating ? "Edit" : "Add"} Rating
                     </button>
                 </div>
-
-                {/* Movie Details */}
-                <h1 className="text-4xl font-extrabold">{movie.name}</h1>
-                <p className="mt-2 text-lg">
-                    {genre?.name ?? "Genre: Unknown"}
-                </p>
-                <p className="mt-1 text-lg">
-                    <strong>Rating:</strong>{" "}
-                    {movie.rating !== null
-                        ? movie.rating.toFixed(2)
-                        : "No rating yet"}
-                </p>
             </div>
 
-            {/* Modal Component */}
+            {/* Modal Components */}
             {isModalOpen && (
                 <AddMovieRatingModal
+                    onClose={() => setIsModalOpen(false)}
                     movie={movie}
                     userId={userId}
                     userRating={userRating}
-                    onClose={() => setIsModalOpen(false)} // Close modal on cancel
                 />
             )}
-
-            {/* Edit Modal Component */}
+            {editModalOpen && (
+                <AddMovieModal
+                    isOpen={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    isEdit={true}
+                    movieId={movie.id}
+                    setSuccess={setSuccess}
+                    setError={setError}
+                />
+            )}
         </div>
     );
 };

@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { createMovie, getAllGenres, getAllMovieNames } from "@/lib/actions";
+import {
+    createMovie,
+    updateMovie,
+    getAllGenres,
+    getAllMovieNames,
+    getMovieById,
+} from "@/lib/actions";
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
@@ -9,23 +15,31 @@ import { useRouter } from "next/navigation";
 interface AddMovieModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setSuccess: (success: boolean) => void;
+    setError: (error: string | null) => void;
+    isEdit?: boolean;
+    movieId?: number;
 }
 
-const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
+const AddMovieModal: React.FC<AddMovieModalProps> = ({
+    isOpen,
+    onClose,
+    setSuccess,
+    setError,
+    isEdit = false,
+    movieId,
+}) => {
     const [formData, setFormData] = useState({
         name: "",
         director: "",
         genreId: "",
-        releaseDate: "",
+        releaseDate: new Date(),
         mpaaRating: "",
         image: "",
     });
-    const [error, setError] = useState<string | null>(null);
     const [genres, setGenres] = useState<Genre[]>([]);
-    const [success, setSuccess] = useState(false);
     const [poster, setPoster] = useState<any>(null);
-    const [existingMovieNames, setExistingMovieNames] = useState<string[]>([]); // To store existing movie names
-
+    const [existingMovieNames, setExistingMovieNames] = useState<string[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -38,12 +52,29 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
             const movies = await getAllMovieNames();
             setExistingMovieNames(movies);
         };
+
         fetchGenres();
         fetchMovieNames();
-    }, []);
+
+        if (isEdit && movieId) {
+            const fetchMovie = async () => {
+                const movie = await getMovieById(movieId);
+                setFormData({
+                    name: movie?.name ?? "",
+                    director: movie?.director ?? "",
+                    genreId: movie?.genreId?.toString() ?? "",
+                    releaseDate: movie?.releaseDate ?? new Date(),
+                    mpaaRating: movie?.mpaaRating ?? "",
+                    image: movie?.image ?? "",
+                });
+                setPoster({ secure_url: movie?.image });
+            };
+            fetchMovie();
+        }
+    }, [isEdit, movieId]);
 
     const checkMovieNameExists = (name: string) => {
-        return existingMovieNames.includes(name); // Check if the movie name exists
+        return existingMovieNames.includes(name);
     };
 
     const handleChange = (
@@ -54,7 +85,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        formData.image = poster.secure_url; // Set the image URL to the poster URL
+        formData.image = poster?.secure_url;
 
         const { name, director, genreId, releaseDate, mpaaRating, image } =
             formData;
@@ -67,44 +98,43 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
             !mpaaRating ||
             !image
         ) {
-            console.log("Missing required fields");
-            console.log({
-                name,
-                director,
-                genreId,
-                releaseDate,
-                mpaaRating,
-                image,
-            });
             setError("Please fill in all fields.");
             return;
         }
-        if (checkMovieNameExists(name)) {
+
+        if (checkMovieNameExists(name) && !isEdit) {
             setError("A movie with this name already exists.");
             return;
         }
 
         try {
-            const newMovie = await createMovie(
-                name,
-                director,
-                parseInt(genreId),
-                new Date(releaseDate),
-                mpaaRating,
-                image
-            );
-
-            if (newMovie) {
-                setSuccess(true);
-                setError(null);
-                router.refresh(); // Reload the page to see the new rating
-                onClose();
-                alert("Movie added successfully!");
+            if (isEdit && movieId) {
+                await updateMovie(
+                    movieId,
+                    name,
+                    director,
+                    parseInt(genreId),
+                    new Date(releaseDate),
+                    mpaaRating,
+                    image
+                );
+            } else {
+                await createMovie(
+                    name,
+                    director,
+                    parseInt(genreId),
+                    new Date(releaseDate),
+                    mpaaRating,
+                    image
+                );
             }
+            setSuccess(true);
+            setError(null);
+            router.refresh(); // Reload the page to see the updated content
+            onClose();
         } catch (error) {
-            console.error("Error creating movie:", error);
-            setError("Failed to create movie. Please try again.");
-            setSuccess(false);
+            console.error("Error creating/updating movie:", error);
+            setError("Failed to save movie. Please try again.");
         }
     };
 
@@ -119,13 +149,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">Add New Movie</h2>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-                {success && (
-                    <p className="text-green-500 mb-4">
-                        Movie added successfully!
-                    </p>
-                )}
+                <h2 className="text-2xl font-bold mb-4">
+                    {isEdit ? "Edit Movie" : "Add New Movie"}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-gray-700">
@@ -175,7 +201,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
                         <input
                             type="date"
                             name="releaseDate"
-                            value={formData.releaseDate}
+                            value={
+                                formData.releaseDate.toISOString().split("T")[0]
+                            }
                             onChange={handleChange}
                             required
                             className="mt-1 p-2 w-full border rounded"
@@ -230,7 +258,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
                             type="submit"
                             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
                         >
-                            Add Movie
+                            {isEdit ? "Save Changes" : "Add Movie"}
                         </button>
                         <button
                             type="button"

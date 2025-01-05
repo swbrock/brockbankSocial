@@ -3,6 +3,7 @@ import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddMovieModal from "../addEvents/AddMovieModal";
+import Toast from "../Toast";
 
 interface MoviePageProps {
     dbMovies: Movie[];
@@ -12,6 +13,8 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const sortedMovies = [...dbMovies].sort(
@@ -27,10 +30,26 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
 
     return (
         <div className="p-8 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 min-h-screen">
+            {success && (
+                <Toast
+                    type="success"
+                    message="Book added successfully!"
+                    onClose={() => setSuccess(false)}
+                />
+            )}
+            {error && (
+                <Toast
+                    type="error"
+                    message={error}
+                    onClose={() => setError(null)}
+                />
+            )}
             {showModal && (
                 <AddMovieModal
                     isOpen={showModal}
                     onClose={() => setShowModal(false)}
+                    setSuccess={setSuccess}
+                    setError={setError}
                 />
             )}
             <div className="max-w-4xl mx-auto">
