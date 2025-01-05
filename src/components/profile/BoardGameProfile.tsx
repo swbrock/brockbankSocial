@@ -4,12 +4,6 @@ import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingM
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
 import Toast from "../Toast";
 
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
-
 export interface BoardGameProfileProps {
     boardGame: {
         id: number;
@@ -18,7 +12,6 @@ export interface BoardGameProfileProps {
         timesPlayed: number | null;
         rating: number | null;
         image: string | null; // Add the image field here
-        Post: Post[];
     };
     userId: string;
     userRating: number | null;

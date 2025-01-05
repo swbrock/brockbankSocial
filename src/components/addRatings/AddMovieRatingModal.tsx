@@ -3,17 +3,10 @@ import WheelSlider from "../WheelSlider"; // Assuming WheelSlider is in the comp
 import { MovieRatingResponses } from "@/lib/content";
 import { useRouter } from "next/navigation"; // Import useRouter
 
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
-
 interface MovieProfileProps {
     id: number;
     name: string;
     rating: number | null;
-    Post: Post[];
 }
 
 // Props interface for the modal

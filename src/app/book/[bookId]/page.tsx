@@ -1,6 +1,6 @@
 import Feed from "@/components/Feed";
 import BookProfilePage from "@/components/profile/BookProfile";
-import { getLoggedInUserId, getUserRating } from "@/lib/actions";
+import { getBookById, getLoggedInUserId, getUserRating } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -16,15 +16,7 @@ export default async function BookProfilePageServer({
         return notFound();
     }
     // Fetch the book data and related posts from the database
-    const book = await prisma.book.findUnique({
-        where: {
-            id: bookId, // Ensure the ID is a number
-        },
-        include: {
-            Post: true, // Fetch related posts
-            genre: true, // Fetch genre
-        },
-    });
+    const book = await getBookById(bookId);
 
     if (!book) {
         return notFound(); // Return 404 if the book is not found

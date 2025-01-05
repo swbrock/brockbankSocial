@@ -597,6 +597,14 @@ export async function getAllMovies() {
     return movies;
 }
 
+//get movie by id
+export async function getMovieById(movieId: number) {
+    const movie = await prisma.movie.findUnique({
+        where: { id: movieId },
+    });
+    return movie;
+}
+
 // ------------------------------- Book Actions -------------------------------
 
 export async function topRatedBooks(): Promise<Book[]> {

@@ -17,7 +17,6 @@ export interface BookProfileProps {
         id: number;
         name: string;
         author: string | null;
-        genre: Genre | null;
         rating: number | null;
         image: string | null;
         Post: Post[];

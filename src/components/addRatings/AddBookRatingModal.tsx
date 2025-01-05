@@ -4,17 +4,11 @@ import { BookRatingResponses } from "@/lib/content";
 import { useRouter } from "next/navigation";
 
 // Props interface for the modal
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
 
 interface BookProfileProps {
     id: number;
     name: string;
     rating: number | null;
-    Post: Post[];
 }
 
 export interface RatingModalProps {

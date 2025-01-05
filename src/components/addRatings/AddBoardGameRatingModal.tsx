@@ -4,19 +4,12 @@ import WheelSlider from "../WheelSlider";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { BoardGameRatingResponses } from "@/lib/content";
 
-interface Post {
-    id: number;
-    title: string;
-    content: string;
-}
-
 interface BoardGameProfileProps {
     id: number;
     name: string;
     difficulty: string | null;
     timesPlayed: number | null;
     rating: number | null;
-    Post: Post[];
 }
 // Props interface for the modal
 export interface RatingModalProps {

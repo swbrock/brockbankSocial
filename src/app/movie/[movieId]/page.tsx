@@ -1,6 +1,6 @@
 import Feed from "@/components/Feed";
 import MovieProfilePage from "@/components/profile/MovieProfile";
-import { getUserRating, getLoggedInUserId } from "@/lib/actions";
+import { getUserRating, getLoggedInUserId, getMovieById } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -18,18 +18,7 @@ export default async function MovieProfilePageServer({
 
     const loggedInUser = await getLoggedInUserId();
     // Fetch movie and ratings in parallel
-    const [movie] = await Promise.all([
-        prisma.movie.findUnique({
-            where: { id: movieId },
-            include: {
-                Post: true,
-                genre: true,
-            },
-        }),
-        prisma.rating.findMany({
-            where: { movieId },
-        }),
-    ]);
+    const movie = await getMovieById(movieId);
 
     // Handle case when the movie is not found
     if (!movie) {
