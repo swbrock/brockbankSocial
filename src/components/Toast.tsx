@@ -1,4 +1,4 @@
-// components/Toast.tsx
+"use client";
 import React, { useEffect } from "react";
 
 interface ToastProps {

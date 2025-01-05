@@ -33,7 +33,7 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
             {success && (
                 <Toast
                     type="success"
-                    message="Book added successfully!"
+                    message="Board Game added successfully!"
                     onClose={() => setSuccess(false)}
                 />
             )}

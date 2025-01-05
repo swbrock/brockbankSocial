@@ -16,7 +16,7 @@ const Navbar = () => {
                 </Link>
             </div>
             {/* CENTER */}
-            <div className="hidden md:flex w-[50%] text-sm items-center justify-between">
+            <div className="hidden md:flex w-[90%] text-sm items-center justify-between">
                 <div className="flex gap-3 text-gray-600">
                     <Link href="/" className="flex items-center gap-2">
                         <Image
@@ -61,6 +61,19 @@ const Navbar = () => {
                         />
                         <span>Books</span>
                     </Link>
+                    <Link
+                        href="/leaderboard"
+                        className="flex items-center gap-2"
+                    >
+                        <Image
+                            src="/leaderBoards.png"
+                            alt="Leaderboard"
+                            width={16}
+                            height={16}
+                            className="w-4 h-4"
+                        />
+                        <span>Leaderboard</span>
+                    </Link>
                 </div>
                 <div className="hidden xl:flex p-2 bg-slate-100 items-center rounded-xl">
                     <input
@@ -81,15 +94,6 @@ const Navbar = () => {
                         <div className="cursor-pointer">
                             <Image
                                 src="/people.png"
-                                alt=""
-                                width={20}
-                                height={20}
-                                className="w-8 h-8"
-                            />
-                        </div>
-                        <div className="cursor-pointer">
-                            <Image
-                                src="/messages.png"
                                 alt=""
                                 width={20}
                                 height={20}

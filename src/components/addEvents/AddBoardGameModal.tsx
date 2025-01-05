@@ -1,7 +1,11 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { createBoardGame, getAllBoardGameNames } from "@/lib/actions";
+import {
+    createBoardGame,
+    updateBoardGame,
+    getAllBoardGameNames,
+    getBoardGameById,
+} from "@/lib/actions";
 import { CldUploadWidget } from "next-cloudinary";
 
 interface AddBoardGameModalProps {
@@ -9,6 +13,8 @@ interface AddBoardGameModalProps {
     onClose: () => void;
     setSuccess: (success: boolean) => void;
     setError: (error: string | null) => void;
+    isEdit?: boolean;
+    boardGameId?: number;
 }
 
 const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
@@ -16,6 +22,8 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     onClose,
     setError,
     setSuccess,
+    isEdit = false,
+    boardGameId,
 }) => {
     const [formData, setFormData] = useState({
         name: "",
@@ -27,6 +35,22 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     const [existingBoardGameTitles, setExistingBoardGameTitles] = useState<
         string[]
     >([]);
+
+    useEffect(() => {
+        if (isEdit && boardGameId) {
+            const fetchBoardGame = async () => {
+                const boardGame = await getBoardGameById(boardGameId);
+                setFormData({
+                    name: boardGame?.name ?? "",
+                    difficulty: boardGame?.difficulty ?? "",
+                    length: boardGame?.length ?? 0,
+                    image: boardGame?.image ?? "",
+                });
+                setCoverImage({ secure_url: boardGame?.image });
+            };
+            fetchBoardGame();
+        }
+    }, [isEdit, boardGameId]);
 
     useEffect(() => {
         const fetchBoardGameTitles = async () => {
@@ -45,8 +69,7 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         if (e.target.name === "length") {
-            // Ensure length is a number and convert to integer
-            setFormData({ ...formData, length: parseInt(e.target.value) });
+            setFormData({ ...formData, length: parseInt(e.target.value, 10) });
         } else {
             setFormData({ ...formData, [e.target.name]: e.target.value });
         }
@@ -54,7 +77,7 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        formData.image = coverImage?.secure_url; // Set the image URL to the cover image URL
+        formData.image = coverImage?.secure_url;
 
         const { name, difficulty, length, image } = formData;
 
@@ -63,27 +86,29 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
             return;
         }
 
-        if (checkBoardGameTitleExists(name)) {
+        if (checkBoardGameTitleExists(name) && !isEdit) {
             setError("A board game with this title already exists.");
             return;
         }
 
         try {
-            const newBoardGame = await createBoardGame(
-                name,
-                difficulty,
-                length,
-                image
-            );
-
-            if (newBoardGame) {
-                setSuccess(true);
-                setError(null);
-                onClose();
+            if (isEdit && boardGameId) {
+                await updateBoardGame(
+                    boardGameId,
+                    formData.name,
+                    formData.difficulty,
+                    formData.length,
+                    formData.image
+                );
+            } else {
+                await createBoardGame(name, difficulty, length, image);
             }
+            setSuccess(true);
+            setError(null);
+            onClose();
         } catch (error) {
-            console.error("Error creating board game:", error);
-            setError("Failed to create board game. Please try again.");
+            console.error("Error creating/updating board game:", error);
+            setError("Failed to save board game. Please try again.");
             setSuccess(false);
         }
     };
@@ -99,7 +124,9 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">Add New Board Game</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                    {isEdit ? "Edit Board Game" : "Add New Board Game"}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-gray-700">
@@ -182,7 +209,7 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
                             type="submit"
                             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
                         >
-                            Add Board Game
+                            {isEdit ? "Save Changes" : "Add Board Game"}
                         </button>
                         <button
                             type="button"

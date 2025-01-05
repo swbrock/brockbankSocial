@@ -30,6 +30,8 @@ const MovieProfilePage = ({
 }: MovieProfileProps) => {
     // Client-side state for managing the modal visibility and rating
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     return (
         <div className="container mx-auto px-6 py-8">
@@ -59,7 +61,7 @@ const MovieProfilePage = ({
                 {/* Movie Details */}
                 <h1 className="text-4xl font-extrabold">{movie.name}</h1>
                 <p className="mt-2 text-lg">
-                    {genre?.name || "Genre: Unknown"}
+                    {genre?.name ?? "Genre: Unknown"}
                 </p>
                 <p className="mt-1 text-lg">
                     <strong>Rating:</strong>{" "}
@@ -78,6 +80,8 @@ const MovieProfilePage = ({
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
                 />
             )}
+
+            {/* Edit Modal Component */}
         </div>
     );
 };

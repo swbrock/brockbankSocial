@@ -2,7 +2,6 @@
 import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import AddMovieRatingModal from "../addRatings/AddMovieRatingModal";
 import AddMovieModal from "../addEvents/AddMovieModal";
 
 interface MoviePageProps {

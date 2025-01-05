@@ -1,5 +1,3 @@
-import { BoardGame, Movie, Book } from "@prisma/client"; // Import types from Prisma
-import prisma from "@/lib/client"; // Import Prisma client
 import AddEvent from "@/components/AddEvent";
 import Feed from "@/components/Feed";
 import LeftMenu from "@/components/LeftMenu";

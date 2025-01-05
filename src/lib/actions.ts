@@ -189,6 +189,17 @@ export async function deleteGame(gameId: number) {
     }
 }
 
+//get all games
+export async function getAllGames() {
+    const games = await prisma.game.findMany({
+        include: {
+            boardGame: true,
+            participants: true,
+        },
+    });
+    return games;
+}
+
 // ------------------------------- SportsEvent and SportsPrediction Actions -------------------------------
 
 // Create a new SportsEvent
@@ -473,6 +484,31 @@ export async function createBoardGame(
     }
 }
 
+//update board game
+export async function updateBoardGame(
+    boardGameId: number,
+    name: string,
+    difficulty: string,
+    length: number,
+    image: string
+) {
+    try {
+        const boardGame = await prisma.boardGame.update({
+            where: { id: boardGameId },
+            data: {
+                name,
+                difficulty,
+                length,
+                image,
+            },
+        });
+        return boardGame;
+    } catch (error) {
+        console.error("Error updating board game:", error);
+        throw new Error("Error updating board game");
+    }
+}
+
 //update times played
 export async function updateTimesPlayed(boardGameId: number) {
     try {
@@ -489,6 +525,14 @@ export async function updateTimesPlayed(boardGameId: number) {
         console.error("Error updating times played:", error);
         throw new Error("Error updating times played");
     }
+}
+
+//get board game by id
+export async function getBoardGameById(boardGameId: number) {
+    const boardGame = await prisma.boardGame.findUnique({
+        where: { id: boardGameId },
+    });
+    return boardGame;
 }
 
 // ------------------------------- Movie Actions -------------------------------

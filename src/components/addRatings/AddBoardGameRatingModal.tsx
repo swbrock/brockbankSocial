@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useState } from "react";
 import WheelSlider from "../WheelSlider";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { BoardGameRatingResponses } from "@/lib/content";

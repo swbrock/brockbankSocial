@@ -29,7 +29,7 @@ const ProfileCard = async () => {
                     className="rounded-md"
                 />
                 <Image
-                    src={user.avatar ?? "/noProfile.png"}
+                    src={user.avatar ?? "/noAvatar.png"}
                     alt="profile"
                     objectFit="cover"
                     width={48}
