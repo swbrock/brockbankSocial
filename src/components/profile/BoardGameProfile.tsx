@@ -54,11 +54,13 @@ const BoardGameProfilePage = ({
             <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
                 {/* Board Game Image */}
                 <div className="flex items-center space-x-6">
-                    <img
-                        src={boardGame.image || "/placeholder.jpg"}
-                        alt={boardGame.name}
-                        className="w-32 h-32 object-cover rounded-lg shadow-lg border border-white"
-                    />
+                    {boardGame.image && (
+                        <img
+                            src={boardGame.image}
+                            alt={boardGame.name}
+                            className="w-40 h-40 object-cover rounded-lg shadow-lg border border-white"
+                        />
+                    )}
                     <div>
                         <h1 className="text-4xl font-extrabold mb-4">
                             {boardGame.name}

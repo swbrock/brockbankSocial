@@ -97,6 +97,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose }) => {
             if (newMovie) {
                 setSuccess(true);
                 setError(null);
+                router.refresh(); // Reload the page to see the new rating
                 onClose();
                 alert("Movie added successfully!");
             }

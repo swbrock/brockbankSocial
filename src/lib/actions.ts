@@ -655,6 +655,39 @@ export async function getAllBooks() {
     return books;
 }
 
+//get book by id
+export async function getBookById(bookId: number) {
+    const book = await prisma.book.findUnique({
+        where: { id: bookId },
+    });
+    return book;
+}
+
+//update book
+export async function updateBook(
+    bookId: number,
+    name: string,
+    author: string,
+    genreId: number,
+    image: string
+) {
+    try {
+        const book = await prisma.book.update({
+            where: { id: bookId },
+            data: {
+                name,
+                author,
+                genreId,
+                image,
+            },
+        });
+        return book;
+    } catch (error) {
+        console.error("Error updating book:", error);
+        throw new Error("Error updating book");
+    }
+}
+
 // ------------------------------- Rating Actions -------------------------------
 
 //update average rating

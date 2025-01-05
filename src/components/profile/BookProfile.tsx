@@ -1,7 +1,9 @@
-"use client"; // Ensures this component is client-side rendered (for hooks like useState)
+"use client";
 
 import React, { useState } from "react";
 import AddBookRatingModal from "@/components/addRatings/AddBookRatingModal";
+import AddBookModal from "../addEvents/AddBookModal";
+import Toast from "../Toast";
 import { Genre } from "@prisma/client";
 
 interface Post {
@@ -17,6 +19,7 @@ export interface BookProfileProps {
         author: string | null;
         genre: Genre | null;
         rating: number | null;
+        image: string | null;
         Post: Post[];
     };
     genre?: Genre | null;
@@ -30,13 +33,66 @@ const BookProfilePage = ({
     userId,
     userRating,
 }: BookProfileProps) => {
-    // Client-side state for managing the modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     return (
         <div className="container mx-auto px-6 py-8">
+            {success && (
+                <Toast
+                    type="success"
+                    message="Book updated successfully!"
+                    onClose={() => setSuccess(false)}
+                />
+            )}
+            {error && (
+                <Toast
+                    type="error"
+                    message={error}
+                    onClose={() => setError(null)}
+                />
+            )}
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-teal-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+                {/* Book Image Section */}
+                <div className="flex items-center space-x-6">
+                    {book.image && (
+                        <img
+                            src={book.image}
+                            alt={book.name}
+                            className="w-40 h-64 object-cover rounded-lg shadow-lg border border-white"
+                        />
+                    )}
+                    <div>
+                        <h1 className="text-4xl font-extrabold mb-4">
+                            {book.name}
+                        </h1>
+                        <div className="space-y-2">
+                            <p className="text-lg">
+                                <strong>Author:</strong>{" "}
+                                {book.author ?? "Unknown"}
+                            </p>
+                            <p className="text-lg">
+                                <strong>Genre:</strong> {genre?.name ?? "N/A"}
+                            </p>
+                            <p className="text-lg">
+                                <strong>Rating:</strong>{" "}
+                                {book.rating ? book.rating.toFixed(2) : "N/A"}
+                            </p>
+                        </div>
+                        <div className="mt-4">
+                            <button
+                                className="bg-green-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow"
+                                onClick={() => setEditModalOpen(true)}
+                            >
+                                Edit Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* User Rating - Top Right */}
                 <div className="absolute top-6 right-6 text-right">
                     <p className="text-sm text-teal-200">Your Rating:</p>
@@ -57,28 +113,25 @@ const BookProfilePage = ({
                         {userRating ? "Edit" : "Add"} Rating
                     </button>
                 </div>
-
-                {/* Book Details */}
-                <h1 className="text-4xl font-extrabold">{book.name}</h1>
-                <p className="mt-2 text-lg">
-                    {book.author ?? "Author: Unknown"}
-                </p>
-                <p className="mt-1 text-lg">
-                    <strong>Genre:</strong> {genre?.name ?? "Genre: N/A"}
-                </p>
-                <p className="mt-1 text-lg">
-                    <strong>Rating:</strong>{" "}
-                    {book.rating ? book.rating.toFixed(2) : "No rating yet"}
-                </p>
             </div>
 
-            {/* Modal Component */}
+            {/* Modal Components */}
             {isModalOpen && (
                 <AddBookRatingModal
                     onClose={() => setIsModalOpen(false)} // Close modal on cancel
                     book={book}
                     userId={userId}
                     userRating={userRating}
+                />
+            )}
+            {editModalOpen && (
+                <AddBookModal
+                    isOpen={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    isEdit={true}
+                    bookId={book.id}
+                    setSuccess={setSuccess}
+                    setError={setError}
                 />
             )}
         </div>

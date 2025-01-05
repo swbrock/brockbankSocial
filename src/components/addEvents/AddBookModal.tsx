@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { createBook, getAllGenres, getAllBookNames } from "@/lib/actions";
+import {
+    createBook,
+    getAllGenres,
+    getAllBookNames,
+    updateBook,
+    getBookById,
+} from "@/lib/actions";
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
@@ -11,6 +17,8 @@ interface AddBookModalProps {
     onClose: () => void;
     setSuccess: (success: boolean) => void;
     setError: (error: string | null) => void;
+    isEdit?: boolean;
+    bookId?: number;
 }
 
 const AddBookModal: React.FC<AddBookModalProps> = ({
@@ -18,6 +26,8 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
     onClose,
     setError,
     setSuccess,
+    isEdit = false,
+    bookId,
 }) => {
     const [formData, setFormData] = useState({
         name: "",
@@ -28,7 +38,6 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
     const [genres, setGenres] = useState<Genre[]>([]);
     const [coverImage, setCoverImage] = useState<any>(null);
     const [existingBookTitles, setExistingBookTitles] = useState<string[]>([]);
-
     const router = useRouter();
 
     useEffect(() => {
@@ -44,7 +53,21 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
 
         fetchGenres();
         fetchBookTitles();
-    }, []);
+
+        if (isEdit && bookId) {
+            const fetchBook = async () => {
+                const book = await getBookById(bookId);
+                setFormData({
+                    name: book?.name ?? "",
+                    author: book?.author ?? "",
+                    genreId: book?.genreId?.toString() ?? "",
+                    image: book?.image ?? "",
+                });
+                setCoverImage({ secure_url: book?.image });
+            };
+            fetchBook();
+        }
+    }, [isEdit, bookId]);
 
     const checkBookTitleExists = (name: string) => {
         return existingBookTitles.includes(name);
@@ -58,7 +81,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        formData.image = coverImage?.secure_url; // Set the image URL to the cover image URL
+        formData.image = coverImage?.secure_url;
 
         const { name, author, genreId, image } = formData;
 
@@ -67,27 +90,30 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
             return;
         }
 
-        if (checkBookTitleExists(name)) {
+        if (checkBookTitleExists(name) && !isEdit) {
             setError("A book with this title already exists.");
             return;
         }
 
         try {
-            const newBook = await createBook(
-                name,
-                author,
-                parseInt(genreId),
-                image
-            );
-
-            if (newBook) {
-                setSuccess(true);
-                setError(null);
-                onClose();
+            if (isEdit && bookId) {
+                await updateBook(
+                    bookId,
+                    formData.name,
+                    formData.author,
+                    parseInt(formData.genreId),
+                    formData.image
+                );
+            } else {
+                await createBook(name, author, parseInt(genreId), image);
             }
+            setSuccess(true);
+            setError(null);
+            router.refresh(); // Reload the page to see the new rating
+            onClose();
         } catch (error) {
-            console.error("Error creating book:", error);
-            setError("Failed to create book. Please try again.");
+            console.error("Error creating/updating book:", error);
+            setError("Failed to save book. Please try again.");
             setSuccess(false);
         }
     };
@@ -103,7 +129,9 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">Add New Book</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                    {isEdit ? "Edit Book" : "Add New Book"}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-gray-700">
@@ -179,7 +207,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
                             type="submit"
                             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
                         >
-                            Add Book
+                            {isEdit ? "Save Changes" : "Add Book"}
                         </button>
                         <button
                             type="button"

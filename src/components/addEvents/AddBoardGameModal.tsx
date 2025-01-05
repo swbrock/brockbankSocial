@@ -7,6 +7,7 @@ import {
     getBoardGameById,
 } from "@/lib/actions";
 import { CldUploadWidget } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 
 interface AddBoardGameModalProps {
     isOpen: boolean;
@@ -35,6 +36,8 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     const [existingBoardGameTitles, setExistingBoardGameTitles] = useState<
         string[]
     >([]);
+
+    const router = useRouter();
 
     useEffect(() => {
         if (isEdit && boardGameId) {
@@ -105,6 +108,8 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
             }
             setSuccess(true);
             setError(null);
+            router.refresh(); // Reload the page to see the new rating
+
             onClose();
         } catch (error) {
             console.error("Error creating/updating board game:", error);
