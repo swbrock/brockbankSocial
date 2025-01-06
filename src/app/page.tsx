@@ -1,6 +1,7 @@
 import AddEvent from "@/components/AddEvent";
 import Feed from "@/components/Feed";
 import LeftMenu from "@/components/LeftMenu";
+import QuoteBoard from "@/components/QuoteBoard";
 import RightMenu from "@/components/RightMenu";
 import Stories from "@/components/Stories";
 import { topRatedGames, topRatedBooks, topRatedMovies } from "@/lib/actions"; // Import topRatedGames function
@@ -18,7 +19,8 @@ const Homepage = async () => {
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
                     <Stories />
-                    <AddEvent />
+                    {/* <AddEvent /> */}
+                    <QuoteBoard />
                     <Feed />
                 </div>
             </div>
