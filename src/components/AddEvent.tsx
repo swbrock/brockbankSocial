@@ -29,7 +29,7 @@ const AddEvent = () => {
                     </div>
                     <div className="flex items-center gap-2 cursor-pointer">
                         <Image
-                            src="/movieIcon.png"
+                            src="/movieIcon.jpg"
                             alt="Add Movie Review"
                             width={40}
                             height={40}

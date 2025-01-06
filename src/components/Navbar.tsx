@@ -30,7 +30,7 @@ const Navbar = () => {
                     </Link>
                     <Link href="/movies" className="flex items-center gap-2">
                         <Image
-                            src="/movieIcon.png"
+                            src="/movieIcon.jpg"
                             alt="Movies"
                             width={16}
                             height={16}
