@@ -2,16 +2,16 @@
 
 import React, { useState } from "react";
 import AddMovieRatingModal from "@/components/addRatings/AddMovieRatingModal";
-import AddMovieModal from "@/components/addMovies/AddMovieModal";
 import Toast from "@/components/Toast";
 import { Genre } from "@prisma/client";
+import AddMovieModal from "../addEvents/AddMovieModal";
 
 export interface MovieProfileProps {
     movie: {
         id: number;
         name: string;
         rating: number | null;
-        director: string;
+        director: string | null;
         image: string | null;
     };
     genre?: Genre | null;
