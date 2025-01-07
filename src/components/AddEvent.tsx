@@ -34,13 +34,6 @@ const AddEvent = ({ userId }: AddEventProps) => {
                     onClose={() => setError(null)}
                 />
             )}
-            <Image
-                src="/profile.jpeg"
-                alt="Add Event"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-cover rounded-full"
-            />
             <div className="flex-1">
                 <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
                     <div className="flex items-center gap-2 cursor-pointer">
