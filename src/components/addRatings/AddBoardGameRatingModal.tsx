@@ -140,7 +140,6 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
             router.refresh(); // Reload the page to see the new rating
         } catch (error) {
             console.error("Error submitting rating or post:", error);
-            alert("Failed to submit rating or post. Please try again.");
             setError && setError("Failed to submit rating or post.");
         }
     };

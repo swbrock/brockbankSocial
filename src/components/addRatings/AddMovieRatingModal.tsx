@@ -109,7 +109,6 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
         } catch (error) {
             setError && setError("Error submitting rating or post");
             console.error("Error submitting rating or post:", error);
-            alert("Failed to submit rating or post. Please try again.");
         }
     };
 
