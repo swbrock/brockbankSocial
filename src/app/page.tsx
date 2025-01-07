@@ -12,18 +12,23 @@ const Homepage = async () => {
     const topBooks = await topRatedBooks(); // Get top rated books
 
     return (
+        <>
+        <div className="banner bg-gradient-to-r from-blue-500 to-orange-500 text-white text-center py-6 rounded-lg shadow-md">
+        <h1 className="text-4xl font-bold">Brockbank Social</h1>
+    </div>
         <div className="flex gap-6 pt-6">
+            
             <div className="hidden xl:block w-[30%]">
+
                 <LeftMenu type={"home"} boardGames={topGames} />
             </div>
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
-                    {/* <Stories /> */}
                     {/* put banner here */}
-                    <div className="banner bg-gradient-to-r from-blue-500 to-orange-500 text-white text-center py-6 rounded-lg shadow-md">
-                        <h1 className="text-4xl font-bold">Brockbank Social</h1>
-                    </div>
+
                     <QuoteBoard />
+                    <Stories />
+
                     <AddEvent />
                     <Feed />
                 </div>
@@ -32,6 +37,7 @@ const Homepage = async () => {
                 <RightMenu movies={topMovies} books={topBooks} />
             </div>
         </div>
+        </>
     );
 };
 

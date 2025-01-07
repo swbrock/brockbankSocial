@@ -295,6 +295,45 @@ export async function getAllGames() {
     return games;
 }
 
+//get best win percentage game for user (get all the games the user has won and calculate the win percentage and return the game with the highest win percentage)
+export async function getBestWinPercentageGame(userId: string) {
+    const games = await prisma.game.findMany({
+        where: {
+            winnerUserId: userId,
+        },
+        include: {
+            boardGame: true,
+            participants: true,
+        },
+    });
+
+    //get all games the user has participated in
+    const allGames = await prisma.game.findMany({
+        where: {
+            participants: {
+                some: {
+                    userId,
+                },
+            },
+        },
+    });
+
+    let bestWinPercentage = 0;
+    let bestGame = null;
+
+    games.forEach((game) => {
+        const totalGames = allGames.filter(
+            (g) => g.boardGameId === game.boardGameId
+        ).length;
+        const winPercentage = (games.length / totalGames) * 100;
+        if (winPercentage > bestWinPercentage) {
+            bestWinPercentage = winPercentage;
+            bestGame = game;
+        }
+    });
+}
+
+
 // ------------------------------- SportsEvent and SportsPrediction Actions -------------------------------
 
 // Create a new SportsEvent
