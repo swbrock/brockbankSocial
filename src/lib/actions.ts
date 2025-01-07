@@ -562,6 +562,15 @@ export async function getAllUsers() {
     return users;
 }
 
+//get loggedinuser
+export async function getLoggedInUser() {
+    const userId = await getLoggedInUserId();
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+    return user;
+}
+
 
 /// ------------------------------- Board Game Actions -------------------------------
 
@@ -670,6 +679,24 @@ export async function getBoardGameById(boardGameId: number) {
     return boardGame;
 }
 
+export async function getBoardGamesNotRatedByUser(userId: string) {
+    const boardGames = await prisma.boardGame.findMany({
+        where: {
+            NOT: {
+                ratings: {
+                    some: {
+                        userId,
+                    },
+                },
+            },
+        },
+        include: {
+            ratings: true,
+        },
+    });
+    return boardGames;
+}
+
 // ------------------------------- Movie Actions -------------------------------
 
 //add new movie
@@ -724,6 +751,26 @@ export async function getAllMovieNames() {
 //get all movies
 export async function getAllMovies() {
     const movies = await prisma.movie.findMany({
+        include: {
+            genre: true, // Include genre details with each movie
+            ratings: true, // Include ratings for each movie
+        },
+    });
+    return movies;
+}
+
+//get all movies the user hasnt rated
+export async function getMoviesNotRatedByUser(userId: string) {
+    const movies = await prisma.movie.findMany({
+        where: {
+            NOT: {
+                ratings: {
+                    some: {
+                        userId,
+                    },
+                },
+            },
+        },
         include: {
             genre: true, // Include genre details with each movie
             ratings: true, // Include ratings for each movie
@@ -858,6 +905,25 @@ export async function updateBook(
         console.error("Error updating book:", error);
         throw new Error("Error updating book");
     }
+}
+
+export const getBooksNotRatedByUser = async (userId: string) => {
+    const books = await prisma.book.findMany({
+        where: {
+            NOT: {
+                ratings: {
+                    some: {
+                        userId,
+                    },
+                },
+            },
+        },
+        include: {
+            genre: true,
+            ratings: true,
+        },
+    });
+    return books;
 }
 
 // ------------------------------- Rating Actions -------------------------------

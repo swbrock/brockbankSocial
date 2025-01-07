@@ -4,12 +4,13 @@ import LeftMenu from "@/components/LeftMenu";
 import QuoteBoard from "@/components/QuoteBoard";
 import RightMenu from "@/components/RightMenu";
 import Stories from "@/components/Stories";
-import { topRatedGames, topRatedBooks, topRatedMovies } from "@/lib/actions"; // Import topRatedGames function
+import { topRatedGames, topRatedBooks, topRatedMovies, getLoggedInUserId } from "@/lib/actions"; // Import topRatedGames function
 
 const Homepage = async () => {
     const topGames = await topRatedGames(); // Get top rated games
     const topMovies = await topRatedMovies(); // Get top rated movies
     const topBooks = await topRatedBooks(); // Get top rated books
+    const userId = await getLoggedInUserId(); // Get the logged in user
 
     return (
         <>
@@ -24,12 +25,9 @@ const Homepage = async () => {
             </div>
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
-                    {/* put banner here */}
-
                     <QuoteBoard />
                     <Stories />
-
-                    <AddEvent />
+                    <AddEvent userId={userId} />
                     <Feed />
                 </div>
             </div>

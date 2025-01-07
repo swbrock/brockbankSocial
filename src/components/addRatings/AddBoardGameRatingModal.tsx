@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WheelSlider from "../WheelSlider";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { BoardGameRatingResponses } from "@/lib/content";
+import { getBoardGamesNotRatedByUser } from "@/lib/actions"; // Import the function to fetch board games
+import { set } from "zod";
 
 interface BoardGameProfileProps {
     id: number;
@@ -11,12 +13,15 @@ interface BoardGameProfileProps {
     timesPlayed: number | null;
     rating: number | null;
 }
+
 // Props interface for the modal
 export interface RatingModalProps {
-    boardGame: BoardGameProfileProps;
+    boardGame?: BoardGameProfileProps | null;
     userId: string;
     onClose: () => void;
-    userRating: number | null;
+    userRating?: number | null;
+    setSuccess?: (value: React.SetStateAction<boolean>) => void;
+    setError?: (value: React.SetStateAction<string | null>) => void;
 }
 
 const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
@@ -24,8 +29,12 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     userId,
     userRating,
     onClose,
+    setSuccess,
+    setError,
 }) => {
     const router = useRouter(); // Get the router instance
+    const [boardGames, setBoardGames] = useState<BoardGameProfileProps[]>([]); // Set the board games
+    const [selectedBoardGame, setSelectedBoardGame] = useState<BoardGameProfileProps | null>(boardGame || null); // Set the selected board game
 
     const [ratings, setRatings] = useState({
         gameplayMechanics: 0,
@@ -34,6 +43,16 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         replayability: 0,
         themeAndAesthetics: 0,
     });
+
+    useEffect(() => {
+        if (!boardGame) {
+            const fetchBoardGames = async () => {
+                const fetchedBoardGames = await getBoardGamesNotRatedByUser(userId);
+                setBoardGames(fetchedBoardGames);
+            };
+            fetchBoardGames();
+        }
+    }, [boardGame, userId]);
 
     const getRandomResponseForRange = (range: string) => {
         const filteredResponses = BoardGameRatingResponses.find(
@@ -63,15 +82,17 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    boardGameId: boardGame.id,
+                    boardGameId: selectedBoardGame?.id,
                     rating: newRating,
                     userId: userId,
                 }),
             });
 
             if (!response.ok) {
+                setError && setError("Failed to submit rating");
                 throw new Error("Failed to submit rating");
             } else {
+                setSuccess && setSuccess(true);
                 console.log("Rating submitted successfully!");
             }
 
@@ -87,11 +108,11 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
 
             const content = userRating
                 ? `Rating has been updated to ${newRating.toFixed(2)} for ${
-                      boardGame.name
+                      selectedBoardGame?.name
                   }. ${randomResponse.response}`
                 : `A new rating of ${newRating.toFixed(
                       2
-                  )} has been submitted for ${boardGame.name}. ${
+                  )} has been submitted for ${selectedBoardGame?.name}. ${
                       randomResponse.response
                   }`;
 
@@ -103,7 +124,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                     userId: userId,
                     title: title,
                     content: content,
-                    entityId: boardGame.id,
+                    entityId: selectedBoardGame?.id,
                     entityType: "boardGame",
                 }),
             });
@@ -119,6 +140,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         } catch (error) {
             console.error("Error submitting rating or post:", error);
             alert("Failed to submit rating or post. Please try again.");
+            setError && setError("Failed to submit rating or post.");
         }
     };
 
@@ -149,87 +171,113 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-md shadow-lg w-96">
-                <h2 className="text-xl font-semibold mb-4">
-                    Rate This Board Game
-                </h2>
+                {/* Board Game selection */}
+                {!boardGame && (
+                    <div>
+                        <h2 className="text-xl font-semibold mb-4">Select a Board Game</h2>
+                        <select
+                            className="w-full p-2 rounded-md border border-gray-300 mb-4"
+                            onChange={(e) => {
+                                const selected = boardGames.find(
+                                    (m) => m.id === parseInt(e.target.value)
+                                );
+                                setSelectedBoardGame(selected ?? null);
+                            }}
+                        >
+                            <option value="">Select a board game...</option>
+                            {boardGames.map((m) => (
+                                <option key={m.id} value={m.id}>
+                                    {m.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
-                <div className="mb-4">
-                    <WheelSlider
-                        value={ratings.gameplayMechanics}
-                        onChange={(value) =>
-                            handleChange("gameplayMechanics", value)
-                        }
-                        max={5}
-                        step={0.1}
-                        min={0}
-                        label={"Gameplay Mechanics"}
-                    />
-                </div>
+                {/* Board Game rating */}
+                {selectedBoardGame && (
+                    <div className="w-full">
+                        <h2 className="text-xl font-semibold mb-4">Rate This Board Game</h2>
 
-                <div className="mb-4">
-                    <WheelSlider
-                        value={ratings.funFactor}
-                        onChange={(value) => handleChange("funFactor", value)}
-                        step={0.1}
-                        min={0}
-                        max={5}
-                        label={"Fun Factor"}
-                    />
-                </div>
+                        <div className="mb-4">
+                            <WheelSlider
+                                value={ratings.gameplayMechanics}
+                                onChange={(value) =>
+                                    handleChange("gameplayMechanics", value)
+                                }
+                                max={5}
+                                min={0}
+                                step={0.1}
+                                label="Gameplay Mechanics"
+                            />
+                        </div>
 
-                <div className="mb-4">
-                    <WheelSlider
-                        value={ratings.strategyAndDepth}
-                        onChange={(value) =>
-                            handleChange("strategyAndDepth", value)
-                        }
-                        step={0.1}
-                        min={0}
-                        max={5}
-                        label={"Strategy & Depth"}
-                    />
-                </div>
+                        <div className="mb-4">
+                            <WheelSlider
+                                value={ratings.funFactor}
+                                onChange={(value) => handleChange("funFactor", value)}
+                                max={5}
+                                min={0}
+                                step={0.1}
+                                label="Fun Factor"
+                            />
+                        </div>
 
-                <div className="mb-4">
-                    <WheelSlider
-                        value={ratings.replayability}
-                        onChange={(value) =>
-                            handleChange("replayability", value)
-                        }
-                        step={0.1}
-                        min={0}
-                        max={5}
-                        label={"Replayability"}
-                    />
-                </div>
+                        <div className="mb-4">
+                            <WheelSlider
+                                value={ratings.strategyAndDepth}
+                                onChange={(value) =>
+                                    handleChange("strategyAndDepth", value)
+                                }
+                                max={5}
+                                min={0}
+                                step={0.1}
+                                label="Strategy & Depth"
+                            />
+                        </div>
 
-                <div className="mb-4">
-                    <WheelSlider
-                        value={ratings.themeAndAesthetics}
-                        onChange={(value) =>
-                            handleChange("themeAndAesthetics", value)
-                        }
-                        step={0.1}
-                        min={0}
-                        max={5}
-                        label={"Theme & Aesthetics"}
-                    />
-                </div>
+                        <div className="mb-4">
+                            <WheelSlider
+                                value={ratings.replayability}
+                                onChange={(value) =>
+                                    handleChange("replayability", value)
+                                }
+                                max={5}
+                                min={0}
+                                step={0.1}
+                                label="Replayability"
+                            />
+                        </div>
 
-                <div className="flex justify-between">
-                    <button
-                        className="bg-gray-400 text-white p-2 rounded"
-                        onClick={onClose} // Close modal on cancel
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        className="bg-blue-500 text-white p-2 rounded"
-                        onClick={handleSubmit} // Submit the ratings
-                    >
-                        Submit Rating
-                    </button>
-                </div>
+                        <div className="mb-4">
+                            <WheelSlider
+                                value={ratings.themeAndAesthetics}
+                                onChange={(value) =>
+                                    handleChange("themeAndAesthetics", value)
+                                }
+                                max={5}
+                                min={0}
+                                step={0.1}
+                                label="Theme & Aesthetics"
+                            />
+                        </div>
+
+                        <div className="flex justify-between">
+                            <button
+                                className="bg-gray-400 text-white p-2 rounded"
+                                onClick={onClose} // Close modal on cancel
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-blue-500 text-white p-2 rounded"
+                                onClick={handleSubmit} // Submit the ratings
+                            >
+                                Submit Rating
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
