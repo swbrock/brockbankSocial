@@ -46,7 +46,7 @@ const QuoteBoard = () => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Quote of the Day</h2>
       <div className="text-center">
         <p className="text-indigo-600 font-semibold">{title}</p>
-        <p className="text-gray-700 mt-3 italic">"{response}"</p>
+        <p className="text-gray-700 mt-3 italic">{response}</p>
       </div>
     </div>
   );
