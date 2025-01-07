@@ -90,6 +90,7 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
             const randomResponse = getRandomResponseForRange(ratingRange);
 
             if (!randomResponse) {
+                setError && setError("Invalid rating range");
                 throw new Error("Invalid rating range");
             }
 
@@ -116,13 +117,19 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
             } else {
                 console.log("Post submitted successfully!");
             }
-
+            //reset ratings and close modal
+            setRatings({
+                plot: 0,
+                characterDevelopment: 0,
+                writingStyle: 0,
+                emotionalImpact: 0,
+                originality: 0,
+            });
             onClose(); // Close the modal
             router.refresh(); // Reload the page to see the new rating
         } catch (error) {
             console.error("Error submitting rating or post:", error);
-            alert("Failed to submit rating or post. Please try again.");
-        }
+            setError && setError("Error submitting rating or post");}
     };
 
     // Handle rating change for each category

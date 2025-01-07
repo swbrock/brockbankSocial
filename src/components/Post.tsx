@@ -57,13 +57,6 @@ const Post = ({ post }: { post: FeedPostType }) => {
                         {post.user?.username ?? "Unknown User"}
                     </span>
                 </div>
-                <Image
-                    src="/more.png"
-                    alt="More options"
-                    width={20}
-                    height={20}
-                    className="cursor-pointer hover:scale-110 transition-transform"
-                />
             </div>
 
             {/* Main content of the post */}

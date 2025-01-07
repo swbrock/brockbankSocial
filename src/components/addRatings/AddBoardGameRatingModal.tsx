@@ -102,6 +102,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
             const randomResponse = getRandomResponseForRange(ratingRange);
 
             if (!randomResponse) {
+                setError && setError("Invalid rating range");
                 throw new Error("Invalid rating range");
             }
             const title = randomResponse.title;

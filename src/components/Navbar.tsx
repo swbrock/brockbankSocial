@@ -92,24 +92,23 @@ const Navbar = () => {
                 <ClerkLoaded>
                     <SignedIn>
                         <div className="cursor-pointer">
-                            <Image
+                        <Link
+                        href="/users"
+                        className="flex items-center gap-2"
+                    >
+                        <Image
                                 src="/people.png"
                                 alt=""
                                 width={20}
                                 height={20}
                                 className="w-8 h-8"
                             />
-                        </div>
-                        <div className="cursor-pointer">
-                            <Image
-                                src="/notifications.png"
-                                alt=""
-                                width={20}
-                                height={20}
-                                className="w-8 h-8"
-                            />
+                    </Link>
+                            
                         </div>
                         <UserButton />
+                <MobileMenu />
+
                     </SignedIn>
                     <SignedOut>
                         <div className="flex items-center gap-2 text-sm">
@@ -123,8 +122,8 @@ const Navbar = () => {
                             <Link href="/sign-in">Login/Register</Link>
                         </div>
                     </SignedOut>
+
                 </ClerkLoaded>
-                <MobileMenu />
             </div>
         </div>
     );

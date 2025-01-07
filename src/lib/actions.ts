@@ -319,7 +319,7 @@ export async function getBestWinPercentageGame(userId: string) {
     });
 
     let bestWinPercentage = 0;
-    let bestGame = null;
+    let bestGame = "No games won yet";
 
     games.forEach((game) => {
         const totalGames = allGames.filter(
@@ -328,9 +328,10 @@ export async function getBestWinPercentageGame(userId: string) {
         const winPercentage = (games.length / totalGames) * 100;
         if (winPercentage > bestWinPercentage) {
             bestWinPercentage = winPercentage;
-            bestGame = game;
+            bestGame = game.boardGame.name;
         }
     });
+    return bestGame;
 }
 
 
@@ -557,7 +558,7 @@ export async function getLoggedInUserId() {
 export async function getAllUsers() {
     //just get the users name and id
     const users = await prisma.user.findMany({
-        select: { id: true, firstName: true, lastName: true },
+        select: { id: true, username: true, firstName: true, lastName: true, avatar: true },
     });
     return users;
 }
@@ -697,6 +698,37 @@ export async function getBoardGamesNotRatedByUser(userId: string) {
     return boardGames;
 }
 
+//get top rated board game for user
+export async function getTopRatedBoardGameForUser(userId: string) {
+    const boardGames = await prisma.boardGame.findMany({
+        where: {
+            ratings: {
+                some: {
+                    userId,
+                },
+            },
+        },
+        include: {
+            ratings: true,
+        },
+    });
+
+    let topRatedGame = "No games rated yet";
+    let topRating = 0;
+
+    boardGames.forEach((game) => {
+        const totalRatings = game.ratings.length;
+        const sum = game.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const averageRating = sum / totalRatings;
+        if (averageRating > topRating) {
+            topRating = averageRating;
+            topRatedGame = game.name;
+        }
+    });
+
+    return topRatedGame;
+}
+
 // ------------------------------- Movie Actions -------------------------------
 
 //add new movie
@@ -816,6 +848,36 @@ export async function updateMovie(
     }
 }
 
+//get top rated movie for user
+export async function getTopRatedMovieForUser(userId: string) {
+    const movies = await prisma.movie.findMany({
+        where: {
+            ratings: {
+                some: {
+                    userId,
+                },
+            },
+        },
+        include: {
+            ratings: true,
+        },
+    });
+
+    let topRatedMovie = "No movies rated yet";
+    let topRating = 0;
+
+    movies.forEach((movie) => {
+        const totalRatings = movie.ratings.length;
+        const sum = movie.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const averageRating = sum / totalRatings;
+        if (averageRating > topRating) {
+            topRating = averageRating;
+            topRatedMovie = movie.name;
+        }
+    });
+    return topRatedMovie;
+}
+
 // ------------------------------- Book Actions -------------------------------
 
 export async function topRatedBooks(): Promise<Book[]> {
@@ -924,6 +986,37 @@ export const getBooksNotRatedByUser = async (userId: string) => {
         },
     });
     return books;
+}
+
+//get top rated book for user
+export async function getTopRatedBookForUser(userId: string) {
+    const books = await prisma.book.findMany({
+        where: {
+            ratings: {
+                some: {
+                    userId,
+                },
+            },
+        },
+        include: {
+            ratings: true,
+        },
+    });
+
+    let topRatedBook = "No books rated yet";
+    let topRating = 0;
+
+    books.forEach((book) => {
+        const totalRatings = book.ratings.length;
+        const sum = book.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const averageRating = sum / totalRatings;
+        if (averageRating > topRating) {
+            topRating = averageRating;
+            topRatedBook = book.name;
+        }
+    });
+
+    return topRatedBook;
 }
 
 // ------------------------------- Rating Actions -------------------------------

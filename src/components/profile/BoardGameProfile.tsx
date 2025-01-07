@@ -43,19 +43,20 @@ const BoardGameProfilePage = ({
                     onClose={() => setError(null)}
                 />
             )}
+
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
-                {/* Board Game Image */}
-                <div className="flex items-center space-x-6">
+                {/* Board Game Image and Info */}
+                <div className="flex flex-col md:flex-row items-center md:space-x-6">
                     {boardGame.image && (
                         <img
                             src={boardGame.image}
                             alt={boardGame.name}
-                            className="w-40 h-40 object-cover rounded-lg shadow-lg border border-white"
+                            className="w-40 h-40 object-cover rounded-lg shadow-lg border border-white mb-4 md:mb-0"
                         />
                     )}
-                    <div>
-                        <h1 className="text-4xl font-extrabold mb-4">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-3xl md:text-4xl font-extrabold mb-4">
                             {boardGame.name}
                         </h1>
                         <div className="space-y-2">
@@ -74,40 +75,42 @@ const BoardGameProfilePage = ({
                                     : "N/A"}
                             </p>
                         </div>
-                        <div className="mt-4">
-                            <button
-                                className="bg-green-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow"
-                                onClick={() => setEditModalOpen(true)}
-                            >
-                                Edit Board Game
-                            </button>
-                        </div>
                     </div>
                 </div>
 
-                {/* User Rating - Top Right */}
-                <div className="absolute top-6 right-6 text-right">
-                    <p className="text-sm text-blue-200">Your Rating:</p>
-                    <p
-                        className="text-2xl font-bold text-white"
-                        title={
-                            userRating
-                                ? `Your rating: ${userRating.toFixed(2)}`
-                                : "You haven't rated this game yet"
-                        }
-                    >
-                        {userRating ? userRating.toFixed(2) : "N/A"}
-                    </p>
+                {/* Add/Edit Rating Button (Always Below the Info on Mobile) */}
+                <div className="mt-4 flex flex-col items-center md:items-start">
                     <button
-                        className="mt-1 bg-white text-blue-600 font-semibold text-xs py-0.5 px-2 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
-                        onClick={() => setIsModalOpen(true)}
+                        className="bg-green-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow"
+                        onClick={() => setEditModalOpen(true)}
                     >
-                        {userRating ? "Edit" : "Add"} Rating
+                        Edit Board Game
                     </button>
+
+                    {/* User Rating Section (Move Below on Mobile) */}
+                    <div className="mt-4 w-full md:w-auto">
+                        <p className="text-sm text-blue-200">Your Rating:</p>
+                        <p
+                            className="text-2xl font-bold text-white"
+                            title={
+                                userRating
+                                    ? `Your rating: ${userRating.toFixed(2)}`
+                                    : "You haven't rated this game yet"
+                            }
+                        >
+                            {userRating ? userRating.toFixed(2) : "N/A"}
+                        </p>
+                        <button
+                            className="mt-1 bg-white text-blue-600 font-semibold text-xs py-0.5 px-2 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
+                            onClick={() => setIsModalOpen(true)}
+                        >
+                            {userRating ? "Edit" : "Add"} Rating
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Modal Component */}
+            {/* Modal Components */}
             {isModalOpen && (
                 <AddBoardGameRatingModal
                     boardGame={boardGame}
@@ -117,7 +120,6 @@ const BoardGameProfilePage = ({
                 />
             )}
 
-            {/* Edit Modal Component */}
             {editModalOpen && (
                 <AddBoardGameModal
                     isOpen={editModalOpen}
