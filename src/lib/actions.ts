@@ -4,6 +4,7 @@ import {
     BoardGame,
     Book,
     Movie,
+    Post,
     PrismaClient,
     Rating,
     SportsEvents,
@@ -95,6 +96,100 @@ export async function deletePost(postId: number) {
         console.error("Error deleting post:", error);
         throw new Error("Error deleting post");
     }
+}
+
+//get posts
+export async function getPosts() {
+    const posts = await prisma.post.findMany({
+        include: {
+            user: true,
+            boardGame: true,
+            movie: true,
+            book: true,
+            game: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+    return posts;
+}
+
+//get posts by user
+export async function getPostsByUser(userName: string) {
+    const user = await prisma.user.findFirst({
+        where: {
+            username: userName,
+        },
+    });
+    if (!user) {
+        throw new Error("User not found");
+    }
+    const posts = await prisma.post.findMany({
+        where: {
+            userId: user.id,
+        },
+        include: {
+            user: true,
+            boardGame: true,
+            movie: true,
+            book: true,
+            game: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+    return posts;
+}
+
+//get posts by entity
+export async function getPostsByEntity(
+    entityId: number,
+    entityType: string
+) {
+    let posts: Post[] = [];
+    if (entityType === "boardGame") {
+        posts = await prisma.post.findMany({
+            where: {
+                boardGameId: entityId,
+            },
+            include: {
+                user: true,
+                boardGame: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    } else if (entityType === "movie") {
+        posts = await prisma.post.findMany({
+            where: {
+                movieId: entityId,
+            },
+            include: {
+                user: true,
+                movie: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    } else if (entityType === "book") {
+        posts = await prisma.post.findMany({
+            where: {
+                bookId: entityId,
+            },
+            include: {
+                user: true,
+                book: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    }
+    return posts;
 }
 
 // ------------------------------- Game Actions -------------------------------
@@ -427,6 +522,7 @@ export async function getAllUsers() {
     });
     return users;
 }
+
 
 /// ------------------------------- Board Game Actions -------------------------------
 
