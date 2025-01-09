@@ -66,7 +66,7 @@ const Navbar = () => {
                         className="flex items-center gap-2"
                     >
                         <Image
-                            src="/leaderBoards.png"
+                            src="/leaderboards.png"
                             alt="Leaderboard"
                             width={16}
                             height={16}
