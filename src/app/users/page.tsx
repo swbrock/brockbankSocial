@@ -18,7 +18,7 @@ type UserProps = {
     mostWonBoardGame: string | null;
 };
 
-export default async function Users() {
+const Users = async () => {
     // Get users from the database
     const users = await getAllUsers();
 
@@ -46,3 +46,5 @@ export default async function Users() {
     // Pass the enriched user data to the UsersPage component
     return <UsersPage dbUsers={userProps} />;
 }
+
+export default Users;
