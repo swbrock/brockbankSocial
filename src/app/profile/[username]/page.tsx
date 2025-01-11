@@ -87,14 +87,14 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
                     <div className="flex flex-col items-center justify-center">
                         <div className="w-full h-64 relative">
                             <Image
-                                src={user.cover || "/noCover.png"}
+                                src={user.cover ?? "/noCover.png"}
                                 layout="fill"
                                 objectFit="cover"
                                 alt="profile"
                                 className="rounded-md"
                             />
                             <Image
-                                src={user.avatar || "/noAvatar.png"}
+                                src={user.avatar ?? "/noAvatar.png"}
                                 width={128}
                                 height={128}
                                 className="w-32 h-32 rounded-full absolute left-0 right-0 m-auto -bottom-16 ring-4 ring-white"

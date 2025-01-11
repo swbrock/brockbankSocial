@@ -53,7 +53,7 @@ const TopMovie: React.FC<TopMovieProps> = ({ movies }) => {
                                             height="20"
                                             fill={
                                                 i <
-                                                Math.round(movie.rating || 0)
+                                                Math.round(movie.rating ?? 0)
                                                     ? "gold"
                                                     : "gray"
                                             }
@@ -64,13 +64,6 @@ const TopMovie: React.FC<TopMovieProps> = ({ movies }) => {
                                         </svg>
                                     ))}
                                 </div>
-
-                                {/* Movie Genre */}
-                                {/* <p className="text-sm text-gray-600 mt-2">
-                                    Genre: {movie.genre?.name || "N/A"}
-                                </p> */}
-
-                                {/* Buttons */}
                                 <div className="flex items-center gap-4 mt-4">
                                     <Link
                                         className="text-blue-500 text-sm hover:underline"

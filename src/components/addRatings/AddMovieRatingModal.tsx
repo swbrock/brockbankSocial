@@ -29,7 +29,7 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
 }) => {
     const router = useRouter();
     const [movies, setMovies] = useState<MovieProfileProps[]>([]);
-    const [selectedMovie, setSelectedMovie] = useState<MovieProfileProps | null>(movie || null);
+    const [selectedMovie, setSelectedMovie] = useState<MovieProfileProps | null>(movie ?? null);
     const [ratings, setRatings] = useState({
         plot: 0,
         acting: 0,

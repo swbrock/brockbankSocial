@@ -18,7 +18,7 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
 
     useEffect(() => {
         const sortedBoardGames = [...dbBoardGames].sort(
-            (a, b) => (b.rating || 0) - (a.rating || 0)
+            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
         );
         setBoardGames(sortedBoardGames);
     }, [dbBoardGames]);

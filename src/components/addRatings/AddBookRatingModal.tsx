@@ -30,7 +30,7 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
 }) => {
     const router = useRouter(); // Get the router instance
     const [books, setBooks] = useState<BookProfileProps[]>([]); // Set the books
-    const [selectedBook, setSelectedBook] = useState<BookProfileProps | null>(book || null); // Set the selected book
+    const [selectedBook, setSelectedBook] = useState<BookProfileProps | null>(book ?? null); // Set the selected book
     const [ratings, setRatings] = useState({
         plot: 0,
         characterDevelopment: 0,

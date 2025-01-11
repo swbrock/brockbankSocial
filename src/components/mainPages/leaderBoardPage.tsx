@@ -169,7 +169,7 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
                                 className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition"
                             >
                                 <h2 className="text-lg font-bold text-gray-800">
-                                    #{index + 1} {user.name || "N/A"}
+                                    #{index + 1} {user.name ?? "N/A"}
                                 </h2>
                                 <p className="text-sm text-gray-600">
                                     Total Games:{" "}
@@ -214,7 +214,7 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
                                         } hover:bg-gray-200`}
                                     >
                                         <td className="p-4 text-center">{index + 1}</td>
-                                        <td className="p-4">{user.name || "N/A"}</td>
+                                        <td className="p-4">{user.name ?? "N/A"}</td>
                                         <td className="p-4 text-center">
                                             {user.totalWins}
                                         </td>

@@ -18,7 +18,7 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
 
     useEffect(() => {
         const sortedMovies = [...dbMovies].sort(
-            (a, b) => (b.rating || 0) - (a.rating || 0)
+            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
         );
         setMovies(sortedMovies);
     }, [dbMovies]);
@@ -87,7 +87,7 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                                         {movie.name}
                                     </h2>
                                     <p className="text-sm text-gray-600 mb-4">
-                                        {movie.director || "Director: Unknown"}
+                                        {movie.director ?? "Director: Unknown"}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Rank: {index + 1}

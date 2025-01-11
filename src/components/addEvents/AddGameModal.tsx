@@ -76,7 +76,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
             if (prev?.some((u) => u.id === user.id)) {
                 return prev.filter((u) => u.id !== user.id);
             } else {
-                return [...(prev || []), user];
+                return [...(prev ?? []), user];
             }
         });
     };
@@ -101,7 +101,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
 
         const gameData = {
             ...formData,
-            image: coverImage?.secure_url || "",
+            image: coverImage?.secure_url ?? "",
         };
 
         try {
@@ -110,7 +110,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
             if (result) {
                 try {
                     const gameParticipants =
-                        participants?.map((p) => p.id) || [];
+                        participants?.map((p) => p.id) ?? [];
                     await createGameParticipants(result.id, gameParticipants);
                 } catch (error) {
                     console.error("Error adding game participants:", error);
@@ -209,7 +209,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                     </span>
                                     <MultiSelectDropdown
                                         options={users}
-                                        selectedOptions={participants || []}
+                                        selectedOptions={participants ?? []}
                                         onChange={handleParticipantsChange}
                                     />
                                 </div>

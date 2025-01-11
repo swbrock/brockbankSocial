@@ -34,7 +34,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
 }) => {
     const router = useRouter(); // Get the router instance
     const [boardGames, setBoardGames] = useState<BoardGameProfileProps[]>([]); // Set the board games
-    const [selectedBoardGame, setSelectedBoardGame] = useState<BoardGameProfileProps | null>(boardGame || null); // Set the selected board game
+    const [selectedBoardGame, setSelectedBoardGame] = useState<BoardGameProfileProps | null>(boardGame ?? null); // Set the selected board game
 
     const [ratings, setRatings] = useState({
         gameplayMechanics: 0,

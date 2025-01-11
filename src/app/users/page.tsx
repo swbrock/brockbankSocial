@@ -35,10 +35,10 @@ const Users = async () => {
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                highestRatedMovie: highestRatedMovie || null,
-                highestRatedBook: highestRatedBook || null,
-                highestRatedBoardGame: highestRatedBoardGame || null,
-                mostWonBoardGame: mostWonBoardGame || null,
+                highestRatedMovie: highestRatedMovie ?? null,
+                highestRatedBook: highestRatedBook ?? null,
+                highestRatedBoardGame: highestRatedBoardGame ?? null,
+                mostWonBoardGame: mostWonBoardGame ?? null,
             };
         })
     );
