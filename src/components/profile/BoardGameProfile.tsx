@@ -32,6 +32,7 @@ const BoardGameProfilePage = ({
     useEffect(() => {
         document.body.style.overflow = isModalOpen || editModalOpen ? "hidden" : "auto";
     }, [isModalOpen, editModalOpen]);
+    
 
     return (
         <div className="container mx-auto px-6 py-8">
@@ -124,7 +125,7 @@ const BoardGameProfilePage = ({
             {/* Rating Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white rounded-lg p-4 shadow-lg max-h-screen overflow-y-auto">
+                    <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto p-6">
                         <AddBoardGameRatingModal
                             boardGame={boardGame}
                             onClose={() => setIsModalOpen(false)}
@@ -135,10 +136,9 @@ const BoardGameProfilePage = ({
                 </div>
             )}
 
-            {/* Edit Modal */}
             {editModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white rounded-lg p-4 shadow-lg max-h-screen overflow-y-auto">
+                    <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto p-6">
                         <AddBoardGameModal
                             isOpen={editModalOpen}
                             onClose={() => setEditModalOpen(false)}
