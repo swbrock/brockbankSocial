@@ -82,6 +82,16 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
     };
 
     useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            // Re-enable scrolling when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+        }, []);
+
+    useEffect(() => {
         if (participants?.length === 1) {
             setFormData({ ...formData, winnerUserId: participants[0].id });
         } else if (participants?.length === 0) {
@@ -190,155 +200,167 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
             )}
 
             {isDropdownOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white w-full max-w-md p-4 rounded-lg shadow-lg">
-                        <h2 className="text-lg font-bold mb-4 text-center">
-                            Add New Game for {boardGameName}
-                        </h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="space-y-4">
-                                <div>
-                                    <label
-                                        htmlFor="participants"
-                                        className="block text-gray-700"
-                                    >
-                                        Participants
-                                    </label>
-                                    <span className="text-gray-500 text-sm ml-2">
-                                        (Select participants for the game)
-                                    </span>
-                                    <MultiSelectDropdown
-                                        options={users}
-                                        selectedOptions={participants ?? []}
-                                        onChange={handleParticipantsChange}
-                                    />
-                                </div>
-
-                                {participants && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    zIndex: 1000, // Ensure it's above the other content
+                    overflow: 'auto', // Ensures modal content can scroll if needed
+                  }}>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white w-full max-w-md p-4 rounded-lg shadow-lg">
+                            <h2 className="text-lg font-bold mb-4 text-center">
+                                Add New Game for {boardGameName}
+                            </h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="space-y-4">
                                     <div>
                                         <label
-                                            htmlFor="winnerUserId"
+                                            htmlFor="participants"
                                             className="block text-gray-700"
                                         >
-                                            Winner
+                                            Participants
                                         </label>
                                         <span className="text-gray-500 text-sm ml-2">
-                                            (Select the winner of the game)
+                                            (Select participants for the game)
                                         </span>
-                                        <select
-                                            id="winnerUserId"
-                                            name="winnerUserId"
-                                            value={formData.winnerUserId}
+                                        <MultiSelectDropdown
+                                            options={users}
+                                            selectedOptions={participants ?? []}
+                                            onChange={handleParticipantsChange}
+                                        />
+                                    </div>
+
+                                    {participants && (
+                                        <div>
+                                            <label
+                                                htmlFor="winnerUserId"
+                                                className="block text-gray-700"
+                                            >
+                                                Winner
+                                            </label>
+                                            <span className="text-gray-500 text-sm ml-2">
+                                                (Select the winner of the game)
+                                            </span>
+                                            <select
+                                                id="winnerUserId"
+                                                name="winnerUserId"
+                                                value={formData.winnerUserId}
+                                                onChange={handleChange}
+                                                className="mt-1 p-2 w-full border rounded"
+                                                required
+                                            >
+                                                <option value="">
+                                                    Select Winner
+                                                </option>
+                                                {participants.map((participant) => (
+                                                    <option
+                                                        key={participant.id}
+                                                        value={participant.id}
+                                                    >
+                                                        {participant.firstName}{" "}
+                                                        {participant.lastName}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    <div>
+                                        <label
+                                            htmlFor="playDate"
+                                            className="block text-gray-700"
+                                        >
+                                            Play Date
+                                        </label>
+                                        <input
+                                            id="playDate"
+                                            name="playDate"
+                                            type="date"
+                                            value={
+                                                formData.playDate
+                                                    .toISOString()
+                                                    .split("T")[0]
+                                            } // Format as date string
                                             onChange={handleChange}
                                             className="mt-1 p-2 w-full border rounded"
                                             required
-                                        >
-                                            <option value="">
-                                                Select Winner
-                                            </option>
-                                            {participants.map((participant) => (
-                                                <option
-                                                    key={participant.id}
-                                                    value={participant.id}
-                                                >
-                                                    {participant.firstName}{" "}
-                                                    {participant.lastName}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
-
-                                <div>
-                                    <label
-                                        htmlFor="playDate"
-                                        className="block text-gray-700"
-                                    >
-                                        Play Date
-                                    </label>
-                                    <input
-                                        id="playDate"
-                                        name="playDate"
-                                        type="date"
-                                        value={
-                                            formData.playDate
-                                                .toISOString()
-                                                .split("T")[0]
-                                        } // Format as date string
-                                        onChange={handleChange}
-                                        className="mt-1 p-2 w-full border rounded"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        htmlFor="playDuration"
-                                        className="block text-gray-700"
-                                    >
-                                        Play Duration (Minutes)
-                                    </label>
-                                    <input
-                                        id="playDuration"
-                                        name="playDuration"
-                                        type="number"
-                                        placeholder="Enter duration in minutes"
-                                        value={formData.playDuration}
-                                        onChange={handleChange}
-                                        className="mt-1 p-2 w-full border rounded"
-                                        required
-                                        min={1}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-700">
-                                        Board Game Cover
-                                    </label>
-                                    <CldUploadWidget
-                                        uploadPreset="social"
-                                        onSuccess={(result) =>
-                                            setCoverImage(result.info)
-                                        }
-                                    >
-                                        {({ open }) => (
-                                            <button
-                                                type="button"
-                                                onClick={() => open()}
-                                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
-                                            >
-                                                {coverImage
-                                                    ? "Change Cover"
-                                                    : "Upload Cover"}
-                                            </button>
-                                        )}
-                                    </CldUploadWidget>
-                                    {coverImage && (
-                                        <img
-                                            src={coverImage.secure_url}
-                                            alt="Uploaded Cover"
-                                            className="mt-2 w-32 h-48 object-cover rounded"
                                         />
-                                    )}
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="playDuration"
+                                            className="block text-gray-700"
+                                        >
+                                            Play Duration (Minutes)
+                                        </label>
+                                        <input
+                                            id="playDuration"
+                                            name="playDuration"
+                                            type="number"
+                                            placeholder="Enter duration in minutes"
+                                            value={formData.playDuration}
+                                            onChange={handleChange}
+                                            className="mt-1 p-2 w-full border rounded"
+                                            required
+                                            min={1}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-gray-700">
+                                            Board Game Cover
+                                        </label>
+                                        <CldUploadWidget
+                                            uploadPreset="social"
+                                            onSuccess={(result) =>
+                                                setCoverImage(result.info)
+                                            }
+                                        >
+                                            {({ open }) => (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => open()}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                                                >
+                                                    {coverImage
+                                                        ? "Change Cover"
+                                                        : "Upload Cover"}
+                                                </button>
+                                            )}
+                                        </CldUploadWidget>
+                                        {coverImage && (
+                                            <img
+                                                src={coverImage.secure_url}
+                                                alt="Uploaded Cover"
+                                                className="mt-2 w-32 h-48 object-cover rounded"
+                                            />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="flex justify-center mt-6 space-x-3">
-                                <button
-                                    type="submit"
-                                    className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={onClose}
-                                    className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
+                                <div className="flex justify-center mt-6 space-x-3">
+                                    <button
+                                        type="submit"
+                                        className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={onClose}
+                                        className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
             )}
         </div>
     );

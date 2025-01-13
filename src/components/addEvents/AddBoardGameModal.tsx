@@ -39,6 +39,17 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
 
     const router = useRouter();
 
+
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            // Re-enable scrolling when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+        }, []);
+
     useEffect(() => {
         if (isEdit && boardGameId) {
             const fetchBoardGame = async () => {
@@ -127,104 +138,115 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">
-                    {isEdit ? "Edit Board Game" : "Add New Board Game"}
-                </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-gray-700">
-                            Board Game Title
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">
-                            Difficulty
-                        </label>
-                        <select
-                            name="difficulty"
-                            value={formData.difficulty}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                        >
-                            <option value="">Select Difficulty</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Casual">Casual</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Advanced">Advanced</option>
-                            <option value="Hard">Hard</option>
-                            <option value="Expert">Expert</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block text-gray-700">
-                            Length in Minutes
-                        </label>
-                        <input
-                            type="number"
-                            name="length"
-                            value={formData.length}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                            min={1}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">
-                            Board Game Cover
-                        </label>
-                        <CldUploadWidget
-                            uploadPreset="social"
-                            onSuccess={(result) => setCoverImage(result.info)}
-                        >
-                            {({ open }) => (
-                                <button
-                                    type="button"
-                                    onClick={() => open()}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
-                                >
-                                    {coverImage
-                                        ? "Change Cover"
-                                        : "Upload Cover"}
-                                </button>
-                            )}
-                        </CldUploadWidget>
-                        {coverImage && (
-                            <img
-                                src={coverImage.secure_url}
-                                alt="Uploaded Cover"
-                                className="mt-2 w-32 h-48 object-cover rounded"
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+                    <h2 className="text-2xl font-bold mb-4">
+                        {isEdit ? "Edit Board Game" : "Add New Board Game"}
+                    </h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-gray-700">
+                                Board Game Title
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
                             />
-                        )}
-                    </div>
-                    <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
-                        >
-                            {isEdit ? "Save Changes" : "Add Board Game"}
-                        </button>
-                        <button
-                            type="button"
-                            className="ml-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg"
-                            onClick={handleClose}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">
+                                Difficulty
+                            </label>
+                            <select
+                                name="difficulty"
+                                value={formData.difficulty}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
+                            >
+                                <option value="">Select Difficulty</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Casual">Casual</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Expert">Expert</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-gray-700">
+                                Length in Minutes
+                            </label>
+                            <input
+                                type="number"
+                                name="length"
+                                value={formData.length}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
+                                min={1}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">
+                                Board Game Cover
+                            </label>
+                            <CldUploadWidget
+                                uploadPreset="social"
+                                onSuccess={(result) => setCoverImage(result.info)}
+                            >
+                                {({ open }) => (
+                                    <button
+                                        type="button"
+                                        onClick={() => open()}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                                    >
+                                        {coverImage
+                                            ? "Change Cover"
+                                            : "Upload Cover"}
+                                    </button>
+                                )}
+                            </CldUploadWidget>
+                            {coverImage && (
+                                <img
+                                    src={coverImage.secure_url}
+                                    alt="Uploaded Cover"
+                                    className="mt-2 w-32 h-48 object-cover rounded"
+                                />
+                            )}
+                        </div>
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                            >
+                                {isEdit ? "Save Changes" : "Add Board Game"}
+                            </button>
+                            <button
+                                type="button"
+                                className="ml-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg"
+                                onClick={handleClose}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
