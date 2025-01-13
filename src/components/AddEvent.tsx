@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddMovieRatingModal from "./addRatings/AddMovieRatingModal";
 import AddBookRatingModal from "./addRatings/AddBookRatingModal";
 import Toast from "./Toast";
@@ -9,7 +9,6 @@ import AddBoardGameRatingModal from "./addRatings/AddBoardGameRatingModal";
 interface AddEventProps {
     userId: string;
 }
-
 
 const AddEvent = ({ userId }: AddEventProps) => {
     const [showAddGameReviewModal, setShowAddGameReviewModal] = useState(false);
@@ -71,6 +70,8 @@ const AddEvent = ({ userId }: AddEventProps) => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
             {showAddMovieReviewModal && (
                 <AddMovieRatingModal
                     onClose={() => setShowAddMovieReviewModal(false)}
