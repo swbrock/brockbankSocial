@@ -64,9 +64,7 @@ const BoardGameProfilePage = ({
                             className="rounded-lg shadow-lg border border-white mb-4 md:mb-0"
                         />
                     ) : (
-                        <div className="w-40 h-40 bg-gray-300 flex items-center justify-center rounded-lg shadow-lg mb-4 md:mb-0">
-                            <span className="text-gray-600">No Image</span>
-                        </div>
+                        null
                     )}
 
                     <div className="text-center md:text-left">

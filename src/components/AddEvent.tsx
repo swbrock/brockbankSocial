@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddMovieRatingModal from "./addRatings/AddMovieRatingModal";
 import AddBookRatingModal from "./addRatings/AddBookRatingModal";
 import Toast from "./Toast";
@@ -16,6 +16,19 @@ const AddEvent = ({ userId }: AddEventProps) => {
     const [showAddBookReviewModal, setShowAddBookReviewModal] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (showAddGameReviewModal || showAddMovieReviewModal || showAddBookReviewModal) {
+            document.body.style.overflow = "hidden"; // Disable body scroll
+        } else {
+            document.body.style.overflow = "auto"; // Re-enable body scroll when modal is closed
+        }
+    
+        return () => {
+            document.body.style.overflow = "auto"; // Cleanup on unmount
+        };
+    }, [showAddGameReviewModal, showAddMovieReviewModal, showAddBookReviewModal]);
+    
 
     return (
         <div className="p-4 bg-white shadow-md rounded-lg flex gap-4 justify-between text-sm">
@@ -73,28 +86,37 @@ const AddEvent = ({ userId }: AddEventProps) => {
 
             {/* Modals */}
             {showAddMovieReviewModal && (
-                <AddMovieRatingModal
-                    onClose={() => setShowAddMovieReviewModal(false)}
-                    userId={userId}
-                    setError={setError}
-                    setSuccess={setSuccess}
-                />
+                <>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+                    <AddMovieRatingModal
+                        onClose={() => setShowAddMovieReviewModal(false)}
+                        userId={userId}
+                        setError={setError}
+                        setSuccess={setSuccess}
+                    />
+                </>
             )}
             {showAddBookReviewModal && (
-                <AddBookRatingModal
-                    onClose={() => setShowAddBookReviewModal(false)}
-                    userId={userId}
-                    setError={setError}
-                    setSuccess={setSuccess}
-                />
+                <>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+                    <AddBookRatingModal
+                        onClose={() => setShowAddBookReviewModal(false)}
+                        userId={userId}
+                        setError={setError}
+                        setSuccess={setSuccess}
+                    />
+                </>
             )}
             {showAddGameReviewModal && (
-                <AddBoardGameRatingModal
-                    onClose={() => setShowAddGameReviewModal(false)}
-                    userId={userId}
-                    setError={setError}
-                    setSuccess={setSuccess}
-                />
+                <>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+                    <AddBoardGameRatingModal
+                        onClose={() => setShowAddGameReviewModal(false)}
+                        userId={userId}
+                        setError={setError}
+                        setSuccess={setSuccess}
+                    />
+                </>
             )}
         </div>
     );
