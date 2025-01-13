@@ -1,10 +1,8 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import WheelSlider from "../WheelSlider";
-import { useRouter } from "next/navigation"; // Import useRouter
 import { BoardGameRatingResponses } from "@/lib/content";
-import { getBoardGamesNotRatedByUser } from "@/lib/actions"; // Import the function to fetch board games
-import { set } from "zod";
+import { useRouter } from "next/navigation";
+import { getBoardGamesNotRatedByUser } from "@/lib/actions";
 
 interface BoardGameProfileProps {
     id: number;
@@ -14,7 +12,6 @@ interface BoardGameProfileProps {
     rating: number | null;
 }
 
-// Props interface for the modal
 export interface RatingModalProps {
     boardGame?: BoardGameProfileProps | null;
     userId: string;
@@ -32,10 +29,9 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
     setSuccess,
     setError,
 }) => {
-    const router = useRouter(); // Get the router instance
-    const [boardGames, setBoardGames] = useState<BoardGameProfileProps[]>([]); // Set the board games
-    const [selectedBoardGame, setSelectedBoardGame] = useState<BoardGameProfileProps | null>(boardGame ?? null); // Set the selected board game
-
+    const router = useRouter();
+    const [boardGames, setBoardGames] = useState<BoardGameProfileProps[]>([]);
+    const [selectedBoardGame, setSelectedBoardGame] = useState<BoardGameProfileProps | null>(boardGame ?? null);
     const [ratings, setRatings] = useState({
         gameplayMechanics: 0,
         funFactor: 0,
@@ -54,6 +50,16 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         }
     }, [boardGame, userId]);
 
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            // Re-enable scrolling when modal is closed
+            document.body.style.overflow = "auto";
+        };
+    }, []);
+
     const getRandomResponseForRange = (range: string) => {
         const filteredResponses = BoardGameRatingResponses.find(
             (res) => res.range === range
@@ -67,8 +73,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
         return null;
     };
 
-    // Handle rating change for each category
-    const handleChange = (category: string, value: number) => {
+    const handleSliderChange = (category: string, value: number) => {
         setRatings((prevRatings) => ({
             ...prevRatings,
             [category]: value,
@@ -77,100 +82,77 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
 
     const submitNewBoardGameRating = async (newRating: number) => {
         try {
-            // Submit the rating
             const response = await fetch("/api/ratings/boardGames", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     boardGameId: selectedBoardGame?.id,
                     rating: newRating,
-                    userId: userId,
+                    userId,
                 }),
             });
 
-            if (!response.ok) {
-                setError && setError("Failed to submit rating");
-                throw new Error("Failed to submit rating");
-            } else {
-                setSuccess && setSuccess(true);
-                console.log("Rating submitted successfully!");
-            }
+            if (!response.ok) throw new Error("Failed to submit rating");
 
-            const ratingRange = `${Math.floor(newRating)}-${Math.ceil(
-                newRating
-            )}`; // Determine the range
+            const ratingRange = `${Math.floor(newRating)}-${Math.ceil(newRating)}`;
             const randomResponse = getRandomResponseForRange(ratingRange);
 
-            if (!randomResponse) {
-                setError && setError("Invalid rating range");
-                throw new Error("Invalid rating range");
-            }
+            if (!randomResponse) throw new Error("Invalid rating range");
+
             const title = randomResponse.title;
-
             const content = userRating
-                ? `Rating has been updated to ${newRating.toFixed(2)} for ${
-                      selectedBoardGame?.name
-                  }. ${randomResponse.response}`
-                : `A new rating of ${newRating.toFixed(
-                      2
-                  )} has been submitted for ${selectedBoardGame?.name}. ${
-                      randomResponse.response
-                  }`;
+                ? `Rating has been updated to ${newRating.toFixed(2)} for ${selectedBoardGame?.name}. ${randomResponse.response}`
+                : `A new rating of ${newRating.toFixed(2)} has been submitted for ${selectedBoardGame?.name}. ${randomResponse.response}`;
 
-            // Submit a new post after the rating is saved
             const postResponse = await fetch("/api/posts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: userId,
-                    title: title,
-                    content: content,
+                    userId,
+                    title,
+                    content,
                     entityId: selectedBoardGame?.id,
                     entityType: "boardGame",
                 }),
             });
 
-            if (!postResponse.ok) {
-                throw new Error("Failed to submit post");
-            } else {
-                console.log("Post submitted successfully!");
-            }
-
-            onClose(); // Close the modal
-            router.refresh(); // Reload the page to see the new rating
+            if (!postResponse.ok) throw new Error("Failed to submit post");
+            setSuccess && setSuccess(true);
+            onClose();
+            router.refresh();
         } catch (error) {
+            setError && setError("Error submitting rating or post");
             console.error("Error submitting rating or post:", error);
-            setError && setError("Failed to submit rating or post.");
+            alert("Failed to submit rating or post. Please try again.");
         }
     };
 
-    // Handle form submission
     const handleSubmit = () => {
-        // Check if all categories are rated with a value between 0 and 5
-        const isValid = Object.values(ratings).every(
-            (value) => value >= 0 && value <= 5
+        const isValid = Object.values(ratings).every((value) => value >= 0 && value <= 5);
+        const averageRating = parseFloat(
+            (Object.values(ratings).reduce((a, b) => a + b, 0) / 5).toFixed(1)
         );
-
-        const averageRating = // Calculate the average rating
-            //make it to 1 decimal place
-            parseFloat(
-                (Object.values(ratings).reduce((a, b) => a + b, 0) / 5).toFixed(
-                    1
-                )
-            );
 
         if (isValid) {
             submitNewBoardGameRating(averageRating);
         } else {
-            alert(
-                "Please provide valid ratings between 0 and 5 for all categories."
-            );
+            alert("Please provide valid ratings between 0 and 5 for all categories.");
         }
     };
 
     return (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-md shadow-lg w-96">
+            <div className="flex flex-col items-center bg-white p-6 rounded-md shadow-lg w-96 space-y-6">
                 {/* Board Game selection */}
                 {!boardGame && (
                     <div>
@@ -191,6 +173,14 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                                 </option>
                             ))}
                         </select>
+                        {!selectedBoardGame && (
+                        <button
+                            className="bg-blue-500 text-white p-2 rounded"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </button>
+                        )}
                     </div>
                 )}
 
@@ -203,7 +193,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                             <WheelSlider
                                 value={ratings.gameplayMechanics}
                                 onChange={(value) =>
-                                    handleChange("gameplayMechanics", value)
+                                    handleSliderChange("gameplayMechanics", value)
                                 }
                                 max={5}
                                 min={0}
@@ -215,7 +205,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                         <div className="mb-4">
                             <WheelSlider
                                 value={ratings.funFactor}
-                                onChange={(value) => handleChange("funFactor", value)}
+                                onChange={(value) => handleSliderChange("funFactor", value)}
                                 max={5}
                                 min={0}
                                 step={0.1}
@@ -227,7 +217,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                             <WheelSlider
                                 value={ratings.strategyAndDepth}
                                 onChange={(value) =>
-                                    handleChange("strategyAndDepth", value)
+                                    handleSliderChange("strategyAndDepth", value)
                                 }
                                 max={5}
                                 min={0}
@@ -240,7 +230,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                             <WheelSlider
                                 value={ratings.replayability}
                                 onChange={(value) =>
-                                    handleChange("replayability", value)
+                                    handleSliderChange("replayability", value)
                                 }
                                 max={5}
                                 min={0}
@@ -253,7 +243,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                             <WheelSlider
                                 value={ratings.themeAndAesthetics}
                                 onChange={(value) =>
-                                    handleChange("themeAndAesthetics", value)
+                                    handleSliderChange("themeAndAesthetics", value)
                                 }
                                 max={5}
                                 min={0}
@@ -262,16 +252,16 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                             />
                         </div>
 
-                        <div className="flex justify-between">
+                        <div className="flex justify-between mt-4">
                             <button
                                 className="bg-gray-400 text-white p-2 rounded"
-                                onClick={onClose} // Close modal on cancel
+                                onClick={onClose}
                             >
                                 Cancel
                             </button>
                             <button
                                 className="bg-blue-500 text-white p-2 rounded"
-                                onClick={handleSubmit} // Submit the ratings
+                                onClick={handleSubmit}
                             >
                                 Submit Rating
                             </button>
@@ -279,6 +269,7 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 };

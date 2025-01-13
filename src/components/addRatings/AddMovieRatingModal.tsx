@@ -29,7 +29,7 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
 }) => {
     const router = useRouter();
     const [movies, setMovies] = useState<MovieProfileProps[]>([]);
-    const [selectedMovie, setSelectedMovie] = useState<MovieProfileProps | null>(movie ?? null);
+    const [selectedMovie, setSelectedMovie] = useState<MovieProfileProps | null>(movie || null);
     const [ratings, setRatings] = useState({
         plot: 0,
         acting: 0,
@@ -47,6 +47,17 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
             fetchMovies();
         }
     }, [movie]);
+
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+      
+        return () => {
+          // Re-enable scrolling when modal is closed
+          document.body.style.overflow = 'auto';
+        }
+        }, []);
+      
 
     const getRandomResponseForRange = (range: string) => {
         const filteredResponses = MovieRatingResponses.find(
@@ -109,6 +120,7 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
         } catch (error) {
             setError && setError("Error submitting rating or post");
             console.error("Error submitting rating or post:", error);
+            alert("Failed to submit rating or post. Please try again.");
         }
     };
 
@@ -124,6 +136,16 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
     };
 
     return (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="flex flex-col items-center bg-white p-6 rounded-md shadow-lg w-96 space-y-6">
                 {/* Movie selection */}
@@ -146,6 +168,14 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
                                 </option>
                             ))}
                         </select>
+                        {!selectedMovie && (
+                        <button
+                            className="bg-blue-500 text-white p-2 rounded"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </button>
+                        )}
                     </div>
                 )}
 
@@ -227,7 +257,9 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
                 )}
             </div>
         </div>
+        </div>
     );
 };
 
 export default AddMovieRatingModal;
+
