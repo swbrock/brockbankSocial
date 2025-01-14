@@ -40,7 +40,7 @@ const BookProfilePage = ({
             }, 1000); // 1-second delay to show the success toast
             return () => clearTimeout(timer);
         }
-    }, [success]);
+    }, [success, router]);
 
     return (
         <div className="container mx-auto px-6 py-8">

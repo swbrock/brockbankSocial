@@ -11,6 +11,7 @@ import {
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface AddBookModalProps {
     isOpen: boolean;
@@ -215,10 +216,12 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
                                 )}
                             </CldUploadWidget>
                             {coverImage && (
-                                <img
+                                <Image
                                     src={coverImage.secure_url}
-                                    alt="Uploaded Cover"
-                                    className="mt-2 w-32 h-48 object-cover rounded"
+                                    alt="Book Cover"
+                                    width={160}
+                                    height={256}
+                                    className="rounded-lg shadow-lg border border-white mt-2"
                                 />
                             )}
                         </div>

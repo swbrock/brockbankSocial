@@ -46,7 +46,7 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
             };
             fetchMovies();
         }
-    }, [movie]);
+    }, [movie, userId]);
 
     useEffect(() => {
         // Disable scrolling when modal is open

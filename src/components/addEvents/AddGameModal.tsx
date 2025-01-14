@@ -10,6 +10,7 @@ import {
 } from "@/lib/actions"; // Replace with actual action for game creation
 import Toast from "../Toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface User {
     id: string;
@@ -97,7 +98,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
         } else if (participants?.length === 0) {
             setFormData({ ...formData, winnerUserId: "" });
         }
-    }, [participants]);
+    }, [participants, formData]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -332,10 +333,11 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                             )}
                                         </CldUploadWidget>
                                         {coverImage && (
-                                            <img
+                                            <Image
                                                 src={coverImage.secure_url}
-                                                alt="Uploaded Cover"
-                                                className="mt-2 w-32 h-48 object-cover rounded"
+                                                alt="Board Game Cover"
+                                                width={150}
+                                                height={150}
                                             />
                                         )}
                                     </div>

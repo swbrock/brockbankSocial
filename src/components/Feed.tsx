@@ -52,7 +52,7 @@ const Feed = ({
     // Fetch posts when the component mounts or when the dependencies change
     useEffect(() => {
         fetchPosts();
-    }, [username, entityId, entityType]);
+    }, [username, entityId, entityType, fetchPosts]);
 
     // Function to handle loading more posts
     const loadMorePosts = () => {

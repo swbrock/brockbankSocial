@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface AddBoardGameModalProps {
     isOpen: boolean;
@@ -223,10 +224,12 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
                                 )}
                             </CldUploadWidget>
                             {coverImage && (
-                                <img
+                                <Image
                                     src={coverImage.secure_url}
-                                    alt="Uploaded Cover"
-                                    className="mt-2 w-32 h-48 object-cover rounded"
+                                    alt="Board Game Cover"
+                                    width={200}
+                                    height={200}
+                                    className="mt-2 rounded-lg"
                                 />
                             )}
                         </div>

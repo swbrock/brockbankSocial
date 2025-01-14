@@ -11,6 +11,7 @@ import {
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface AddMovieModalProps {
     isOpen: boolean;
@@ -266,10 +267,12 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                             )}
                         </CldUploadWidget>
                         {poster && (
-                            <img
+                            <Image
                                 src={poster.secure_url}
-                                alt="Uploaded Poster"
-                                className="mt-2 w-32 h-48 object-cover rounded"
+                                alt="Movie Poster"
+                                width={200}
+                                height={300}
+                                className="rounded-lg shadow-lg border border-white mt-2"
                             />
                         )}
                     </div>
