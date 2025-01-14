@@ -28,12 +28,6 @@ const BoardGameProfilePage = ({
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Disable scroll when modal is open
-    useEffect(() => {
-        document.body.style.overflow = isModalOpen || editModalOpen ? "hidden" : "auto";
-    }, [isModalOpen, editModalOpen]);
-    
-
     return (
         <div className="container mx-auto px-6 py-8">
             {success && (
