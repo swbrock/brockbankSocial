@@ -165,6 +165,7 @@ model GameParticipant {
   id        Int     @id @default(autoincrement())
   gameId    Int
   userId    String
+  score     Int?
   createdAt DateTime @default(now())
 
   game      Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)

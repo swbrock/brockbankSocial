@@ -52,7 +52,7 @@ const TopBook: React.FC<TopBookProps> = ({ books }) => {
                                             width="20"
                                             height="20"
                                             fill={
-                                                i < Math.round(book.rating || 0)
+                                                i < Math.round(book.rating ?? 0)
                                                     ? "gold"
                                                     : "gray"
                                             }

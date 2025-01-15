@@ -6,6 +6,7 @@ import AddBookModal from "../addEvents/AddBookModal";
 import Toast from "../Toast";
 import { Genre } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export interface BookProfileProps {
     book: {
@@ -33,16 +34,17 @@ const BookProfilePage = ({
     const router = useRouter();
 
     useEffect(() => {
-        //refresh the page when the user rates the book
         if (success) {
-            router.refresh();
+            const timer = setTimeout(() => {
+                router.refresh();
+            }, 1000); // 1-second delay to show the success toast
+            return () => clearTimeout(timer);
         }
-    }
-    , [success]);
-
+    }, [success, router]);
 
     return (
         <div className="container mx-auto px-6 py-8">
+            {/* Toast Notifications */}
             {success && (
                 <Toast
                     type="success"
@@ -63,10 +65,12 @@ const BookProfilePage = ({
                 {/* Book Image and Info */}
                 <div className="flex flex-col md:flex-row items-center md:space-x-6">
                     {book.image && (
-                        <img
+                        <Image
                             src={book.image}
                             alt={book.name}
-                            className="w-40 h-64 object-cover rounded-lg shadow-lg border border-white mb-4 md:mb-0"
+                            width={160}
+                            height={256}
+                            className="rounded-lg shadow-lg border border-white mb-4 md:mb-0"
                         />
                     )}
                     <div>
@@ -87,7 +91,7 @@ const BookProfilePage = ({
                         </div>
                         <div className="mt-4">
                             <button
-                                className="bg-green-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow"
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded-md shadow transition-transform transform hover:scale-105"
                                 onClick={() => setEditModalOpen(true)}
                             >
                                 Edit Book
@@ -97,7 +101,7 @@ const BookProfilePage = ({
                 </div>
 
                 {/* User Rating and Add/Edit Rating Button */}
-                <div className="mt-4 w-full md:w-auto md:absolute md:top-6 md:right-6 md:text-right flex flex-col items-center md:items-start">
+                <div className="mt-4 w-full md:w-auto md:absolute md:top-6 md:right-6 md:text-right flex flex-col items-center md:items-end">
                     <p className="text-sm text-teal-200">Your Rating:</p>
                     <p
                         className="text-2xl font-bold text-white"
@@ -110,7 +114,7 @@ const BookProfilePage = ({
                         {userRating ? userRating.toFixed(2) : "N/A"}
                     </p>
                     <button
-                        className="mt-1 bg-white text-blue-600 font-semibold text-xs py-0.5 px-2 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
+                        className="mt-1 bg-white text-blue-600 font-semibold text-xs py-1 px-3 rounded-md shadow hover:bg-gray-200 transition-transform transform hover:scale-105"
                         onClick={() => setIsModalOpen(true)}
                     >
                         {userRating ? "Edit" : "Add"} Rating
@@ -118,24 +122,34 @@ const BookProfilePage = ({
                 </div>
             </div>
 
-            {/* Modal Components */}
+            {/* Rating Modal with Backdrop */}
             {isModalOpen && (
-                <AddBookRatingModal
-                    onClose={() => setIsModalOpen(false)} // Close modal on cancel
-                    book={book}
-                    userId={userId}
-                    userRating={userRating}
-                />
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white rounded-lg p-4 shadow-lg overflow-y-auto max-h-screen">
+                        <AddBookRatingModal
+                            onClose={() => setIsModalOpen(false)}
+                            book={book}
+                            userId={userId}
+                            userRating={userRating}
+                        />
+                    </div>
+                </div>
             )}
+
+            {/* Edit Book Modal with Backdrop */}
             {editModalOpen && (
-                <AddBookModal
-                    isOpen={editModalOpen}
-                    onClose={() => setEditModalOpen(false)}
-                    isEdit={true}
-                    bookId={book.id}
-                    setSuccess={setSuccess}
-                    setError={setError}
-                />
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white rounded-lg p-4 shadow-lg overflow-y-auto max-h-screen">
+                        <AddBookModal
+                            isOpen={editModalOpen}
+                            onClose={() => setEditModalOpen(false)}
+                            isEdit={true}
+                            bookId={book.id}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                        />
+                    </div>
+                </div>
             )}
         </div>
     );

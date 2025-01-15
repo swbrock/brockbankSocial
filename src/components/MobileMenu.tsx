@@ -8,6 +8,7 @@ const MobileMenu = () => {
         setIsOpen(false);  // Close the menu when a link is clicked
     };
 
+
     return (
         <div className="md:hidden">
             <div

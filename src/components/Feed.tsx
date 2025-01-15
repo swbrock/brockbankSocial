@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Post from "./Post";
 import { getPosts, getPostsByEntity, getPostsByUser } from "@/lib/actions";
 import { Post as PostType } from "@prisma/client";
@@ -23,23 +23,22 @@ const Feed = ({
 
 
     // Function to fetch posts
-    const fetchPosts = async () => {
+
+    // Inside your component
+    const fetchPosts = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
             let fetchedPosts = [];
-    
+        
             if (username) {
-                // Fetch posts by user
                 fetchedPosts = await getPostsByUser(username);
             } else if (entityType && entityId) {
-                // Fetch posts by entity
                 fetchedPosts = await getPostsByEntity(entityId, entityType);
             } else {
-                // Fetch all posts
                 fetchedPosts = await getPosts();
             }
-    
+        
             setPosts(fetchedPosts);
             setHasMore(fetchedPosts.length > displayedPosts);
         } catch (err) {
@@ -47,12 +46,12 @@ const Feed = ({
         } finally {
             setIsLoading(false);
         }
-    };
-
-    // Fetch posts when the component mounts or when the dependencies change
+    }, [username, entityId, entityType, displayedPosts]);
+    
     useEffect(() => {
         fetchPosts();
-    }, [username, entityId, entityType]);
+    }, [fetchPosts]);
+    
 
     // Function to handle loading more posts
     const loadMorePosts = () => {

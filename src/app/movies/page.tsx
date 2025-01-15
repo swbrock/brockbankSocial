@@ -5,9 +5,11 @@
 import MoviePage from "@/components/mainPages/moviePage";
 import { getAllMovies } from "@/lib/actions";
 
-export default async function Movies() {
+const Movies = async () => {
     //get movies from the database
     const movies = await getAllMovies();
 
     return <MoviePage dbMovies={movies} />; // Pass the fetched
 }
+
+export default Movies;

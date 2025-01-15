@@ -11,6 +11,7 @@ import {
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface AddBookModalProps {
     isOpen: boolean;
@@ -124,100 +125,123 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
         onClose();
     };
 
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            // Re-enable scrolling when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+        }, []);
+
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">
-                    {isEdit ? "Edit Book" : "Add New Book"}
-                </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-gray-700">
-                            Book Title
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Author</label>
-                        <input
-                            type="text"
-                            name="author"
-                            value={formData.author}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Genre</label>
-                        <select
-                            name="genreId"
-                            value={formData.genreId}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 p-2 w-full border rounded"
-                        >
-                            <option value="">Select Genre</option>
-                            {genres.map((genre) => (
-                                <option key={genre.id} value={genre.id}>
-                                    {genre.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">
-                            Book Cover
-                        </label>
-                        <CldUploadWidget
-                            uploadPreset="social"
-                            onSuccess={(result) => setCoverImage(result.info)}
-                        >
-                            {({ open }) => (
-                                <button
-                                    type="button"
-                                    onClick={() => open()}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
-                                >
-                                    {coverImage
-                                        ? "Change Cover"
-                                        : "Upload Cover"}
-                                </button>
-                            )}
-                        </CldUploadWidget>
-                        {coverImage && (
-                            <img
-                                src={coverImage.secure_url}
-                                alt="Uploaded Cover"
-                                className="mt-2 w-32 h-48 object-cover rounded"
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+                    <h2 className="text-2xl font-bold mb-4">
+                        {isEdit ? "Edit Book" : "Add New Book"}
+                    </h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-gray-700">
+                                Book Title
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
                             />
-                        )}
-                    </div>
-                    <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
-                        >
-                            {isEdit ? "Save Changes" : "Add Book"}
-                        </button>
-                        <button
-                            type="button"
-                            className="ml-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg"
-                            onClick={handleClose}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Author</label>
+                            <input
+                                type="text"
+                                name="author"
+                                value={formData.author}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Genre</label>
+                            <select
+                                name="genreId"
+                                value={formData.genreId}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 p-2 w-full border rounded"
+                            >
+                                <option value="">Select Genre</option>
+                                {genres.map((genre) => (
+                                    <option key={genre.id} value={genre.id}>
+                                        {genre.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">
+                                Book Cover
+                            </label>
+                            <CldUploadWidget
+                                uploadPreset="social"
+                                onSuccess={(result) => setCoverImage(result.info)}
+                            >
+                                {({ open }) => (
+                                    <button
+                                        type="button"
+                                        onClick={() => open()}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                                    >
+                                        {coverImage
+                                            ? "Change Cover"
+                                            : "Upload Cover"}
+                                    </button>
+                                )}
+                            </CldUploadWidget>
+                            {coverImage && (
+                                <Image
+                                    src={coverImage.secure_url}
+                                    alt="Book Cover"
+                                    width={160}
+                                    height={256}
+                                    className="rounded-lg shadow-lg border border-white mt-2"
+                                />
+                            )}
+                        </div>
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+                            >
+                                {isEdit ? "Save Changes" : "Add Book"}
+                            </button>
+                            <button
+                                type="button"
+                                className="ml-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg"
+                                onClick={handleClose}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

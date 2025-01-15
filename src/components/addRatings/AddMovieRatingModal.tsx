@@ -46,7 +46,18 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
             };
             fetchMovies();
         }
-    }, [movie]);
+    }, [movie, userId]);
+
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+      
+        return () => {
+          // Re-enable scrolling when modal is closed
+          document.body.style.overflow = 'auto';
+        }
+        }, []);
+      
 
     useEffect(() => {
         // Disable scrolling when modal is open
@@ -262,3 +273,4 @@ const AddMovieRatingModal: React.FC<RatingModalProps> = ({
 };
 
 export default AddMovieRatingModal;
+

@@ -8,56 +8,45 @@ import { notFound } from "next/navigation";
 export default async function BoardGameProfilePageServer({
     params,
 }: {
-    params: { boardGameId: string }; // IDs from Next.js params are strings
+    params: { boardGameId: string };
 }) {
-    // Convert the ID to a number
     const boardGameId = parseInt(params.boardGameId);
 
-    const loggedInUser = await getLoggedInUserId();
-
-    // Ensure the ID is valid
+    // Validate the boardGameId
     if (isNaN(boardGameId)) {
         return notFound();
     }
 
-    // Fetch the board game and ratings
-    const [boardGame] = await Promise.all([
-        prisma.boardGame.findUnique({
-            where: { id: boardGameId },
-            include: {
-                Post: true,
-            },
-        }),
-        prisma.rating.findMany({
-            where: { boardGameId },
-        }),
-    ]);
+    const loggedInUser = await getLoggedInUserId();
 
-    // Handle the case where the board game is not found
+    if (!loggedInUser) {
+        return notFound(); // Or redirect to login page if needed
+    }
+
+    // Fetch the board game
+    const boardGame = await prisma.boardGame.findUnique({
+        where: { id: boardGameId },
+        include: {
+            Post: true,
+        },
+    });
+
     if (!boardGame) {
         return notFound();
     }
 
-    const userRating = await getUserRating(
-        loggedInUser,
-        boardGame.id,
-        "BoardGame"
-    );
+    // Fetch the user's rating for this board game
+    const userRating = await getUserRating(loggedInUser, boardGame.id, "BoardGame");
 
-    //get all users
+    // Fetch all users and sanitize names
     const users = await getAllUsers();
 
-    //for each through users and if firstname or lastname is null, set it to an empty string
     users.forEach((user) => {
-        if (!user.firstName) {
-            user.firstName = "";
-        }
-        if (!user.lastName) {
-            user.lastName = "";
-        }
+        user.firstName ??= "";
+        user.lastName ??= "";
     });
 
-    // Render the page components
+    // Render components
     return (
         <>
             <BoardGameProfilePage

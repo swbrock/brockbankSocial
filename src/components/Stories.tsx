@@ -20,15 +20,14 @@ const Stories = ({ users }: StoriesProps) => {
             {users && users.length > 0 && (
                 <div className="flex gap-6 md:gap-8 w-max justify-center">
                     {users.map((user) => (
-                            <Link href={`/profile/${user.username}`}>
-
+                        <Link key={user.id} href={`/profile/${user.username}`}>
                         <div
                             key={user.id}
                             className="flex flex-col items-center gap-6 cursor-pointer justify-between"  // Increased gap from gap-4 to gap-6
                         >
                                 {/* Avatar Image */}
                                 <Image
-                                    src={user.avatar || "/noAvatar.png"} // Default to "/noAvatar.png" if no avatar
+                                    src={user.avatar ?? "/noAvatar.png"} // Default to "/noAvatar.png" if no avatar
                                     alt={`${user.username}'s Avatar`}
                                     className="w-20 h-20 rounded-full ring-2"
                                     width={80}

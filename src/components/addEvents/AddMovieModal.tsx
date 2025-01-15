@@ -11,6 +11,7 @@ import {
 import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface AddMovieModalProps {
     isOpen: boolean;
@@ -76,6 +77,16 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     const checkMovieNameExists = (name: string) => {
         return existingMovieNames.includes(name);
     };
+
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            // Re-enable scrolling when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+        }, []);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -147,6 +158,16 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     if (!isOpen) return null;
 
     return (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
                 <h2 className="text-2xl font-bold mb-4">
@@ -246,10 +267,12 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                             )}
                         </CldUploadWidget>
                         {poster && (
-                            <img
+                            <Image
                                 src={poster.secure_url}
-                                alt="Uploaded Poster"
-                                className="mt-2 w-32 h-48 object-cover rounded"
+                                alt="Movie Poster"
+                                width={200}
+                                height={300}
+                                className="rounded-lg shadow-lg border border-white mt-2"
                             />
                         )}
                     </div>
@@ -270,6 +293,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     );
 };

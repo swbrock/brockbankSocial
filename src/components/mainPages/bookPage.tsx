@@ -18,7 +18,7 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
 
     useEffect(() => {
         const sortedBooks = [...dbBooks].sort(
-            (a, b) => (b.rating || 0) - (a.rating || 0)
+            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
         );
         setBooks(sortedBooks);
     }, [dbBooks]);
@@ -86,7 +86,7 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
                                         {book.name}
                                     </h2>
                                     <p className="text-sm text-gray-600 mb-1">
-                                        Author: {book.author || "Unknown"}
+                                        Author: {book.author ?? "Unknown"}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                         Rank: {index + 1}

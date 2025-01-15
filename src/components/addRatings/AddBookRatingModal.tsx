@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import WheelSlider from "../WheelSlider";
 import { BookRatingResponses } from "@/lib/content";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
 }) => {
     const router = useRouter(); // Get the router instance
     const [books, setBooks] = useState<BookProfileProps[]>([]); // Set the books
-    const [selectedBook, setSelectedBook] = useState<BookProfileProps | null>(book || null); // Set the selected book
+    const [selectedBook, setSelectedBook] = useState<BookProfileProps | null>(book ?? null); // Set the selected book
     const [ratings, setRatings] = useState({
         plot: 0,
         characterDevelopment: 0,
@@ -49,6 +49,16 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
             fetchBooks();
         }
     }, [book, userId]);
+
+    useEffect(() => {
+        // Disable scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+      
+        return () => {
+          // Re-enable scrolling when modal is closed
+          document.body.style.overflow = 'auto';
+        }
+    }, []);
 
     const getRandomResponseForRange = (range: string) => {
         const filteredResponses = BookRatingResponses.find(
@@ -117,7 +127,7 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
             } else {
                 console.log("Post submitted successfully!");
             }
-            //reset ratings and close modal
+            // Reset ratings and close modal
             setRatings({
                 plot: 0,
                 characterDevelopment: 0,
@@ -129,7 +139,8 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
             router.refresh(); // Reload the page to see the new rating
         } catch (error) {
             console.error("Error submitting rating or post:", error);
-            setError && setError("Error submitting rating or post");}
+            setError && setError("Error submitting rating or post");
+        }
     };
 
     // Handle rating change for each category
@@ -159,68 +170,87 @@ const AddBookRatingModal: React.FC<RatingModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-md shadow-lg w-96 flex flex-col space-y-6">
-                {!book && (
-                    <div className="mb-4">
-                        <h2 className="text-xl font-semibold mb-4">Select a Book</h2>
-                        <select
-                            className="w-full p-2 rounded-md border border-gray-300 mb-4"
-                            onChange={(e) => {
-                                const selected = books.find(
-                                    (b) => b.id === parseInt(e.target.value)
-                                );
-                                setSelectedBook(selected ?? null);
-                            }}
-                        >
-                            <option value="">Select a book...</option>
-                            {books.map((b) => (
-                                <option key={b.id} value={b.id}>
-                                    {b.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
-
-                {selectedBook && (
-                    <div className="w-full">
-                        <h2 className="text-xl font-semibold mb-4">Rate This Book</h2>
-                        {[
-                            ["plot", "Plot and Pacing"],
-                            ["characterDevelopment", "Character Development"],
-                            ["writingStyle", "Writing Style & Language"],
-                            ["emotionalImpact", "Emotional Impact"],
-                            ["originality", "Originality"]
-                        ].map(([category, label]) => (
-                            <div className="mb-4" key={category}>
-                                <WheelSlider
-                                    value={ratings[category as keyof typeof ratings]}
-                                    onChange={(value) => handleChange(category, value)}
-                                    max={5}
-                                    step={0.1}
-                                    min={0}
-                                    label={label}
-                                />
-                            </div>
-                        ))}
-
-                        <div className="flex justify-between">
-                            <button
-                                className="bg-gray-400 text-white p-2 rounded"
-                                onClick={onClose} // Close modal on cancel
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 1000, // Ensure it's above the other content
+            overflow: 'auto', // Ensures modal content can scroll if needed
+          }}>
+            <div className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-md shadow-lg w-96 flex flex-col space-y-6">
+                    {!book && (
+                        <div className="mb-4">
+                            <h2 className="text-xl font-semibold mb-4">Select a Book</h2>
+                            <select
+                                className="w-full p-2 rounded-md border border-gray-300 mb-4"
+                                onChange={(e) => {
+                                    const selected = books.find(
+                                        (b) => b.id === parseInt(e.target.value)
+                                    );
+                                    setSelectedBook(selected ?? null);
+                                }}
                             >
-                                Cancel
-                            </button>
-                            <button
-                                className="bg-blue-500 text-white p-2 rounded"
-                                onClick={handleSubmit} // Submit the ratings
-                            >
-                                Submit Rating
-                            </button>
+                                <option value="">Select a book...</option>
+                                {books.map((b) => (
+                                    <option key={b.id} value={b.id}>
+                                        {b.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {!selectedBook && (
+                                <button
+                                    className="bg-blue-500 text-white p-2 rounded"
+                                    onClick={onClose}
+                                >
+                                    Cancel
+                                </button>
+                            )}
                         </div>
-                    </div>
-                )}
+                    )}
+
+                    {selectedBook && (
+                        <div className="w-full">
+                            <h2 className="text-xl font-semibold mb-4">Rate This Book</h2>
+                            {[
+                                ["plot", "Plot and Pacing"],
+                                ["characterDevelopment", "Character Development"],
+                                ["writingStyle", "Writing Style & Language"],
+                                ["emotionalImpact", "Emotional Impact"],
+                                ["originality", "Originality"]
+                            ].map(([category, label]) => (
+                                <div className="mb-4" key={category}>
+                                    <WheelSlider
+                                        value={ratings[category as keyof typeof ratings]}
+                                        onChange={(value) => handleChange(category, value)}
+                                        max={5}
+                                        step={0.1}
+                                        min={0}
+                                        label={label}
+                                    />
+                                </div>
+                            ))}
+
+                            <div className="flex justify-between mt-4">
+                                <button
+                                    className="bg-gray-400 text-white p-2 rounded"
+                                    onClick={onClose} // Close modal on cancel
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="bg-blue-500 text-white p-2 rounded"
+                                    onClick={handleSubmit} // Submit the ratings
+                                >
+                                    Submit Rating
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

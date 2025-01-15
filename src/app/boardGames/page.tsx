@@ -5,9 +5,11 @@
 import BoardGamePage from "@/components/mainPages/boardGamePage";
 import { getAllBoardGames } from "@/lib/actions";
 
-export default async function Movies() {
+const BoardGames = async () => {
     //get movies from the database
     const boardGames = await getAllBoardGames();
 
     return <BoardGamePage dbBoardGames={boardGames} />; // Pass the fetched
 }
+
+export default BoardGames;

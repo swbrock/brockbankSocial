@@ -47,16 +47,16 @@ const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
                                 <td className="p-4">{user.firstName}</td>
                                 <td className="p-4">{user.lastName}</td>
                                 <td className="p-4">
-                                    {user.highestRatedMovie || "N/A"}
+                                    {user.highestRatedMovie ?? "N/A"}
                                 </td>
                                 <td className="p-4">
-                                    {user.highestRatedBook || "N/A"}
+                                    {user.highestRatedBook ?? "N/A"}
                                 </td>
                                 <td className="p-4">
-                                    {user.highestRatedBoardGame || "N/A"}
+                                    {user.highestRatedBoardGame ?? "N/A"}
                                 </td>
                                 <td className="p-4">
-                                    {user.mostWonBoardGame || "N/A"}
+                                    {user.mostWonBoardGame ?? "N/A"}
                                 </td>
                             </tr>
                         ))}
@@ -87,19 +87,19 @@ const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">Highest Rated Movie:</span>{" "}
-                            {user.highestRatedMovie || "N/A"}
+                            {user.highestRatedMovie ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">Highest Rated Book:</span>{" "}
-                            {user.highestRatedBook || "N/A"}
+                            {user.highestRatedBook ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">Highest Rated Board Game:</span>{" "}
-                            {user.highestRatedBoardGame || "N/A"}
+                            {user.highestRatedBoardGame ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-semibold">Most Won Board Game:</span>{" "}
-                            {user.mostWonBoardGame || "N/A"}
+                            {user.mostWonBoardGame ?? "N/A"}
                         </p>
                     </div>
                 ))}
