@@ -13,8 +13,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
     const [boardGames, setBoardGames] = useState<BoardGame[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const sortedBoardGames = [...dbBoardGames].sort(
@@ -30,26 +28,10 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
 
     return (
         <div className="p-8 bg-gradient-to-r from-yellow-100 via-orange-100 to-red-100 min-h-screen">
-            {success && (
-                <Toast
-                    type="success"
-                    message="Board Game added successfully!"
-                    onClose={() => setSuccess(false)}
-                />
-            )}
-            {error && (
-                <Toast
-                    type="error"
-                    message={error}
-                    onClose={() => setError(null)}
-                />
-            )}
             {showModal && (
                 <AddBoardGameModal
                     isOpen={showModal}
                     onClose={() => setShowModal(false)}
-                    setSuccess={setSuccess}
-                    setError={setError}
                 />
             )}
             <div className="max-w-5xl mx-auto">
