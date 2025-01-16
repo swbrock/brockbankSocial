@@ -29,23 +29,12 @@ const BookProfilePage = ({
 }: BookProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-
-    useEffect(() => {
-        if (success) {
-            const timer = setTimeout(() => {
-                router.refresh();
-            }, 1000); // 1-second delay to show the success toast
-            return () => clearTimeout(timer);
-        }
-    }, [success, router]);
 
     return (
         <div className="container mx-auto px-6 py-8">
             {/* Toast Notifications */}
-            {success && (
+            {/* {success && (
                 <Toast
                     type="success"
                     message="Book updated successfully!"
@@ -58,7 +47,7 @@ const BookProfilePage = ({
                     message={error}
                     onClose={() => setError(null)}
                 />
-            )}
+            )} */}
 
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-teal-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
@@ -145,8 +134,6 @@ const BookProfilePage = ({
                             onClose={() => setEditModalOpen(false)}
                             isEdit={true}
                             bookId={book.id}
-                            setSuccess={setSuccess}
-                            setError={setError}
                         />
                     </div>
                 </div>

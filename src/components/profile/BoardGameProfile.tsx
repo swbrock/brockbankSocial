@@ -30,21 +30,6 @@ const BoardGameProfilePage = ({
 
     return (
         <div className="container mx-auto px-6 py-8">
-            {success && (
-                <Toast
-                    type="success"
-                    message="Board Game updated successfully!"
-                    onClose={() => setSuccess(false)}
-                />
-            )}
-            {error && (
-                <Toast
-                    type="error"
-                    message={error}
-                    onClose={() => setError(null)}
-                />
-            )}
-
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
                 {/* Board Game Image and Info */}
@@ -136,8 +121,6 @@ const BoardGameProfilePage = ({
                             onClose={() => setEditModalOpen(false)}
                             isEdit={true}
                             boardGameId={boardGame.id}
-                            setSuccess={setSuccess}
-                            setError={setError}
                         />
                     </div>
                 </div>

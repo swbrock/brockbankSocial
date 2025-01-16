@@ -27,27 +27,9 @@ const MovieProfilePage = ({
 }: MovieProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     return (
         <div className="container mx-auto px-6 py-8">
-            {/* Toast Notifications */}
-            {success && (
-                <Toast
-                    type="success"
-                    message="Movie updated successfully!"
-                    onClose={() => setSuccess(false)}
-                />
-            )}
-            {error && (
-                <Toast
-                    type="error"
-                    message={error}
-                    onClose={() => setError(null)}
-                />
-            )}
-
             {/* Header Section */}
             <div className="relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
                 {/* Movie Image and Info */}
@@ -133,8 +115,6 @@ const MovieProfilePage = ({
                             onClose={() => setEditModalOpen(false)}
                             isEdit={true}
                             movieId={movie.id}
-                            setSuccess={setSuccess}
-                            setError={setError}
                         />
                     </div>
                 </div>

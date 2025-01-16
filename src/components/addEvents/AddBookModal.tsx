@@ -12,12 +12,11 @@ import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Toast from "../Toast";
 
 interface AddBookModalProps {
     isOpen: boolean;
     onClose: () => void;
-    setSuccess: (success: boolean) => void;
-    setError: (error: string | null) => void;
     isEdit?: boolean;
     bookId?: number;
 }
@@ -25,8 +24,6 @@ interface AddBookModalProps {
 const AddBookModal: React.FC<AddBookModalProps> = ({
     isOpen,
     onClose,
-    setError,
-    setSuccess,
     isEdit = false,
     bookId,
 }) => {
@@ -39,7 +36,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
     const [genres, setGenres] = useState<Genre[]>([]);
     const [coverImage, setCoverImage] = useState<any>(null);
     const [existingBookTitles, setExistingBookTitles] = useState<string[]>([]);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+
 
     useEffect(() => {
         const fetchGenres = async () => {
@@ -64,7 +64,8 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
                     genreId: book?.genreId?.toString() ?? "",
                     image: book?.image ?? "",
                 });
-                setCoverImage({ secure_url: book?.image });
+                if (book?.image) setCoverImage({ secure_url: book?.image });
+
             };
             fetchBook();
         }
@@ -149,6 +150,20 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
             overflow: 'auto', // Ensures modal content can scroll if needed
           }}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                {success && (
+                    <Toast
+                        type="success"
+                        message="Book updated successfully!"
+                        onClose={() => setSuccess(false)}
+                    />
+                )}
+                {error && (
+                    <Toast
+                        type="error"
+                        message={error}
+                        onClose={() => setError(null)}
+                    />
+                )}
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
                     <h2 className="text-2xl font-bold mb-4">
                         {isEdit ? "Edit Book" : "Add New Book"}
@@ -215,7 +230,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({
                                     </button>
                                 )}
                             </CldUploadWidget>
-                            {coverImage && (
+                            {coverImage && coverImage != "" && (
                                 <Image
                                     src={coverImage.secure_url}
                                     alt="Book Cover"

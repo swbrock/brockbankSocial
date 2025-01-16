@@ -12,12 +12,11 @@ import { Genre } from "@prisma/client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Toast from "../Toast";
 
 interface AddMovieModalProps {
     isOpen: boolean;
     onClose: () => void;
-    setSuccess: (success: boolean) => void;
-    setError: (error: string | null) => void;
     isEdit?: boolean;
     movieId?: number;
 }
@@ -25,8 +24,6 @@ interface AddMovieModalProps {
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
     isOpen,
     onClose,
-    setSuccess,
-    setError,
     isEdit = false,
     movieId,
 }) => {
@@ -41,6 +38,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     const [genres, setGenres] = useState<Genre[]>([]);
     const [poster, setPoster] = useState<any>(null);
     const [existingMovieNames, setExistingMovieNames] = useState<string[]>([]);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -68,7 +67,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                     mpaaRating: movie?.mpaaRating ?? "",
                     image: movie?.image ?? "",
                 });
-                setPoster({ secure_url: movie?.image });
+                if (movie?.image) setPoster({ secure_url: movie?.image });
             };
             fetchMovie();
         }
@@ -169,6 +168,20 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
             overflow: 'auto', // Ensures modal content can scroll if needed
           }}>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            {success && (
+                <Toast
+                    type="success"
+                    message="Movie updated successfully!"
+                    onClose={() => setSuccess(false)}
+                />
+            )}
+            {error && (
+                <Toast
+                    type="error"
+                    message={error}
+                    onClose={() => setError(null)}
+                />
+                )}
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
                 <h2 className="text-2xl font-bold mb-4">
                     {isEdit ? "Edit Movie" : "Add New Movie"}

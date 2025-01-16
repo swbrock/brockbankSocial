@@ -9,12 +9,11 @@ import {
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Toast from "../Toast";
 
 interface AddBoardGameModalProps {
     isOpen: boolean;
     onClose: () => void;
-    setSuccess: (success: boolean) => void;
-    setError: (error: string | null) => void;
     isEdit?: boolean;
     boardGameId?: number;
 }
@@ -22,8 +21,6 @@ interface AddBoardGameModalProps {
 const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     isOpen,
     onClose,
-    setError,
-    setSuccess,
     isEdit = false,
     boardGameId,
 }) => {
@@ -39,6 +36,8 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
     >([]);
 
     const router = useRouter();
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
 
     useEffect(() => {
@@ -61,7 +60,7 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
                     length: boardGame?.length ?? 0,
                     image: boardGame?.image ?? "",
                 });
-                setCoverImage({ secure_url: boardGame?.image });
+                if (boardGame?.image) setCoverImage({ secure_url: boardGame?.image });
             };
             fetchBoardGame();
         }
@@ -150,6 +149,20 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
             overflow: 'auto', // Ensures modal content can scroll if needed
           }}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                {success && (
+                    <Toast
+                        type="success"
+                        message="Board Game updated successfully!"
+                        onClose={() => setSuccess(false)}
+                    />
+                )}
+                {error && (
+                    <Toast
+                        type="error"
+                        message={error}
+                        onClose={() => setError(null)}
+                    />
+                )}
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
                     <h2 className="text-2xl font-bold mb-4">
                         {isEdit ? "Edit Board Game" : "Add New Board Game"}
@@ -223,7 +236,7 @@ const AddBoardGameModal: React.FC<AddBoardGameModalProps> = ({
                                     </button>
                                 )}
                             </CldUploadWidget>
-                            {coverImage && (
+                            {coverImage && coverImage != "" && (
                                 <Image
                                     src={coverImage.secure_url}
                                     alt="Board Game Cover"
