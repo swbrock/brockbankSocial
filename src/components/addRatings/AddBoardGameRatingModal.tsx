@@ -152,8 +152,8 @@ const AddBoardGameRatingModal: React.FC<RatingModalProps> = ({
             zIndex: 1000, // Ensure it's above the other content
             overflow: 'auto', // Ensures modal content can scroll if needed
           }}>
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="flex flex-col items-center bg-white p-6 rounded-md shadow-lg w-96 space-y-6">
+            <div className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-md shadow-lg w-96 flex flex-col space-y-6">
                 {/* Board Game selection */}
                 {!boardGame && (
                     <div>
