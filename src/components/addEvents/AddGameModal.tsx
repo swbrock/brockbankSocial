@@ -84,11 +84,12 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
 
     useEffect(() => {
         if (participants?.length === 1) {
-            setFormData({ ...formData, winnerUserId: participants[0].id });
+            setFormData((prevData) => ({ ...prevData, winnerUserId: participants[0].id }));
         } else if (participants?.length === 0) {
-            setFormData({ ...formData, winnerUserId: "" });
+            setFormData((prevData) => ({ ...prevData, winnerUserId: "" }));
         }
-    }, [participants, formData]);
+    }, [participants]); // Only depend on participants, not formData
+    
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

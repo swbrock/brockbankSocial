@@ -66,7 +66,7 @@ const Feed = ({
     // Handle scroll to show/hide "Back to Top" button
     useEffect(() => {
         const handleScroll = () => {
-            setShowBackToTop(window.scrollY > 300); // Show button when scrolled 300px down
+            setShowBackToTop(window.scrollY > 500); // Show button when scrolled 300px down
         };
 
         window.addEventListener("scroll", handleScroll);
