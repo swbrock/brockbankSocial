@@ -2,8 +2,13 @@
 import React, { useState, useEffect } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
-import Toast from "../Toast";
 import Image from "next/image";
+
+interface HighScore {
+    user: string | null;
+    score: number;
+    date: Date;
+}
 
 export interface BoardGameProfileProps {
     boardGame: {
@@ -16,18 +21,23 @@ export interface BoardGameProfileProps {
     };
     userId: string;
     userRating: number | null;
+    highScore: HighScore | null;
 }
+
+
 
 const BoardGameProfilePage = ({
     boardGame,
     userId,
     userRating,
+    highScore,
 }: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        console.log(highScore);
+    } , [highScore]);
     return (
         <div className="container mx-auto px-6 py-8">
             {/* Header Section */}
@@ -65,6 +75,13 @@ const BoardGameProfilePage = ({
                                     ? boardGame.rating.toFixed(2)
                                     : "N/A"}
                             </p>
+                            {highScore && (
+                                <p className="text-lg">
+                                    <strong>High Score:</strong>{" "}
+                                    {highScore.score} by {highScore.user} on{" "}
+                                    {new Date(highScore.date).toLocaleDateString()}
+                                </p>
+                            )}
                         </div>
                         <div className="mt-4">
                             <button

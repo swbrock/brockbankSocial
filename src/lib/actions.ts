@@ -202,6 +202,12 @@ interface CreateGameParams {
     image?: string;
 }
 
+interface HighScore {
+    user: string | null;
+    score: number;
+    date: Date;
+}
+
 // Create a new game
 export async function createGame({
     boardGameId,
@@ -332,6 +338,43 @@ export async function getBestWinPercentageGame(userId: string) {
         }
     });
     return bestGame;
+}
+
+//get highest scores for a game
+export async function getHighestScoresForGame(boardGameId: number) {
+    const games = await prisma.game.findMany({
+        where: {
+            boardGameId,
+        },
+        include: {
+            participants: true,
+        },
+    });
+
+    let highestScore = 0;
+    let highestScorer = "No games played yet";
+    let date = new Date();
+
+    games.forEach((game) => {
+        game.participants.forEach((participant) => {
+            if (participant.score && participant.score > highestScore) {
+                highestScore = participant.score;
+                highestScorer = participant.userId;
+                date = game.playDate;
+            }
+        });
+    });
+
+    const user = await getUserFullName(highestScorer);
+
+    const highScore: HighScore = {
+        user: user ?? null,
+        score: highestScore,
+        date,
+    };
+
+    return highScore ?? null;
+
 }
 
 
@@ -570,6 +613,19 @@ export async function getLoggedInUser() {
         where: { id: userId },
     });
     return user;
+}
+
+//get user first and last name
+export async function getUserFullName(userId: string) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { firstName: true, lastName: true, username: true },
+    });
+    if (user?.firstName && user?.lastName) {
+        return `${user.firstName} ${user.lastName}`;
+    } else {
+        return user?.username ?? null;
+    }
 }
 
 

@@ -1,9 +1,15 @@
 import AddGameModal from "@/components/addEvents/AddGameModal";
 import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
-import { getLoggedInUserId, getUserRating, getAllUsers } from "@/lib/actions";
+import { getLoggedInUserId, getUserRating, getAllUsers, getHighestScoresForGame } from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
+
+interface HighScore {
+    user: string | null;
+    score: number;
+    date: Date;
+}
 
 export default async function BoardGameProfilePageServer({
     params,
@@ -45,6 +51,9 @@ export default async function BoardGameProfilePageServer({
         user.firstName ??= "";
         user.lastName ??= "";
     });
+    
+    const highScore: HighScore = await getHighestScoresForGame(boardGameId);
+
 
     // Render components
     return (
@@ -53,6 +62,7 @@ export default async function BoardGameProfilePageServer({
                 boardGame={boardGame}
                 userId={loggedInUser}
                 userRating={userRating ?? null}
+                highScore={highScore ?? null}
             />
             <AddGameModal
                 users={users}
