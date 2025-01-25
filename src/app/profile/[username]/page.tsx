@@ -97,6 +97,7 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
                                 src={user.avatar ?? "/noAvatar.png"}
                                 width={128}
                                 height={128}
+                                style={{ objectFit: "cover" }}
                                 className="w-32 h-32 rounded-full absolute left-0 right-0 m-auto -bottom-16 ring-4 ring-white"
                                 alt={""}
                             />
