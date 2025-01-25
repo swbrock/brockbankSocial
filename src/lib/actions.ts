@@ -267,7 +267,7 @@ export async function updateGame({
                 winnerUserId,
                 playDate,
                 playDuration,
-                //image,
+                image,
             },
         });
         return game;
