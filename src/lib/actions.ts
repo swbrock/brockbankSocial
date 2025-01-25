@@ -342,46 +342,46 @@ export async function getBestWinPercentageGame(userId: string) {
 }
 
 //get highest scores for a game
-export async function getHighestScoresForGame(boardGameId: number) {
-    const games = await prisma.game.findMany({
-        where: {
-            boardGameId,
-        },
-        include: {
-            participants: {
-                select: {
-                    userId: true,
-                    score: true,
-                }
-            }
-        },
-    });
+// export async function getHighestScoresForGame(boardGameId: number) {
+//     const games = await prisma.game.findMany({
+//         where: {
+//             boardGameId,
+//         },
+//         include: {
+//             participants: {
+//                 select: {
+//                     userId: true,
+//                     score: true,
+//                 }
+//             }
+//         },
+//     });
 
-    let highestScore = 0;
-    let highestScorer = "No games played yet";
-    let date = new Date();
+//     let highestScore = 0;
+//     let highestScorer = "No games played yet";
+//     let date = new Date();
 
-    games.forEach((game) => {
-        game.participants.forEach((participant) => {
-            if (participant.score && participant.score > highestScore) {
-                highestScore = participant.score;
-                highestScorer = participant.userId;
-                date = game.playDate;
-            }
-        });
-    });
+//     games.forEach((game) => {
+//         game.participants.forEach((participant) => {
+//             if (participant.score && participant.score > highestScore) {
+//                 highestScore = participant.score;
+//                 highestScorer = participant.userId;
+//                 date = game.playDate;
+//             }
+//         });
+//     });
 
-    const user = await getUserFullName(highestScorer);
+//     const user = await getUserFullName(highestScorer);
 
-    const highScore: HighScore = {
-        user: user ?? null,
-        score: highestScore,
-        date,
-    };
+//     const highScore: HighScore = {
+//         user: user ?? null,
+//         score: highestScore,
+//         date,
+//     };
 
-    return highScore ?? null;
+//     return highScore ?? null;
 
-}
+// }
 
 
 // ------------------------------- SportsEvent and SportsPrediction Actions -------------------------------
