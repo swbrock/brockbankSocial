@@ -1,10 +1,12 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import Image from "next/image";
 
 interface User {
     id: string;
     firstName: string | null;
     lastName: string | null;
+    avatar: string | null;
 }
 
 interface BoardGame {
@@ -41,24 +43,18 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
     const [selectedBoardGame, setSelectedBoardGame] = useState<string>("All");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+    const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
     const filteredGames = useMemo(() => {
         if (selectedBoardGame === "All") return dbGames;
-
-        const selectedGame = dbBoardGames.find(
-            (bg) => bg.name === selectedBoardGame
-        );
+        const selectedGame = dbBoardGames.find((bg) => bg.name === selectedBoardGame);
         return selectedGame
             ? dbGames.filter((game) => game.boardGameId === selectedGame.id)
             : [];
     }, [selectedBoardGame, dbGames, dbBoardGames]);
 
     const leaderboardData = useMemo(() => {
-        const userStats: Record<
-            string,
-            { totalGames: number; totalWins: number }
-        > = {};
+        const userStats: Record<string, { totalGames: number; totalWins: number }> = {};
 
         dbUsers.forEach((user) => {
             userStats[user.id] = { totalGames: 0, totalWins: 0 };
@@ -81,119 +77,90 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
                 const stats = userStats[user.id];
                 const winPercentage =
                     stats.totalGames > 0
-                        ? ((stats.totalWins / stats.totalGames) * 100).toFixed(
-                              2
-                          )
+                        ? ((stats.totalWins / stats.totalGames) * 100).toFixed(2)
                         : "0.00";
                 return {
                     id: user.id,
-                    name: `${user.firstName ?? ""} ${
-                        user.lastName ?? ""
-                    }`.trim(),
+                    name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
                     totalGames: stats.totalGames,
                     totalWins: stats.totalWins,
                     winPercentage: parseFloat(winPercentage),
+                    avatar: user.avatar,
                 };
             })
             .filter((user) => user.totalGames > 0)
             .sort((a, b) => b.winPercentage - a.winPercentage);
     }, [filteredGames, dbUsers]);
 
-    
+    const dropdownOptions = useMemo(() => ["All", ...dbBoardGames.map((bg) => bg.name)], [dbBoardGames]);
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold text-center text-blue-700 mb-6">
-                Leaderboard
-            </h1>
+            <h1 className="text-2xl font-bold text-center text-blue-700 mb-6">Leaderboard</h1>
             <div className="flex flex-col md:flex-row md:items-center justify-center mb-4 space-y-2 md:space-y-0 md:space-x-4">
-                <label
-                    htmlFor="boardGameFilter"
-                    className="text-gray-700 font-medium"
-                >
+                <label htmlFor="boardGameFilter" className="text-gray-700 font-medium">
                     Filter by Board Game:
                 </label>
 
-                {/* Custom Dropdown */}
+                {/* Dropdown */}
                 <div className="relative">
                     <button
                         onClick={toggleDropdown}
                         className="p-2 border rounded-md bg-white text-gray-700 w-48"
+                        aria-haspopup="listbox"
+                        aria-expanded={isDropdownOpen}
                     >
                         {selectedBoardGame}
                     </button>
                     {isDropdownOpen && (
-                        <div
+                        <ul
                             className="absolute mt-2 w-full max-h-96 overflow-y-auto border border-gray-300 bg-white rounded-md shadow-lg z-10"
-                            style={{ maxHeight: "30rem" }} // Increased max height
+                            role="listbox"
                         >
-                            <ul className="list-none m-0 p-0">
+                            {dropdownOptions.map((option) => (
                                 <li
+                                    key={option}
                                     onClick={() => {
-                                        setSelectedBoardGame("All");
+                                        setSelectedBoardGame(option);
                                         setIsDropdownOpen(false);
                                     }}
                                     className="p-2 hover:bg-gray-200 cursor-pointer"
+                                    role="option"
+                                    aria-selected={option === selectedBoardGame}
                                 >
-                                    All
+                                    {option}
                                 </li>
-                                {dbBoardGames.map((boardGame) => (
-                                    <li
-                                        key={boardGame.id}
-                                        onClick={() => {
-                                            setSelectedBoardGame(boardGame.name);
-                                            setIsDropdownOpen(false);
-                                        }}
-                                        className="p-2 hover:bg-gray-200 cursor-pointer"
-                                    >
-                                        {boardGame.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                            ))}
+                        </ul>
                     )}
                 </div>
             </div>
 
             {leaderboardData.length === 0 ? (
-                <p className="text-center text-gray-600">
-                    No games have been played for the selected board game.
-                </p>
+                <p className="text-center text-gray-600">No games have been played for the selected board game.</p>
             ) : (
                 <>
-                    {/* Mobile Card Layout */}
+                    {/* Mobile View */}
                     <div className="block md:hidden grid grid-cols-1 gap-4">
                         {leaderboardData.map((user, index) => (
-                            <div
-                                key={user.id}
-                                className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition"
-                            >
+                            <div key={user.id} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
                                 <h2 className="text-lg font-bold text-gray-800">
-                                    #{index + 1} {user.name ?? "N/A"}
+                                    #{index + 1} {user.name}
                                 </h2>
                                 <p className="text-sm text-gray-600">
-                                    Total Games:{" "}
-                                    <span className="font-medium">
-                                        {user.totalGames}
-                                    </span>
+                                    Total Games: <span className="font-medium">{user.totalGames}</span>
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    Total Wins:{" "}
-                                    <span className="font-medium">
-                                        {user.totalWins}
-                                    </span>
+                                    Total Wins: <span className="font-medium">{user.totalWins}</span>
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    Win Percentage:{" "}
-                                    <span className="font-medium">
-                                        {user.winPercentage}%
-                                    </span>
+                                    Win Percentage: <span className="font-medium">{user.winPercentage}%</span>
                                 </p>
                             </div>
                         ))}
                     </div>
 
-                    {/* Desktop Table Layout */}
+                    {/* Desktop View */}
                     <div className="hidden md:block overflow-x-auto">
                         <table className="min-w-full table-auto bg-white rounded-lg shadow-md">
                             <thead>
@@ -214,16 +181,21 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
                                         } hover:bg-gray-200`}
                                     >
                                         <td className="p-4 text-center">{index + 1}</td>
-                                        <td className="p-4">{user.name ?? "N/A"}</td>
                                         <td className="p-4 text-center">
-                                            {user.totalWins}
+                                            <div className="flex flex-col items-center">
+                                                <Image
+                                                    src={user.avatar ?? "/noAvatar.png"}
+                                                    alt={`${user.name}'s Avatar`}
+                                                    width={50}
+                                                    height={50}
+                                                    className="w-12 h-12 rounded-full object-cover mb-1"
+                                                />
+                                                <span className="font-medium">{user.name}</span>
+                                            </div>
                                         </td>
-                                        <td className="p-4 text-center">
-                                            {user.totalGames}
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            {user.winPercentage}%
-                                        </td>
+                                        <td className="p-4 text-center">{user.totalWins}</td>
+                                        <td className="p-4 text-center">{user.totalGames}</td>
+                                        <td className="p-4 text-center">{user.winPercentage}%</td>
                                     </tr>
                                 ))}
                             </tbody>

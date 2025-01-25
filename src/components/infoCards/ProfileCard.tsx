@@ -31,7 +31,7 @@ const ProfileCard = async () => {
                 <Image
                     src={user.avatar ?? "/noAvatar.png"}
                     alt="profile"
-                    objectFit="cover"
+                    style={{ objectFit: "cover" }}
                     width={48}
                     height={48}
                     className="rounded-full w-12 h-12 absolute left-0 right-0 m-auto -bottom-6 ring-1 ring-white z-10"
