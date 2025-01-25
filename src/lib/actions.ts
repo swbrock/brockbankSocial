@@ -348,7 +348,12 @@ export async function getHighestScoresForGame(boardGameId: number) {
             boardGameId,
         },
         include: {
-            participants: true,
+            participants: {
+                select: {
+                    userId: true,
+                    score: true,
+                }
+            }
         },
     });
 
