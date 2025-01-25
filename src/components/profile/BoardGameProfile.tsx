@@ -75,7 +75,7 @@ const BoardGameProfilePage = ({
                                     ? boardGame.rating.toFixed(2)
                                     : "N/A"}
                             </p>
-                            {highScore && (
+                            {highScore && highScore?.score != 0 && (
                                 <p className="text-lg">
                                     <strong>High Score:</strong>{" "}
                                     {highScore.score} by {highScore.user} on{" "}

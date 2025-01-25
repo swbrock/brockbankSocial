@@ -90,6 +90,13 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
+        if (e.target.name === "releaseDate") {
+            setFormData({
+                ...formData,
+                [e.target.name]: new Date(e.target.value),
+            });
+            return;
+        }
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
@@ -229,18 +236,24 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700">
+                        <label
+                            htmlFor="releaseDate"
+                            className="block text-gray-700"
+                        >
                             Release Date
                         </label>
                         <input
-                            type="date"
+                            id="releaseDate"
                             name="releaseDate"
+                            type="date"
                             value={
-                                formData.releaseDate.toISOString().split("T")[0]
-                            }
+                                formData.releaseDate
+                                    .toISOString()
+                                    .split("T")[0]
+                            } // Format as date string
                             onChange={handleChange}
-                            required
                             className="mt-1 p-2 w-full border rounded"
+                            required
                         />
                     </div>
                     <div>
