@@ -10,13 +10,13 @@ const Navbar = () => {
     return (
         <div className="h-24 flex items-center justify-between">
             {/* LEFT */}
-            <div className="md:hidden lg:block w-[20%]">
+            <div className="sm:block w-[70%] md:hidden lg:block lg:w-[20%] justify-start">
                 <Link href="/" className="font-bold text-xl text-blue-500">
                     Brockbank Social
                 </Link>
             </div>
-            {/* CENTER */}
-            <div className="flex md:w-[90%] w-full text-sm items-center justify-between">
+            {/* CENTER (Hide on mobile, show on md and larger) */}
+            <div className="hidden md:flex md:w-[90%] w-full text-sm items-center justify-between">
                 <div className="flex gap-3 text-gray-600">
                     <Link href="/" className="flex items-center gap-2">
                         <Image
@@ -25,8 +25,6 @@ const Navbar = () => {
                             width={16}
                             height={16}
                             className="w-4 h-4"
-                            style={{ objectFit: "cover" }}
-
                         />
                         <span className="hidden md:inline">Homepage</span>
                     </Link>
@@ -37,7 +35,6 @@ const Navbar = () => {
                             width={16}
                             height={16}
                             className="w-4 h-4"
-                            style={{ objectFit: "cover" }}
                         />
                         <span className="hidden md:inline">Movies</span>
                     </Link>
@@ -48,7 +45,6 @@ const Navbar = () => {
                             width={16}
                             height={16}
                             className="w-4 h-4"
-                            style={{ objectFit: "cover" }}
                         />
                         <span className="hidden md:inline">Board Games</span>
                     </Link>
@@ -59,7 +55,6 @@ const Navbar = () => {
                             width={16}
                             height={16}
                             className="w-4 h-4"
-                            style={{ objectFit: "cover" }}
                         />
                         <span className="hidden md:inline">Books</span>
                     </Link>
@@ -69,7 +64,6 @@ const Navbar = () => {
                             alt="Leaderboard"
                             width={16}
                             height={16}
-                            style={{ objectFit: "cover" }}
                             className="w-4 h-4"
                         />
                         <span className="hidden md:inline">Leaderboard</span>
@@ -84,6 +78,7 @@ const Navbar = () => {
                     <Image src="/search.png" alt="" width={14} height={14} />
                 </div>
             </div>
+
             {/* RIGHT */}
             <div className="w-[30%] flex items-center gap-4 xl:gap-8 justify-end">
                 <ClerkLoading>
@@ -92,13 +87,12 @@ const Navbar = () => {
                 <ClerkLoaded>
                     <SignedIn>
                         <div className="cursor-pointer">
-                            <Link href="/users" className="flex items-center gap-2">
+                            <Link href="/users" className="flex items-center gap-2 hidden md:block">
                                 <Image
                                     src="/people.png"
                                     alt=""
                                     width={20}
                                     height={20}
-                                    style={{ objectFit: "cover" }}
                                     className="w-8 h-8"
                                 />
                             </Link>
@@ -113,7 +107,7 @@ const Navbar = () => {
                                 alt=""
                                 width={20}
                                 height={20}
-                                style={{ objectFit: "cover" }}
+                                style={{objectFit: "cover"}}
                                 className="w-8 h-8"
                             />
                             <Link href="/sign-in">Login/Register</Link>
