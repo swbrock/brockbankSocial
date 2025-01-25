@@ -41,6 +41,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [gameScores, setGameScores] = useState<{ [id: string]: number }>({});
 
     const router = useRouter(); // Get the router instance
 
@@ -70,6 +71,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
         });
         setCoverImage(null);
         setParticipants(null);
+        setGameScores({});
     };
 
     const handleParticipantsChange = (user: User) => {
@@ -80,6 +82,13 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                 return [...(prev ?? []), user];
             }
         });
+    };
+
+    const handleScoreChange = (id: string, score: number) => {
+        setGameScores((prevScores) => ({
+            ...prevScores,
+            [id]: score,
+        }));
     };
 
     useEffect(() => {
@@ -110,10 +119,12 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
             const result = await createGame(gameData);
 
             if (result) {
+                const participantData = participants?.map((p) => ({
+                    userId: p.id,
+                    score: gameScores[p.id] || 0,
+                })) || [];
                 try {
-                    const gameParticipants =
-                        participants?.map((p) => p.id) ?? [];
-                    await createGameParticipants(result.id, gameParticipants);
+                    await createGameParticipants(result.id, participantData);
                 } catch (error) {
                     console.error("Error adding game participants:", error);
                     setError(
@@ -306,6 +317,35 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                         required
                                         min={1}
                                     />
+                                </div>
+                                {/* for each partcipant add score */}
+                                <div>
+                                    <label
+                                        htmlFor="score"
+                                        className="block text-gray-700"
+                                    >
+                                        Scores
+                                    </label>
+                                    {participants?.map((participant) => (
+                                        <div key={participant.id} className="flex items-center mb-2">
+                                            <span className="mr-2">
+                                                {participant.firstName} {participant.lastName}
+                                            </span>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                placeholder="Enter score"
+                                                className="p-2 border rounded w-full"
+                                                value={gameScores[participant.id] || ""}
+                                                onChange={(e) =>
+                                                    handleScoreChange(
+                                                        participant.id,
+                                                        Number(e.target.value)
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                                 <div>
                                     <label className="block text-gray-700">

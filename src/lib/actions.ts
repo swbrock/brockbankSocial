@@ -236,13 +236,14 @@ export async function createGame({
 //create game participants
 export async function createGameParticipants(
     gameId: number,
-    userIds: string[]
+    gameParticipants: { userId: string; score: number }[]
 ) {
     try {
         const participants = await prisma.gameParticipant.createMany({
-            data: userIds.map((userId) => ({
+            data: gameParticipants.map((participant) => ({
+                userId: participant.userId,
                 gameId,
-                userId,
+                score: participant.score,
             })),
         });
         return participants;
