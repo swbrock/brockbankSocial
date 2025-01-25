@@ -106,7 +106,7 @@ const UpdateUser = ({ user }: { user: User }) => {
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder={user.lastName || "Doe"}
+                                    placeholder={user.lastName ?? "Doe"}
                                     className="ring-1 ring-gray-300 p-[13px] rounded-md text-sm"
                                     name="lastName"
                                 />

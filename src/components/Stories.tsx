@@ -30,8 +30,9 @@ const Stories = ({ users }: StoriesProps) => {
                                     src={user.avatar ?? "/noAvatar.png"} // Default to "/noAvatar.png" if no avatar
                                     alt={`${user.username}'s Avatar`}
                                     className="w-20 h-20 rounded-full ring-2"
-                                    width={80}
-                                    height={80}
+                                    height={100}
+                                    style={{ objectFit: "cover" }}
+                                    width={100}
                                 />
 
                                 {/* Username with link to profile */}
