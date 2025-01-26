@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
     try {
         // Parse the request body
         const body = await req.json();
-        const { userId, title, content, entityId, entityType } = body;
+        const { userId, title, content, entityId, entityType, image } = body;
 
         // Input validation
         if (!userId || !title || !content) {
@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
             title,
             content,
             entityId,
-            entityType
+            entityType,
+            image
         );
         return NextResponse.json(
             {

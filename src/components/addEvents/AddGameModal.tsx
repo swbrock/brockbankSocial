@@ -85,6 +85,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
     };
 
     const handleScoreChange = (id: string, score: number) => {
+        console.log("Score changed for user:", id, "New score:", score);
         setGameScores((prevScores) => ({
             ...prevScores,
             [id]: score,
@@ -119,11 +120,13 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
             const result = await createGame(gameData);
 
             if (result) {
+                console.log("Game added successfully:", result);
                 const participantData = participants?.map((p) => ({
                     userId: p.id,
                     score: gameScores[p.id] || 0,
-                })) || [];
+                })) ?? [];
                 try {
+                    console.log("Participant data:", participantData);
                     await createGameParticipants(result.id, participantData);
                 } catch (error) {
                     console.error("Error adding game participants:", error);
@@ -148,6 +151,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                 } ${
                     participants?.find((p) => p.id === winnerUserId)?.lastName
                 } won the game. The game lasted for ${playDuration} minutes.`;
+                console.log("image", coverImage?.secure_url);
                 const postResponse = await fetch("/api/posts", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -157,7 +161,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                         content: content,
                         entityId: result.boardGameId,
                         entityType: "boardGame",
-                        image: result.image ?? "",
+                        image: coverImage?.secure_url ?? ""
                     }),
                 });
 
@@ -336,7 +340,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                                 min={0}
                                                 placeholder="Enter score"
                                                 className="p-2 border rounded w-full"
-                                                value={gameScores[participant.id] || ""}
+                                                value={gameScores[participant.id] ?? ""}
                                                 onChange={(e) =>
                                                     handleScoreChange(
                                                         participant.id,
@@ -349,7 +353,7 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                 </div>
                                 <div>
                                     <label className="block text-gray-700">
-                                        Board Game Cover
+                                        Game Picture
                                     </label>
                                     <CldUploadWidget
                                         uploadPreset="social"
@@ -364,15 +368,15 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
                                                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
                                             >
                                                 {coverImage
-                                                    ? "Change Cover"
-                                                    : "Upload Cover"}
+                                                    ? "Change Picture"
+                                                    : "Upload Picture"}
                                             </button>
                                         )}
                                     </CldUploadWidget>
                                     {coverImage && (
                                         <Image
                                             src={coverImage.secure_url}
-                                            alt="Board Game Cover"
+                                            alt="Game Picture"
                                             width={150}
                                             height={150}
                                         />
