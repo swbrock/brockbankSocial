@@ -658,16 +658,6 @@ export async function getAllBoardGameNames() {
     return boardGames.map((boardGame: { name: string }) => boardGame.name);
 }
 
-//get all board games
-export async function getAllBoardGames() {
-    const boardGames = await prisma.boardGame.findMany({
-        include: {
-            ratings: true, // Include ratings for each board game
-        },
-    });
-    return boardGames;
-}
-
 //create a new board game
 export async function createBoardGame(
     name: string,
@@ -755,6 +745,16 @@ export async function getBoardGamesNotRatedByUser(userId: string) {
         },
         include: {
             ratings: true,
+        },
+    });
+    return boardGames;
+}
+
+//get all board games
+export async function getAllBoardGames() {
+    const boardGames = await prisma.boardGame.findMany({
+        include: {
+            ratings: true, // Include ratings for each board game
         },
     });
     return boardGames;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Toast from "../Toast";
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
+import { getAllBoardGames } from "@/lib/actions";
 
 interface BoardGamePageProps {
     dbBoardGames: BoardGame[];
@@ -15,11 +16,16 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const sortedBoardGames = [...dbBoardGames].sort(
-            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-        );
-        setBoardGames(sortedBoardGames);
-    }, [dbBoardGames]);
+        const fetchBoardGames = async () => {
+            const fetchedBoardGames = await getAllBoardGames();
+            const sortedBoardGames = [...fetchedBoardGames].sort(
+                (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
+            );
+            setBoardGames(sortedBoardGames);
+        };
+        fetchBoardGames();
+
+        }, []);
 
     // Filter board games based on the search query
     const filteredBoardGames = boardGames.filter((game) =>

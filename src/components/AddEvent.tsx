@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddMovieRatingModal from "./addRatings/AddMovieRatingModal";
 import AddBookRatingModal from "./addRatings/AddBookRatingModal";
 import Toast from "./Toast";
