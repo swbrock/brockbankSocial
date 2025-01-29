@@ -1,6 +1,7 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { getAllBoardGames, getAllGames, getAllUsers } from "@/lib/actions";
 
 interface User {
     id: string;
@@ -42,16 +43,38 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
 }) => {
     const [selectedBoardGame, setSelectedBoardGame] = useState<string>("All");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [users, setUsers] = useState<User[]>([]);
+    const [games, setGames] = useState<Game[]>([]);
+    const [boardGames, setBoardGames] = useState<BoardGame[]>([]);
 
     const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const fetchedUsers = await getAllUsers();
+            setUsers(fetchedUsers);
+        }
+        const fetchGames = async () => {
+            const fetchedGames = await getAllGames();
+            setGames(fetchedGames);
+        }
+        const fetchBoardGames = async () => {
+            const fetchedBoardGames = await getAllBoardGames();
+            setBoardGames(fetchedBoardGames);
+        }
+        fetchUsers();
+        fetchGames();
+        fetchBoardGames();
+    }, []);
+
+
     const filteredGames = useMemo(() => {
-        if (selectedBoardGame === "All") return dbGames;
-        const selectedGame = dbBoardGames.find((bg) => bg.name === selectedBoardGame);
+        if (selectedBoardGame === "All") return games;
+        const selectedGame = boardGames.find((bg) => bg.name === selectedBoardGame);
         return selectedGame
-            ? dbGames.filter((game) => game.boardGameId === selectedGame.id)
+            ? games.filter((game) => game.boardGameId === selectedGame.id)
             : [];
-    }, [selectedBoardGame, dbGames, dbBoardGames]);
+    }, [selectedBoardGame, games, boardGames]);
 
     const leaderboardData = useMemo(() => {
         const userStats: Record<string, { totalGames: number; totalWins: number }> = {};
@@ -92,7 +115,7 @@ const LeaderBoardPage: React.FC<LeaderBoardPageProps> = ({
             .sort((a, b) => b.winPercentage - a.winPercentage);
     }, [filteredGames, dbUsers]);
 
-    const dropdownOptions = useMemo(() => ["All", ...dbBoardGames.map((bg) => bg.name)], [dbBoardGames]);
+    const dropdownOptions = useMemo(() => ["All", ...boardGames.map((bg) => bg.name)], [boardGames]);
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">

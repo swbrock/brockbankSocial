@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { getAllUsers, getUsersWithTopRatings } from "@/lib/actions";
 
 type UserProps = {
     id: string;
@@ -14,6 +15,17 @@ type UserProps = {
 };
 
 const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
+
+    const [users, setUsers] = React.useState<UserProps[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const fetchedUsers = await getUsersWithTopRatings();
+            setUsers(fetchedUsers);
+        }
+        fetchUsers();
+    }, []);
+
     return (
         <div className="p-4 bg-gray-50 min-h-screen">
             <h1 className="text-3xl font-bold text-center mb-6">Users</h1>
@@ -31,7 +43,7 @@ const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dbUsers.map((user) => (
+                        {users.map((user) => (
                             <tr
                                 key={user.id}
                                 className="even:bg-gray-100 hover:bg-blue-100 transition"
@@ -66,7 +78,7 @@ const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
 
             {/* Mobile View */}
             <div className="md:hidden flex flex-col gap-4">
-                {dbUsers.map((user) => (
+                {users.map((user) => (
                     <div
                         key={user.id}
                         className="p-4 bg-white rounded-lg shadow-md border border-gray-200"

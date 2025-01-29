@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddBookModal from "../addEvents/AddBookModal";
 import Toast from "../Toast";
+import { getAllBooks } from "@/lib/actions";
 
 interface BookPageProps {
     dbBooks: Book[];
@@ -15,10 +16,14 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const sortedBooks = [...dbBooks].sort(
-            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-        );
-        setBooks(sortedBooks);
+        const fetchBooks = async () => {
+            const fetchedBooks = await getAllBooks();
+            const sortedBooks = [...fetchedBooks].sort(
+                (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
+            );
+            setBooks(sortedBooks);
+        };
+        fetchBooks();
     }, [dbBooks]);
 
     const filteredBooks = books.filter((book) =>

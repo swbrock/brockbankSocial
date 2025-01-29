@@ -634,6 +634,31 @@ export async function getUserFullName(userId: string) {
     }
 }
 
+export async function getUsersWithTopRatings() {
+    const users = await getAllUsers();
+
+    return await Promise.all(
+        users.map(async (user) => {
+            const highestRatedMovie = await getTopRatedMovieForUser(user.id);
+            const highestRatedBook = await getTopRatedBookForUser(user.id);
+            const highestRatedBoardGame = await getTopRatedBoardGameForUser(user.id);
+            const mostWonBoardGame = await getBestWinPercentageGame(user.id);
+
+            return {
+                id: user.id,
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                avatar: user.avatar,
+                highestRatedMovie: highestRatedMovie ?? null,
+                highestRatedBook: highestRatedBook ?? null,
+                highestRatedBoardGame: highestRatedBoardGame ?? null,
+                mostWonBoardGame: mostWonBoardGame ?? null,
+            };
+        })
+    );
+}
+
 
 /// ------------------------------- Board Game Actions -------------------------------
 

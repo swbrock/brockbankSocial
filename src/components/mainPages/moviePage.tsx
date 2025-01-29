@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddMovieModal from "../addEvents/AddMovieModal";
 import Toast from "../Toast";
+import { getAllMovies } from "@/lib/actions";
 
 interface MoviePageProps {
     dbMovies: Movie[];
@@ -15,10 +16,15 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const sortedMovies = [...dbMovies].sort(
-            (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-        );
-        setMovies(sortedMovies);
+        const fetchMovies = async () => {
+            const fetchedMovies = await getAllMovies();
+            const sortedMovies = [...fetchedMovies].sort(
+                (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
+            );
+            setMovies(sortedMovies);
+        };
+        fetchMovies();
+        
     }, [dbMovies]);
 
     // Filter movies based on the search query
