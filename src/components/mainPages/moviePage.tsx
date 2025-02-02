@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import AddMovieModal from "../addEvents/AddMovieModal";
 import Toast from "../Toast";
 import { getAllMovies } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 
 interface MoviePageProps {
     dbMovies: Movie[];
@@ -14,6 +15,14 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const router = useRouter();
+
+    //when the show modal closes, refresh the page
+    useEffect(() => {
+        if (!showModal) {
+            router.refresh();
+        }
+    }, [showModal]);
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -21,7 +30,14 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
             const sortedMovies = [...fetchedMovies].sort(
                 (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
             );
-            setMovies(sortedMovies);
+            //set all movie ratings to two decimal places
+            const moviesWithRatings = sortedMovies.map((movie) => {
+                if (movie.rating) {
+                    movie.rating = parseFloat(movie.rating.toFixed(2));
+                }
+                return movie;
+            });
+            setMovies(moviesWithRatings);
         };
         fetchMovies();
         

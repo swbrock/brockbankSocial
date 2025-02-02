@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import AddBookModal from "../addEvents/AddBookModal";
 import Toast from "../Toast";
 import { getAllBooks } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 
 interface BookPageProps {
     dbBooks: Book[];
@@ -14,6 +15,14 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
     const [books, setBooks] = useState<Book[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const router = useRouter();
+
+    //when the show modal closes, refresh the page
+    useEffect(() => {
+        if (!showModal) {
+            router.refresh();
+        }
+    }, [showModal]);
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -21,7 +30,14 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
             const sortedBooks = [...fetchedBooks].sort(
                 (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
             );
-            setBooks(sortedBooks);
+            //set all book ratings to two decimal places
+            const booksWithRatings = sortedBooks.map((book) => {
+                if (book.rating) {
+                    book.rating = parseFloat(book.rating.toFixed(2));
+                }
+                return book;
+            });
+            setBooks(booksWithRatings);
         };
         fetchBooks();
     }, [dbBooks]);

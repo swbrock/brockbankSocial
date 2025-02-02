@@ -1144,279 +1144,108 @@ export const MovieRatingResponses = [
     {
         range: "0-1",
         responses: [
-            {
-                title: "A Waste of Time",
-                response: "This movie was an absolute waste of time. The plot was nonsensical, the acting was subpar, and the pacing was horrendous. I kept checking my watch, wishing it would end sooner.",
-            },
-            {
-                title: "Disastrous",
-                response: "Everything about this movie was wrong. The plot was all over the place, the characters were one-dimensional, and the dialogue felt forced. The acting was terrible, and it was clear no one put effort into making it a quality film.",
-            },
-            {
-                title: "Dull & Boring",
-                response: "This movie was a struggle to sit through. The plot dragged, the characters lacked depth, and the entire experience was a snooze fest. I kept waiting for something interesting to happen, but it never did.",
-            },
-            {
-                title: "Uninspired",
-                response: "Nothing about this movie felt fresh or original. The story was predictable, the characters were clichés, and the direction lacked creativity. I found myself zoning out frequently, wishing for more substance and originality.",
-            },
-            {
-                title: "Painfully Bad",
-                response: "This was a painful experience from start to finish. The script was horrendous, the acting was stiff and unbelievable, and the story made absolutely no sense. There was nothing enjoyable about this film whatsoever.",
-            },
-            {
-                title: "Not Worth It",
-                response: "I don’t know what I was expecting, but this definitely wasn’t it. There was nothing memorable about this movie, and I felt like I’d rather have spent my time doing anything else. It was completely forgettable.",
-            },
-            {
-                title: "Awful",
-                response: "Everything about this movie screamed bad. The plot was incoherent, the acting was cringeworthy, and the pacing was all over the place. It felt like a low-budget attempt at something bigger, but it missed the mark completely.",
-            },
-            {
-                title: "Terrible Script",
-                response: "The script was absolutely terrible. The dialogue was awkward, the plot twists were ridiculous, and the entire movie felt forced. It was clear the writers didn’t put much thought into making the story compelling.",
-            },
-            {
-                title: "Cringe-Worthy",
-                response: "This movie was so cringeworthy I could hardly watch it. The awkward humor, forced drama, and unrealistic scenarios made it incredibly uncomfortable to sit through. Nothing about it felt authentic or enjoyable.",
-            },
-            {
-                title: "Unwatchable",
-                response: "I couldn’t even finish it. The pacing was awful, the story was incoherent, and the acting was horrendous. I tried to power through, but I just couldn’t. This movie was truly unwatchable.",
-            },
-            {
-                title: "Complete Disaster",
-                response: "This movie was an absolute disaster. The storyline made no sense, the characters were poorly developed, and the direction felt lost. There was no emotional depth, and the dialogue was cringeworthy. Overall, it felt like a cash grab with no care put into the production.",
-            },
-            {
-                title: "Frustratingly Bad",
-                response: "This film was frustrating to watch. The pacing was terrible, and it felt like scenes were added in just to stretch the runtime. The plot had so many holes that I kept getting lost in confusion, and the acting was some of the worst I’ve ever seen.",
-            },
-            {
-                title: "Unbearable",
-                response: "I couldn’t bear watching this movie. The plot was thin and poorly executed, the characters were cardboard cutouts, and the dialogue felt like it was written by someone who has never spoken to a human. It was a chore to get through.",
-            },
-            {
-                title: "Utterly Disappointing",
-                response: "This movie had so much potential but completely failed to deliver. It started off with a promising premise, but the execution was terrible. The plot got lost, the characters made ridiculous decisions, and it completely squandered the chance to be something great.",
-            },
-            {
-                title: "Excruciating to Watch",
-                response: "This was excruciating to watch from beginning to end. The pacing was slow, the dialogue awkward, and the acting was painful to sit through. It felt like a low-budget knockoff trying to replicate something much better, but it failed on every front.",
-            },
-            {
-                title: "A Total Letdown",
-                response: "After hearing so much hype about this movie, I was sorely let down. It promised action, excitement, and drama, but delivered nothing but clichés, predictable tropes, and eye-rolling moments. The acting was wooden, and the plot was a mess.",
-            },
-            {
-                title: "Zero Chemistry",
-                response: "The characters had zero chemistry, which made it impossible to care about their journey. The romance felt forced, the conflicts were trivial, and nothing seemed to come together in a meaningful way. It was a struggle to stay engaged.",
-            },
-            {
-                title: "Painful to Sit Through",
-                response: "This movie was a painful experience from start to finish. The pacing dragged, the story was painfully predictable, and the humor was flat. I didn’t feel connected to any of the characters, and the plot had no real direction or purpose.",
-            },
-            {
-                title: "Unoriginal and Forgettable",
-                response: "This movie had no originality whatsoever. It borrowed from every other film in its genre without adding anything new. The result was a forgettable, bland experience with no lasting impact. I had trouble recalling what happened even hours after watching it.",
-            },
-            {
-                title: "A Total Miss",
-                response: "This movie was a total miss in every way. The plot was nonsensical, the acting was terrible, and the special effects were laughable. It’s hard to believe anyone thought this would be worth watching. I regretted wasting my time on it.",
-            },
+            { title: "A Waste of Time", response: "Nonsensical plot, bad acting, and horrendous pacing. I kept checking my watch." },
+            { title: "Disastrous", response: "A mess—terrible acting, one-dimensional characters, and forced dialogue." },
+            { title: "Dull & Boring", response: "A snooze fest. Nothing interesting ever happened." },
+            { title: "Uninspired", response: "Predictable story, cliché characters, and zero originality." },
+            { title: "Painfully Bad", response: "Awful script, stiff acting, and a nonsensical story." },
+            { title: "Not Worth It", response: "Completely forgettable. I wish I spent my time elsewhere." },
+            { title: "Awful", response: "Incoherent plot, cringeworthy acting, and terrible pacing." },
+            { title: "Terrible Script", response: "Awkward dialogue and ridiculous plot twists." },
+            { title: "Cringe-Worthy", response: "Forced drama, awkward humor, and unbearable moments." },
+            { title: "Unwatchable", response: "I couldn’t finish it. Everything was awful." },
+            { title: "Complete Disaster", response: "A cash grab with no emotional depth or care." },
+            { title: "Frustratingly Bad", response: "Plot holes, terrible pacing, and confusing scenes." },
+            { title: "Unbearable", response: "Thin plot, lifeless characters, and awful dialogue." },
+            { title: "Utterly Disappointing", response: "Started promising but completely fell apart." },
+            { title: "Excruciating to Watch", response: "Slow, awkward, and painful acting." },
+            { title: "A Total Letdown", response: "Clichés, wooden acting, and predictable tropes." },
+            { title: "Zero Chemistry", response: "Forced romance, trivial conflicts, and no engagement." },
+            { title: "Painful to Sit Through", response: "Predictable, directionless, and humorless." },
+            { title: "Unoriginal and Forgettable", response: "Borrowed everything but added nothing new." },
+            { title: "A Total Miss", response: "Terrible acting, nonsensical plot, and laughable effects." },
         ],
     },
-    
     {
         range: "1-2",
         responses: [
-            {
-                title: "Terrible Experience",
-                response:
-                    "Absolutely terrible! I could barely stay awake through it. The story lacked any real depth, and the pacing was so slow it felt like it would never end. The acting was flat, and the dialogue was cringe-worthy. Overall, a complete disaster that failed to keep my attention in any way."
-            },
-            {
-                title: "Awful & Boring",
-                response:
-                    "This movie was awful from start to finish. The plot was all over the place, and it was extremely hard to follow. The characters were one-dimensional, and I didn’t care about any of them. There was nothing exciting or interesting about it. Just a dull, monotonous experience that I regretted spending my time on."
-            },
-            {
-                title: "Disastrous Plot",
-                response:
-                    "The plot was disastrous! It felt like it had no direction, and by the time it started to go somewhere, it just fell apart. There were so many holes in the story, and the characters made illogical decisions that completely took me out of the experience. It was frustrating to watch, and I couldn’t get invested in any part of it."
-            },
-            {
-                title: "Unwatchable",
-                response:
-                    "Unwatchable is the only way to describe this film. The story was incoherent, and none of the characters were compelling enough to keep me engaged. The dialogue was painful, and I felt no emotional connection to what was happening on screen. I couldn’t even finish it, and I don’t plan on trying again."
-            },
-            {
-                title: "Terrible Pacing",
-                response:
-                    "The pacing was absolutely terrible. It was either too slow or rushed, making the entire film feel disjointed. There was no sense of rhythm, and the scenes dragged on endlessly. The acting didn’t help either, as it felt forced and unconvincing, making it hard to believe in any of the characters or the story."
-            },
-            {
-                title: "No Attention Grabs",
-                response:
-                    "This movie failed to grab my attention in any meaningful way. From the beginning, it felt like I was just waiting for something to happen, but nothing ever did. The storyline was unoriginal and lacked any real hook, and I couldn’t bring myself to care about the characters or their struggles. I wouldn’t recommend this to anyone."
-            },
-            {
-                title: "Weak Storyline",
-                response:
-                    "The storyline was incredibly weak. There was no real emotional depth or investment, and the plot points felt random and underdeveloped. The movie tried to throw in some twists, but they were predictable and didn’t land as they should have. Overall, it was an exhausting watch with no payoff."
-            },
-            {
-                title: "Waste of Time",
-                response:
-                    "This movie was an absolute waste of time. I could have spent my time doing anything else, and it still would have been a more enjoyable experience. The acting was unconvincing, the plot was nonsensical, and the pacing was so slow that I was constantly checking how much time was left. I regret sitting through this one."
-            },
-            {
-                title: "Flat-Out Bad",
-                response:
-                    "This was just flat-out bad. From the poorly written script to the lifeless performances, everything about this movie was a letdown. The plot was nonsensical, and the pacing was so slow that I lost interest early on. There was no emotional connection to any of the characters, and the supposed 'twists' were nothing but recycled tropes."
-            },
-            {
-                title: "Total Letdown",
-                response:
-                    "What a total letdown. I had high hopes for this movie based on the premise, but it didn’t deliver on any of its promises. The story was predictable, the acting was lackluster, and it didn’t even have the decency to be entertaining. There was no emotional or intellectual stimulation, and it just felt like a missed opportunity from start to finish."
-            },
-            {
-                title: "Incoherent & Frustrating",
-                response:
-                    "The film was incredibly incoherent, and I found myself frustrated with how everything unfolded. The plot made little sense, the characters seemed to change motivations at random, and I was left scratching my head most of the time. The direction was all over the place, and it felt like the filmmakers didn’t even know what they were trying to say."
-            },
-            {
-                title: "Lackluster & Disappointing",
-                response:
-                    "This movie was completely lackluster and ultimately disappointing. There was no real sense of excitement or wonder, and it felt like the filmmakers didn’t put much effort into creating something truly engaging. The performances were wooden, the plot was tired and uninspired, and I was left wishing I had chosen something else to watch."
-            },
-            {
-                title: "Painfully Predictable",
-                response:
-                    "This movie was painfully predictable. From the first scene, I could tell exactly where it was headed, and it offered nothing new or surprising. The plot twists were obvious from a mile away, and the characters were stereotypical. It felt like a formulaic movie made just to tick off the usual boxes without any creativity or flair."
-            },
-            {
-                title: "Poor Execution",
-                response:
-                    "The poor execution of this movie was evident in every aspect. The acting was flat, the direction was uninspired, and the pacing was off. The potential for a good story was there, but it was squandered by a lack of vision. Even the most basic elements felt like they were mishandled, and I found myself disinterested early on."
-            },
-            {
-                title: "Awful Writing",
-                response:
-                    "The writing was absolutely awful. The dialogue was cringe-worthy, the plot was forced, and the pacing felt like it was made up as it went along. I couldn’t believe how badly it was written; it seemed like the script had no real understanding of character development or structure. It made the whole experience feel cheap and poorly constructed."
-            }
+            { title: "Terrible Experience", response: "Slow, boring, and completely unengaging." },
+            { title: "Awful & Boring", response: "Dull plot, one-dimensional characters, and no excitement." },
+            { title: "Disastrous Plot", response: "Filled with plot holes and illogical character choices." },
+            { title: "Unwatchable", response: "Incoherent story, bad dialogue, and no emotional impact." },
+            { title: "Terrible Pacing", response: "Too slow or rushed—completely disjointed." },
+            { title: "No Attention Grabs", response: "Nothing exciting or engaging ever happens." },
+            { title: "Weak Storyline", response: "Random plot points and predictable twists." },
+            { title: "Waste of Time", response: "Nothing enjoyable, just painfully slow and pointless." },
+            { title: "Flat-Out Bad", response: "Lifeless performances and a nonsensical plot." },
+            { title: "Total Letdown", response: "Promising premise wasted on clichés and dull execution." },
+            { title: "Incoherent & Frustrating", response: "Confusing story with random character shifts." },
+            { title: "Lackluster & Disappointing", response: "No excitement, no effort, just bland." },
+            { title: "Painfully Predictable", response: "Every twist was obvious from the start." },
+            { title: "Poor Execution", response: "Weak acting, bad pacing, and uninspired direction." },
+            { title: "Awful Writing", response: "Cringeworthy dialogue and a weak plot." },
         ],
-    },    
+    },
     {
         range: "2-3",
         responses: [
-            {
-                title: "Not Great",
-                response:
-                    "Not great. While the premise showed some potential, there were noticeable issues with the pacing and storyline. The flow of events felt uneven, and the characters didn’t evolve as much as I hoped. Some moments felt forced, and by the time the film tried to redeem itself, it was already too late to make a lasting impression. I wouldn’t call it bad, but it definitely left me feeling underwhelmed."
-            },
-            {
-                title: "Mediocre",
-                response:
-                    "Mediocre at best. The film had its moments, but overall, it didn’t leave a strong impression. The story lacked depth, and the characters were somewhat flat. It felt like the filmmakers didn’t fully commit to any particular direction, resulting in a film that was okay to watch but easily forgettable. It didn’t offer anything particularly exciting or unique."
-            },
-            {
-                title: "Forgettable",
-                response:
-                    "Forgettable. I can barely remember key plot points or characters after watching it. While it wasn’t terrible, it lacked anything that would make it stand out. It had all the right ingredients—a decent premise, competent actors, and an average plot—but somehow it just didn’t come together in a way that would keep me thinking about it after the credits rolled. It's a film that’s easy to watch but hard to remember."
-            },
-            {
-                title: "Underwhelming",
-                response:
-                    "Underwhelming. The movie started with promise, but ultimately didn’t meet my expectations. While it was decent enough, it didn’t live up to the hype or the potential it showed in its first act. The pacing felt off, and the emotional impact was lacking. I expected more from the characters and storyline, but instead, it was a bit too formulaic to make a lasting impression. I was left hoping for more depth and excitement."
-            },
-            {
-                title: "Had Moments",
-                response:
-                    "Had moments that made it enjoyable, but overall, it didn’t fully captivate me. There were some interesting scenes, and the acting in parts was solid, but it never quite reached the level of excitement I was hoping for. The story was slow to develop, and the final act felt rushed, leaving me with mixed feelings. While it wasn’t a waste of time, it lacked the emotional or dramatic highs to make it memorable."
-            },
-            {
-                title: "Just Average",
-                response:
-                    "Just average. The movie didn’t offer much in terms of new ideas or unexpected twists. The characters were okay, but their development felt shallow, and the plot was predictable from the start. It didn’t feel like anything special, and though it wasn’t a total disappointment, it didn’t leave me with a sense of satisfaction. It could’ve been so much better with a little more effort."
-            },
-            {
-                title: "Not Terrible",
-                response:
-                    "Not terrible, but far from great. It had some decent moments, but overall, the film could have used more polish. The storyline had potential but didn’t follow through on its promises, and the pacing was inconsistent at best. While it wasn’t painful to watch, it didn’t stand out in any meaningful way. The film could use a little fine-tuning to make it more engaging and memorable."
-            },
-            {
-                title: "Lacked Consistency",
-                response:
-                    "While the movie had some enjoyable moments, it lacked consistency, which made it difficult to stay engaged throughout. Some scenes were entertaining, but others felt like filler or didn’t contribute much to the story. The characters had potential, but their arcs were either rushed or poorly executed. If it had been more cohesive, it could have been a solid film, but instead, it just didn’t come together."
-            },
-            {
-                title: "Okay But Boring",
-                response:
-                    "Okay, but definitely didn’t grab my attention. The movie had a decent premise, but the execution left a lot to be desired. There was a lack of urgency in the plot, and the pacing felt sluggish. Despite having some decent actors, the chemistry and dialogue weren’t enough to keep me invested. It wasn’t painful to watch, but it certainly didn’t hold my interest for long."
-            },
-            {
-                title: "Enjoyable Enough",
-                response:
-                    "Enjoyable enough to pass the time, but not a standout experience by any means. The film had its share of fun moments and some solid performances, but it didn’t break any new ground. It felt like a safe, predictable movie that didn’t offer much in terms of emotional payoff or intellectual stimulation. I’d watch it again if I were in the mood, but I wouldn’t rush to recommend it."
-            },
-        ]
-    },    
+            { title: "Not Great", response: "Had potential but was uneven and underwhelming." },
+            { title: "Mediocre", response: "Okay but forgettable with flat characters." },
+            { title: "Forgettable", response: "Decent premise but didn’t leave an impression." },
+            { title: "Underwhelming", response: "Started strong but fizzled out quickly." },
+            { title: "Had Moments", response: "Some enjoyable scenes, but mostly bland." },
+            { title: "Just Average", response: "Predictable and lacking depth." },
+            { title: "Not Terrible", response: "Watchable, but nothing special." },
+            { title: "Lacked Consistency", response: "Good moments, but too many filler scenes." },
+            { title: "Okay But Boring", response: "Decent premise, but sluggish and unengaging." },
+            { title: "Enjoyable Enough", response: "Fine for passing time but not memorable." },
+        ],
+    },
     {
         range: "3-4",
         responses: [
             {
                 title: "Solid & Enjoyable",
-                response:
-                    "Solid and enjoyable overall. The film offers a great mix of humor, action, and character moments. There’s enough here to keep me entertained from start to finish, even if it doesn’t reinvent the genre. While it doesn’t have any groundbreaking elements, the pacing is steady, and the characters are likable enough to keep me invested. I’d recommend it if you’re looking for a fun, feel-good movie without too much depth."
+                response: "A fun and well-paced movie with likable characters. Nothing groundbreaking, but an entertaining watch."
             },
             {
                 title: "Decent & Fun",
-                response:
-                    "Decent movie with some fun moments that kept me engaged. It’s not a cinematic masterpiece, but it has enough charm and energy to make for an enjoyable watch. The storyline is fairly predictable, but the characters carry it well, and there’s a sense of lightheartedness that makes it fun. While it has some rough edges, it shows a lot of promise, and I found myself enjoying it more than I expected."
+                response: "Not a masterpiece, but has enough charm and energy to be enjoyable. Predictable but engaging."
             },
             {
                 title: "Good Balance",
-                response:
-                    "Good balance between plot, pacing, and character development. The movie delivers a solid experience with a bit of everything—action, humor, and drama. It’s a fun movie with some replay value. While it’s not the most innovative, it succeeds in creating an entertaining atmosphere. The pacing keeps things moving along, and there’s just enough emotional weight to make it worth watching multiple times."
+                response: "A solid mix of action, humor, and drama. Not the most innovative, but enjoyable with some replay value."
             },
             {
                 title: "Above Average",
-                response:
-                    "Not bad at all—there’s definitely some fun to be had here. It’s slightly above average in terms of both entertainment and execution. While it’s not going to win any major awards, it delivers a solid viewing experience with likable characters, an easy-to-follow plot, and moments of genuine excitement. There’s a good amount of enjoyment to be had, but it doesn’t quite break into the realm of greatness."
+                response: "Slightly above average with likable characters and fun moments. Not great, but a solid watch."
             },
             {
                 title: "Fairly Good",
-                response:
-                    "Fairly good movie, though it lacked the depth I was hoping for. It has some nice elements, like solid performances and a generally engaging storyline, but there are moments where it feels a bit shallow. The characters could have used more development, and some subplots didn’t fully come to fruition. Still, it was a pleasant watch and worth seeing if you're looking for something light, but not necessarily groundbreaking."
+                response: "Engaging with solid performances, though it lacks depth. A pleasant, light watch."
             },
             {
                 title: "Pretty Good",
-                response:
-                    "Pretty good movie overall. I found myself enjoying the plot and the chemistry between the leads. It has a strong foundation with a well-paced storyline, and the characters are relatable, which makes the experience engaging. It’s not revolutionary, but it’s a solid entry that provides a good mix of entertainment. The film delivers a satisfying experience without trying to push the boundaries too far."
+                response: "A well-paced, relatable story with good chemistry. Not revolutionary, but satisfying."
             },
             {
                 title: "Fun But Could Improve",
-                response:
-                    "It’s fun, but it could benefit from more depth and development. While the movie is enjoyable in parts, there’s a sense that it didn’t fully capitalize on its potential. Some of the character arcs felt rushed, and the plot could have been fleshed out a bit more. Despite these issues, it’s still a good time, with plenty of action and humor to keep things lively. I’d recommend it if you want something light, but it could have been more compelling."
+                response: "Enjoyable with action and humor, but lacks depth. Had potential to be stronger."
             },
             {
                 title: "Nice & Balanced",
-                response:
-                    "A nice, balanced movie that offers a bit of everything—comedy, drama, and action. It does a good job of balancing these elements without feeling too heavy-handed. While the plot isn’t groundbreaking, the characters are charming, and the overall tone of the film is enjoyable. It’s not the most memorable movie, but it’s definitely worth exploring further for a lighthearted and satisfying watch."
+                response: "A balanced mix of comedy, drama, and action. Enjoyable but not particularly memorable."
             },
             {
                 title: "Better Than Expected",
-                response:
-                    "Better than I expected, and surprisingly fun. While the movie doesn’t offer anything particularly new, it delivers a good time with some solid performances. The plot is straightforward, but it’s engaging enough to keep you entertained. The pacing is on point, and there’s a nice balance of humor and action. It shows promise for a future watch and has a strong foundation for further development if it were to expand on the story."
+                response: "Surprisingly fun with solid performances. Simple but engaging, with good pacing."
             },
             {
                 title: "Rewatch Worthy",
-                response:
-                    "Decent movie that I’d consider rewatching. It keeps me entertained throughout and offers enough charm and excitement to make me want to revisit it. The storyline may not be anything revolutionary, but the characters and pacing hold up well enough for repeat viewings. It’s the kind of film that you can put on for a fun, laid-back watch and still enjoy the second or third time around."
+                response: "Entertaining enough for repeat viewings. A fun, laid-back watch with decent charm."
             }
         ]
-    },    
+    },
     {
         range: "4-5",
         responses: [

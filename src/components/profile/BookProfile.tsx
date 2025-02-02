@@ -31,6 +31,20 @@ const BookProfilePage = ({
     const [editModalOpen, setEditModalOpen] = useState(false);
     const router = useRouter();
 
+    // make sure rating is two decimal places
+    useEffect(() => {
+        if (book.rating) {
+            book.rating = parseFloat(book.rating.toFixed(2));
+        }
+    }, []);
+
+    //when the edit modal closes, refresh the page
+    useEffect(() => {
+        if (!editModalOpen || !isModalOpen) {
+            router.refresh();
+        }
+    }, [editModalOpen, isModalOpen]);
+
     return (
         <div className="container mx-auto px-6 py-8">
             {/* Toast Notifications */}

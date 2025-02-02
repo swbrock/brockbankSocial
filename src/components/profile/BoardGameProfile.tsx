@@ -1,8 +1,9 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // interface HighScore {
 //     user: string | null;
@@ -34,6 +35,23 @@ const BoardGameProfilePage = ({
 }: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const router = useRouter();
+
+    // make sure rating is two decimal places
+    useEffect(() => {
+        if (boardGame.rating) {
+            boardGame.rating = parseFloat(boardGame.rating.toFixed(2));
+        }
+    }, []);
+
+    //when the edit modal closes, refresh the page
+    useEffect(() => {
+        if (!editModalOpen || !isModalOpen) {
+            router.refresh();
+        }
+    }, [editModalOpen, isModalOpen]);
+
+    // get high score for this board game
 
     return (
         <div className="container mx-auto px-6 py-8">

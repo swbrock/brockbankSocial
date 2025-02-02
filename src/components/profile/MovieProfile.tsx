@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddMovieRatingModal from "@/components/addRatings/AddMovieRatingModal";
 import Toast from "@/components/Toast";
 import { Genre } from "@prisma/client";
 import AddMovieModal from "../addEvents/AddMovieModal";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export interface MovieProfileProps {
     movie: {
@@ -27,6 +28,23 @@ const MovieProfilePage = ({
 }: MovieProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const router = useRouter();
+
+    // make sure rating is two decimal places
+    useEffect(() => {
+        if (movie.rating) {
+            movie.rating = parseFloat(movie.rating.toFixed(2));
+        }
+    }, []);
+
+    //when the edit modal closes, refresh the page
+    useEffect(() => {
+        if (!editModalOpen || !isModalOpen) {
+            router.refresh();
+        }
+    }, [editModalOpen, isModalOpen]);
+
+
 
     return (
         <div className="container mx-auto px-6 py-8">
