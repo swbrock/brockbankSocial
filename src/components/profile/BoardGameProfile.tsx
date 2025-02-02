@@ -42,14 +42,14 @@ const BoardGameProfilePage = ({
         if (boardGame.rating) {
             boardGame.rating = parseFloat(boardGame.rating.toFixed(2));
         }
-    }, []);
+    }, [boardGame]);
 
     //when the edit modal closes, refresh the page
     useEffect(() => {
         if (!editModalOpen || !isModalOpen) {
             router.refresh();
         }
-    }, [editModalOpen, isModalOpen]);
+    }, [editModalOpen, isModalOpen, router]);
 
     // get high score for this board game
 

@@ -36,14 +36,14 @@ const BookProfilePage = ({
         if (book.rating) {
             book.rating = parseFloat(book.rating.toFixed(2));
         }
-    }, []);
+    }, [book]);
 
     //when the edit modal closes, refresh the page
     useEffect(() => {
         if (!editModalOpen || !isModalOpen) {
             router.refresh();
         }
-    }, [editModalOpen, isModalOpen]);
+    }, [editModalOpen, isModalOpen, router]);
 
     return (
         <div className="container mx-auto px-6 py-8">

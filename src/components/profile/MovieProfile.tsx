@@ -35,14 +35,14 @@ const MovieProfilePage = ({
         if (movie.rating) {
             movie.rating = parseFloat(movie.rating.toFixed(2));
         }
-    }, []);
+    }, [movie]);
 
     //when the edit modal closes, refresh the page
     useEffect(() => {
         if (!editModalOpen || !isModalOpen) {
             router.refresh();
         }
-    }, [editModalOpen, isModalOpen]);
+    }, [editModalOpen, isModalOpen, router]);
 
 
 
