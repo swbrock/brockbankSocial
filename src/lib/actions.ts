@@ -233,25 +233,57 @@ export async function createGame({
     }
 }
 
-//create game participants
 export async function createGameParticipants(
     gameId: number,
-    gameParticipants: { userId: string; score: number }[]
+    gameParticipants: { userId: string }[] // No score here
 ) {
     try {
-        const participants = await prisma.gameParticipant.createMany({
+        const result = await prisma.gameParticipant.createMany({
             data: gameParticipants.map((participant) => ({
                 userId: participant.userId,
                 gameId,
-                score: participant.score,
+                score: 0,
             })),
         });
-        return participants;
+
+        console.log(`${result.count} participants added without scores.`);
+        return result;
     } catch (error) {
         console.error("Error creating game participants:", error);
         throw new Error("Error creating game participants");
     }
 }
+
+
+export async function updateGameParticipants(
+    gameId: number,
+    gameParticipants: { userId: string; score: number }[]
+) {
+    try {
+        const updatePromises = gameParticipants.map((participant) =>
+            prisma.gameParticipant.update({
+                where: {
+                    gameId_userId: {
+                        gameId, // This is the gameId you're updating for
+                        userId: participant.userId, // The specific user to update
+                    },
+                },
+                data: {
+                    score: participant.score, // The new score for the participant
+                },
+            })
+        );
+
+        const results = await Promise.all(updatePromises);
+        console.log(`${results.length} participants updated successfully.`);
+        return results;
+    } catch (error) {
+        console.error("Error updating game participants:", error);
+        throw new Error("Error updating game participants");
+    }
+}
+
+
 
 // Update a game
 export async function updateGame({

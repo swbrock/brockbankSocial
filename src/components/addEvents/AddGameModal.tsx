@@ -6,6 +6,7 @@ import MultiSelectDropdown from "../MultiSelectDropdown";
 import {
     createGame,
     createGameParticipants,
+    updateGameParticipants,
     updateTimesPlayed,
 } from "@/lib/actions"; // Replace with actual action for game creation
 import Toast from "../Toast";
@@ -121,18 +122,33 @@ const AddGameModal: React.FC<AddGameModalProps> = ({
 
             if (result) {
                 console.log("Game added successfully:", result);
+            
+                // Step 1: Add participants without scores (score can be null or omitted)
                 const participantData = participants?.map((p) => ({
                     userId: p.id,
-                    score: gameScores[p.id] || 0,
+                    gameId: result.id, // Make sure to include the gameId here
                 })) ?? [];
+            
                 try {
-                    console.log("Participant data:", participantData);
+                    console.log("Adding participants without scores:", participantData);
+            
+                    // Create participants without scores
                     await createGameParticipants(result.id, participantData);
+            
+                    // Step 2: Update the participants with their scores
+                    const updatedScores = participants?.map((p) => ({
+                        userId: p.id,
+                        score: gameScores[p.id] || 0, // Default to 0 if no score exists
+                    })) ?? [];
+            
+                    console.log("Updating participants with scores:", updatedScores);
+            
+                    // Update participants with their scores
+                    await updateGameParticipants(result.id, updatedScores);
+                    
                 } catch (error) {
-                    console.error("Error adding game participants:", error);
-                    setError(
-                        "Failed to add game participants. Please try again."
-                    );
+                    console.error("Error adding or updating game participants:", error);
+                    setError("Failed to add or update game participants. Please try again.");
                 }
                 try {
                     await updateTimesPlayed(boardGameId);
