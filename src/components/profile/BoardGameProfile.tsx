@@ -5,11 +5,11 @@ import AddBoardGameModal from "../addEvents/AddBoardGameModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-// interface HighScore {
-//     user: string | null;
-//     score: number;
-//     date: Date;
-// }
+interface HighScore {
+    user: string | null;
+    score: number;
+    date: Date;
+}
 
 export interface BoardGameProfileProps {
     boardGame: {
@@ -22,7 +22,7 @@ export interface BoardGameProfileProps {
     };
     userId: string;
     userRating: number | null;
-   // highScore: HighScore | null;
+    highScore: HighScore | null;
 }
 
 
@@ -31,7 +31,7 @@ const BoardGameProfilePage = ({
     boardGame,
     userId,
     userRating,
-    //highScore,
+    highScore,
 }: BoardGameProfileProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -90,13 +90,13 @@ const BoardGameProfilePage = ({
                                     ? boardGame.rating.toFixed(2)
                                     : "N/A"}
                             </p>
-                            {/* {highScore && highScore?.score != 0 && (
+                            {highScore && highScore?.score != 0 && (
                                 <p className="text-lg">
                                     <strong>High Score:</strong>{" "}
                                     {highScore.score} by {highScore.user} on{" "}
                                     {new Date(highScore.date).toLocaleDateString()}
                                 </p>
-                            )} */}
+                            )}
                         </div>
                         <div className="mt-4">
                             <button
