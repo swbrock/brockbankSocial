@@ -22,7 +22,7 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
         if (!showModal) {
             router.refresh();
         }
-    }, [showModal]);
+    }, [showModal, router]);
 
     useEffect(() => {
         const fetchMovies = async () => {

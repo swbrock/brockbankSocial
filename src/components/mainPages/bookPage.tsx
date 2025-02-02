@@ -22,7 +22,7 @@ const BookPage: React.FC<BookPageProps> = ({ dbBooks }) => {
         if (!showModal) {
             router.refresh();
         }
-    }, [showModal]);
+    }, [showModal, router]);
 
     useEffect(() => {
         const fetchBooks = async () => {

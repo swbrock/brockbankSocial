@@ -21,7 +21,7 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
         if (!showModal) {
             router.refresh();
         }
-    }, [showModal]);
+    }, [showModal, router]);
 
     useEffect(() => {
         const fetchBoardGames = async () => {
