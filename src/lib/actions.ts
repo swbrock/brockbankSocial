@@ -539,6 +539,17 @@ export async function deleteSportsPrediction(
     }
 }
 
+//get most recent sports events
+export async function getMostRecentSportsEvents() {
+    const events = await prisma.sportsEvents.findMany({
+        orderBy: {
+            time: "desc",
+        },
+        take: 5,
+    });
+    return events;
+}
+
 // ------------------------------- User Actions -------------------------------
 
 export const updateProfile = async (
