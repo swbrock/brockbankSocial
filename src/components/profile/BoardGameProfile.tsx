@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect, use } from "react";
 import AddBoardGameRatingModal from "@/components/addRatings/AddBoardGameRatingModal";
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
@@ -24,8 +24,6 @@ export interface BoardGameProfileProps {
     userRating: number | null;
     highScore: HighScore | null;
 }
-
-
 
 const BoardGameProfilePage = ({
     boardGame,
@@ -67,9 +65,7 @@ const BoardGameProfilePage = ({
                             height={160}
                             className="rounded-lg shadow-lg border border-white mb-4 md:mb-0"
                         />
-                    ) : (
-                        null
-                    )}
+                    ) : null}
 
                     <div className="text-center md:text-left">
                         <h1 className="text-3xl md:text-4xl font-extrabold mb-4">
@@ -94,7 +90,9 @@ const BoardGameProfilePage = ({
                                 <p className="text-lg">
                                     <strong>High Score:</strong>{" "}
                                     {highScore.score} by {highScore.user} on{" "}
-                                    {new Date(highScore.date).toLocaleDateString()}
+                                    {new Date(
+                                        highScore.date
+                                    ).toLocaleDateString()}
                                 </p>
                             )}
                         </div>

@@ -1,7 +1,12 @@
 import AddGameModal from "@/components/addEvents/AddGameModal";
 import Feed from "@/components/Feed";
 import BoardGameProfilePage from "@/components/profile/BoardGameProfile";
-import { getLoggedInUserId, getUserRating, getAllUsers, getHighestScoresForGame } from "@/lib/actions";
+import {
+    getLoggedInUserId,
+    getUserRating,
+    getAllUsers,
+    getHighestScoresForGame,
+} from "@/lib/actions";
 import prisma from "@/lib/client";
 import { notFound } from "next/navigation";
 
@@ -16,17 +21,17 @@ export default async function BoardGameProfilePageServer({
 }: {
     params: { boardGameId: string };
 }) {
-    const boardGameId = parseInt(params.boardGameId);
+    const boardGameId = Number.parseInt(params.boardGameId);
 
     // Validate the boardGameId
-    if (isNaN(boardGameId)) {
+    if (Number.isNaN(boardGameId)) {
         return notFound();
     }
 
     const loggedInUser = await getLoggedInUserId();
 
     if (!loggedInUser) {
-        return notFound(); // Or redirect to login page if needed
+        return notFound();
     }
 
     // Fetch the board game
@@ -42,18 +47,21 @@ export default async function BoardGameProfilePageServer({
     }
 
     // Fetch the user's rating for this board game
-    const userRating = await getUserRating(loggedInUser, boardGame.id, "BoardGame");
+    const userRating = await getUserRating(
+        loggedInUser,
+        boardGame.id,
+        "BoardGame"
+    );
 
     // Fetch all users and sanitize names
     const users = await getAllUsers();
 
-    users.forEach((user) => {
+    for (const user of users) {
         user.firstName ??= "";
         user.lastName ??= "";
-    });
-    
-   const highScore: HighScore = await getHighestScoresForGame(boardGameId);
+    }
 
+    const highScore: HighScore = await getHighestScoresForGame(boardGameId);
 
     // Render components
     return (

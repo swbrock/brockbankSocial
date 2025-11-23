@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        reactCompiler: true,
-        ppr: "incremental",
+        reactCompiler: true, // you can keep this
+        // ppr: "incremental", // removed for stable Next.js
     },
     images: {
         remotePatterns: [

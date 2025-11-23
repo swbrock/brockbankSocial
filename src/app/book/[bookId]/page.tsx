@@ -9,10 +9,10 @@ export default async function BookProfilePageServer({
 }: {
     params: { bookId: string };
 }) {
-    const bookId = parseInt(params.bookId);
+    const bookId = Number.parseInt(params.bookId);
 
     // Ensure movieId is valid
-    if (isNaN(bookId)) {
+    if (Number.isNaN(bookId)) {
         return notFound();
     }
     // Fetch the book data and related posts from the database

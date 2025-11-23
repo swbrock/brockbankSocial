@@ -39,7 +39,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
             setBoardGames(boardGamesWithRatings);
         };
         fetchBoardGames();
-
     }, []);
 
     // Filter board games based on the search query

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { getAllUsers, getUsersWithTopRatings } from "@/lib/actions";
+import { getUsersWithTopRatings } from "@/lib/actions";
 
 type UserProps = {
     id: string;
@@ -15,14 +15,13 @@ type UserProps = {
 };
 
 const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
-
     const [users, setUsers] = React.useState<UserProps[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
             const fetchedUsers = await getUsersWithTopRatings();
             setUsers(fetchedUsers);
-        }
+        };
         fetchUsers();
     }, []);
 
@@ -92,25 +91,35 @@ const UsersPage = ({ dbUsers }: { dbUsers: UserProps[] }) => {
                             </Link>
                         </h2>
                         <p className="text-gray-600">
-                            <span className="font-semibold">First Name:</span> {user.firstName}
+                            <span className="font-semibold">First Name:</span>{" "}
+                            {user.firstName}
                         </p>
                         <p className="text-gray-600">
-                            <span className="font-semibold">Last Name:</span> {user.lastName}
+                            <span className="font-semibold">Last Name:</span>{" "}
+                            {user.lastName}
                         </p>
                         <p className="text-gray-600">
-                            <span className="font-semibold">Highest Rated Movie:</span>{" "}
+                            <span className="font-semibold">
+                                Highest Rated Movie:
+                            </span>{" "}
                             {user.highestRatedMovie ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
-                            <span className="font-semibold">Highest Rated Book:</span>{" "}
+                            <span className="font-semibold">
+                                Highest Rated Book:
+                            </span>{" "}
                             {user.highestRatedBook ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
-                            <span className="font-semibold">Highest Rated Board Game:</span>{" "}
+                            <span className="font-semibold">
+                                Highest Rated Board Game:
+                            </span>{" "}
                             {user.highestRatedBoardGame ?? "N/A"}
                         </p>
                         <p className="text-gray-600">
-                            <span className="font-semibold">Most Won Board Game:</span>{" "}
+                            <span className="font-semibold">
+                                Most Won Board Game:
+                            </span>{" "}
                             {user.mostWonBoardGame ?? "N/A"}
                         </p>
                     </div>

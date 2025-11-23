@@ -3,7 +3,6 @@ import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddMovieModal from "../addEvents/AddMovieModal";
-import Toast from "../Toast";
 import { getAllMovies } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
@@ -40,7 +39,6 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
             setMovies(moviesWithRatings);
         };
         fetchMovies();
-        
     }, [dbMovies]);
 
     // Filter movies based on the search query
