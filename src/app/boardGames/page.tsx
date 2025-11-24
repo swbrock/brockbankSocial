@@ -9,7 +9,18 @@ const BoardGames = async () => {
     //get movies from the database
     const boardGames = await getAllBoardGames();
 
-    return <BoardGamePage dbBoardGames={boardGames} />; // Pass the fetched
-}
+    const sortedBoardGames = [...boardGames].sort(
+        (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
+    );
+
+    const boardGamesWithRatings = sortedBoardGames.map((game) => {
+        if (game.rating) {
+            game.rating = Number.parseFloat(game.rating.toFixed(2));
+        }
+        return game;
+    });
+
+    return <BoardGamePage boardGames={boardGamesWithRatings} />; // Pass the sorted board games
+};
 
 export default BoardGames;

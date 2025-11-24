@@ -26,14 +26,14 @@ export default function RootLayout({
                             <Navbar />
                         </div>
                     </header>
-                    
+
                     {/* Main Content */}
                     <main className="min-h-screen">
                         <div className="w-full px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 py-8 bg-gray-100 shadow-inner">
                             {children}
                         </div>
                     </main>
-                    
+
                     {/* Footer */}
                     <footer className="bg-white py-4 shadow-t-lg">
                         <div className="w-full text-center text-gray-500 text-sm">

@@ -38,7 +38,10 @@ const Navbar = () => {
                         />
                         <span className="hidden md:inline">Movies</span>
                     </Link>
-                    <Link href="/boardGames" className="flex items-center gap-2">
+                    <Link
+                        href="/boardGames"
+                        className="flex items-center gap-2"
+                    >
                         <Image
                             src="/games.png"
                             alt="Games"
@@ -58,7 +61,20 @@ const Navbar = () => {
                         />
                         <span className="hidden md:inline">Books</span>
                     </Link>
-                    <Link href="/leaderboard" className="flex items-center gap-2">
+                    <Link href="/sports" className="flex items-center gap-2">
+                        <Image
+                            src="/sports.jpg"
+                            alt="Sports"
+                            width={16}
+                            height={16}
+                            className="w-4 h-4"
+                        />
+                        <span className="hidden md:inline">Sports</span>
+                    </Link>
+                    <Link
+                        href="/leaderboard"
+                        className="flex items-center gap-2"
+                    >
                         <Image
                             src="/leaderboards.png"
                             alt="Leaderboard"
@@ -68,14 +84,6 @@ const Navbar = () => {
                         />
                         <span className="hidden md:inline">Leaderboard</span>
                     </Link>
-                </div>
-                <div className="hidden xl:flex p-2 bg-slate-100 items-center rounded-xl">
-                    <input
-                        type="text"
-                        placeholder="search..."
-                        className="bg-transparent outline-none"
-                    />
-                    <Image src="/search.png" alt="" width={14} height={14} />
                 </div>
             </div>
 
@@ -87,7 +95,10 @@ const Navbar = () => {
                 <ClerkLoaded>
                     <SignedIn>
                         <div className="cursor-pointer">
-                            <Link href="/users" className="flex items-center gap-2 hidden md:block">
+                            <Link
+                                href="/users"
+                                className="flex items-center gap-2 hidden md:block"
+                            >
                                 <Image
                                     src="/people.png"
                                     alt=""
@@ -107,7 +118,7 @@ const Navbar = () => {
                                 alt=""
                                 width={20}
                                 height={20}
-                                style={{objectFit: "cover"}}
+                                style={{ objectFit: "cover" }}
                                 className="w-8 h-8"
                             />
                             <Link href="/sign-in">Login/Register</Link>

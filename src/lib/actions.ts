@@ -144,10 +144,7 @@ export async function getPostsByUser(userName: string) {
 }
 
 //get posts by entity
-export async function getPostsByEntity(
-    entityId: number,
-    entityType: string
-) {
+export async function getPostsByEntity(entityId: number, entityType: string) {
     let posts: Post[] = [];
     if (entityType === "boardGame") {
         posts = await prisma.post.findMany({
@@ -254,7 +251,6 @@ export async function createGameParticipants(
     }
 }
 
-
 export async function updateGameParticipants(
     gameId: number,
     gameParticipants: { userId: string; score: number }[]
@@ -282,8 +278,6 @@ export async function updateGameParticipants(
         throw new Error("Error updating game participants");
     }
 }
-
-
 
 // Update a game
 export async function updateGame({
@@ -373,7 +367,6 @@ export async function getBestWinPercentageGame(userId: string) {
     return bestGame;
 }
 
-
 // ------------------------------- SportsEvent and SportsPrediction Actions -------------------------------
 
 // Create a new SportsEvent
@@ -421,6 +414,13 @@ export async function createSportsEvent({
 // Update an existing SportsEvent
 interface UpdateSportsEventParams extends CreateSportsEventParams {
     eventId: number;
+}
+
+export async function getAllSportEvents() {
+    const events = await prisma.sportsEvents.findMany({
+        include: {},
+    });
+    return events;
 }
 
 export async function updateSportsEvent({
@@ -597,7 +597,13 @@ export async function getLoggedInUserId() {
 export async function getAllUsers() {
     //just get the users name and id
     const users = await prisma.user.findMany({
-        select: { id: true, username: true, firstName: true, lastName: true, avatar: true },
+        select: {
+            id: true,
+            username: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+        },
     });
     return users;
 }
@@ -631,7 +637,9 @@ export async function getUsersWithTopRatings() {
         users.map(async (user) => {
             const highestRatedMovie = await getTopRatedMovieForUser(user.id);
             const highestRatedBook = await getTopRatedBookForUser(user.id);
-            const highestRatedBoardGame = await getTopRatedBoardGameForUser(user.id);
+            const highestRatedBoardGame = await getTopRatedBoardGameForUser(
+                user.id
+            );
             const mostWonBoardGame = await getBestWinPercentageGame(user.id);
 
             return {
@@ -648,7 +656,6 @@ export async function getUsersWithTopRatings() {
         })
     );
 }
-
 
 /// ------------------------------- Board Game Actions -------------------------------
 
@@ -795,7 +802,10 @@ export async function getTopRatedBoardGameForUser(userId: string) {
 
     boardGames.forEach((game) => {
         const totalRatings = game.ratings.length;
-        const sum = game.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const sum = game.ratings.reduce(
+            (acc, rating) => acc + rating.rating,
+            0
+        );
         const averageRating = sum / totalRatings;
         if (averageRating > topRating) {
             topRating = averageRating;
@@ -985,7 +995,10 @@ export async function getTopRatedMovieForUser(userId: string) {
 
     movies.forEach((movie) => {
         const totalRatings = movie.ratings.length;
-        const sum = movie.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const sum = movie.ratings.reduce(
+            (acc, rating) => acc + rating.rating,
+            0
+        );
         const averageRating = sum / totalRatings;
         if (averageRating > topRating) {
             topRating = averageRating;
@@ -1103,7 +1116,7 @@ export const getBooksNotRatedByUser = async (userId: string) => {
         },
     });
     return books;
-}
+};
 
 //get top rated book for user
 export async function getTopRatedBookForUser(userId: string) {
@@ -1125,7 +1138,10 @@ export async function getTopRatedBookForUser(userId: string) {
 
     books.forEach((book) => {
         const totalRatings = book.ratings.length;
-        const sum = book.ratings.reduce((acc, rating) => acc + rating.rating, 0);
+        const sum = book.ratings.reduce(
+            (acc, rating) => acc + rating.rating,
+            0
+        );
         const averageRating = sum / totalRatings;
         if (averageRating > topRating) {
             topRating = averageRating;

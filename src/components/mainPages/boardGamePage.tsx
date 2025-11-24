@@ -3,15 +3,13 @@ import { BoardGame } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddBoardGameModal from "../addEvents/AddBoardGameModal";
-import { getAllBoardGames } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
 interface BoardGamePageProps {
-    dbBoardGames: BoardGame[];
+    boardGames: BoardGame[];
 }
 
-const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
-    const [boardGames, setBoardGames] = useState<BoardGame[]>([]);
+const BoardGamePage: React.FC<BoardGamePageProps> = ({ boardGames }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
@@ -23,25 +21,6 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
         }
     }, [showModal, router]);
 
-    useEffect(() => {
-        const fetchBoardGames = async () => {
-            const fetchedBoardGames = await getAllBoardGames();
-            const sortedBoardGames = [...fetchedBoardGames].sort(
-                (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-            );
-            //set all board games ratings to two decimal places
-            const boardGamesWithRatings = sortedBoardGames.map((game) => {
-                if (game.rating) {
-                    game.rating = parseFloat(game.rating.toFixed(2));
-                }
-                return game;
-            });
-            setBoardGames(boardGamesWithRatings);
-        };
-        fetchBoardGames();
-    }, []);
-
-    // Filter board games based on the search query
     const filteredBoardGames = boardGames.filter((game) =>
         game.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -71,7 +50,7 @@ const BoardGamePage: React.FC<BoardGamePageProps> = ({ dbBoardGames }) => {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search board games..."
+                        placeholder="Search games..."
                         className="w-full p-4 border rounded-lg shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
                     />
                 </div>

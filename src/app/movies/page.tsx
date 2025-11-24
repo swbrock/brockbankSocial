@@ -9,7 +9,18 @@ const Movies = async () => {
     //get movies from the database
     const movies = await getAllMovies();
 
-    return <MoviePage dbMovies={movies} />; // Pass the fetched
-}
+    const sortedMovies = [...movies].sort(
+        (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
+    );
+
+    const moviesWithRatings = sortedMovies.map((movie) => {
+        if (movie.rating) {
+            movie.rating = Number.parseFloat(movie.rating.toFixed(2));
+        }
+        return movie;
+    });
+
+    return <MoviePage movies={moviesWithRatings} />; // Pass the fetched
+};
 
 export default Movies;

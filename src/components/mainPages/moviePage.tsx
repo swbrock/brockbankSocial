@@ -3,15 +3,13 @@ import { Movie } from "@prisma/client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddMovieModal from "../addEvents/AddMovieModal";
-import { getAllMovies } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
 interface MoviePageProps {
-    dbMovies: Movie[];
+    movies: Movie[];
 }
 
-const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
-    const [movies, setMovies] = useState<Movie[]>([]);
+const MoviePage: React.FC<MoviePageProps> = ({ movies }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
@@ -23,27 +21,10 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
         }
     }, [showModal, router]);
 
-    useEffect(() => {
-        const fetchMovies = async () => {
-            const fetchedMovies = await getAllMovies();
-            const sortedMovies = [...fetchedMovies].sort(
-                (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-            );
-            //set all movie ratings to two decimal places
-            const moviesWithRatings = sortedMovies.map((movie) => {
-                if (movie.rating) {
-                    movie.rating = parseFloat(movie.rating.toFixed(2));
-                }
-                return movie;
-            });
-            setMovies(moviesWithRatings);
-        };
-        fetchMovies();
-    }, [dbMovies]);
-
-    // Filter movies based on the search query
-    const filteredMovies = movies.filter((movie) =>
-        movie.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredMovies = movies.filter(
+        (movie) =>
+            movie.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            movie.director?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -70,9 +51,9 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                     <input
                         type="text"
                         value={searchQuery}
+                        placeholder="Search Movies..."
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search movies..."
-                        className="w-full p-4 border rounded-lg shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        className="w-full p-6 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
                     />
                 </div>
                 {filteredMovies && filteredMovies.length > 0 ? (
@@ -100,7 +81,7 @@ const MoviePage: React.FC<MoviePageProps> = ({ dbMovies }) => {
                     </div>
                 ) : (
                     <p className="text-gray-500 text-center mt-20">
-                        No movies match your search.
+                        No movies that match search.
                     </p>
                 )}
             </div>
